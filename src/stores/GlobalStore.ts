@@ -38,6 +38,7 @@ export interface TableGroupedHistoryChilds {
 
 export interface TableGroupedElement {
   name: string;
+  symbol: string;
   type: string;
   size: string;
   currency_mint: string;
@@ -136,6 +137,7 @@ export const useGlobalStore = defineStore("globalStore", {
                 key: key_idx.toString(),
                 data: {
                   name: type,
+                  symbol: "",
                   type: type,
                   size: "",
                   price: "",
@@ -150,6 +152,7 @@ export const useGlobalStore = defineStore("globalStore", {
                           this.sa_api_data.find(
                             (api) => api.mint === filtered.asset_mint
                           )?.name ?? "none",
+                        symbol: filtered.symbol,
                         type: type,
                         currency_mint: filtered.currency_mint,
                         size: filtered.asset_change.toString(),
