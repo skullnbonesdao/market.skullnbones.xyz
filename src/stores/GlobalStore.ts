@@ -51,7 +51,7 @@ export const useGlobalStore = defineStore("globalStore", {
     rpc: useLocalStorage("rpc_local_store", endpoints_list[0]),
     connection: {} as Connection,
     symbol: {
-      name: "PX4USDC",
+      name: "FOODATLAS",
       mint_asset: new PublicKey("foodQJAztMzX1DKpLaiounNe2BDMds5RNuPC6jsNrDG"),
       mint_pair: new PublicKey("ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx"),
     },
@@ -71,6 +71,7 @@ export const useGlobalStore = defineStore("globalStore", {
     async init() {
       this.connection = new Connection(this.rpc.url, { httpHeaders: {} });
     },
+
     async update_connection(rpc_name: string) {
       this.rpc =
         endpoints_list.find((e) => e.name === rpc_name) ?? endpoints_list[0];

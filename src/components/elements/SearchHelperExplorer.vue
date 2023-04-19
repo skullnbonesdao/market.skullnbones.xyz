@@ -34,10 +34,11 @@
 <script setup lang="ts">
 import { useGlobalStore } from "../../stores/GlobalStore";
 import AutoComplete from "primevue/autocomplete";
-import { getTransitionRawChildren, ref } from "vue";
+import { ref } from "vue";
 import { FilterMatchMode, FilterService } from "primevue/api";
-import { ItemType, StarAtlasAPIItem } from "../../static/StarAtlasAPIItem";
+import { ItemType } from "../../static/StarAtlasAPIItem";
 import { SEARCH_TYPE } from "../../static/search_types_api";
+import { CURRENCIES, E_CURRENCIES } from "../../static/currencies";
 
 defineEmits(["toSearch"]);
 
@@ -76,6 +77,10 @@ for (let item_type in ItemType) {
             api_search: {
               type: SEARCH_TYPE.SYMBOL,
               value: asset.symbol + "ATLAS",
+              mint_asset: asset.mint,
+              mint_currency: CURRENCIES.find(
+                (c) => c.type === E_CURRENCIES.USDC
+              )?.mint,
             },
           },
           {
@@ -84,6 +89,10 @@ for (let item_type in ItemType) {
             api_search: {
               type: SEARCH_TYPE.SYMBOL,
               value: asset.symbol + "USDC",
+              mint_asset: asset.mint,
+              mint_currency: CURRENCIES.find(
+                (c) => c.type === E_CURRENCIES.USDC
+              )?.mint,
             },
           },
         ];

@@ -201,7 +201,7 @@ let table_data = ref([]);
 
 watch(
   () => search_input_object.value,
-  () => fetch_api_data()
+  async () => await fetch_api_data()
 );
 
 onMounted(async () => {

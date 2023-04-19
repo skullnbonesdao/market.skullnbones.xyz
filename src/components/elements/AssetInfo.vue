@@ -22,6 +22,7 @@
               )
             "
           />
+          {{ useGlobalStore().symbol }}
           <div class="flex w-full flex-col sm:flex-row items-baseline">
             <h3 class="w-full">
               {{
@@ -109,7 +110,7 @@
         </div>
       </div>
       <div class="flex items-center px-3 border-l">
-        <div class="i-carbon:search" />
+        <i class="pi pi-search" style="font-size: 1.5rem"></i>
       </div>
     </div>
   </div>
