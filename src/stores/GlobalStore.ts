@@ -50,6 +50,11 @@ export const useGlobalStore = defineStore("globalStore", {
     is_dark: useLocalStorage("is_dark", false),
     rpc: useLocalStorage("rpc_local_store", endpoints_list[0]),
     connection: {} as Connection,
+    symbol: {
+      name: "PX4USDC",
+      mint_asset: new PublicKey("foodQJAztMzX1DKpLaiounNe2BDMds5RNuPC6jsNrDG"),
+      mint_pair: new PublicKey("ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx"),
+    },
     wallet: {
       address: "none",
       is_web_wallet_connected: false,
