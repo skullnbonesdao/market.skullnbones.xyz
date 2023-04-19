@@ -25,7 +25,7 @@
       </AutoComplete>
       <Button
         icon="pi pi-search"
-        @click="$emit('toSearch', search_user_selected.api_search)"
+        @click="$emit('toSearch', search_user_selected)"
       />
     </div>
   </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-2">
     <SearchHelperExplorer
-      @toSearch="(value) => (search_input_object = value)"
+      @toSearch="(value) => (search_input_object = value.api_search)"
     />
     <div class="p-card p-2">
       <div class="flex w-full">
