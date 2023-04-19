@@ -26,7 +26,7 @@
 import { endpoints_list, useGlobalStore } from "../../stores/GlobalStore";
 import Dropdown from "primevue/dropdown";
 import { ref, watch } from "vue";
-import * as wasi from "wasi";
+const version = __APP_VERSION__;
 
 const selected_option = ref();
 const drop_downOptions = ref();
@@ -42,9 +42,7 @@ watch(
   () => selected_option.value,
   () => {
     console.log("dsdd");
-    useGlobalStore().rpc =
-      endpoints_list.find((e) => e.name === selected_option.value.name) ??
-      endpoints_list[0];
+    useGlobalStore().update_connection(selected_option.value.name);
   }
 );
 </script>
