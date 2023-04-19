@@ -2,9 +2,10 @@ import { defineStore } from "pinia";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { useToast } from "primevue/usetoast";
 import { PropType } from "vue";
-import { StarAtlasAPIItem } from "../static/StarAtlasAPIItem";
+import { ItemType, StarAtlasAPIItem } from "../static/StarAtlasAPIItem";
 import { useLocalStorage } from "@vueuse/core";
 import { CURRENCIES } from "../static/currencies";
+import { Api } from "../static/swagger/skullnbones_api/skullnbones_api";
 
 export interface RPCEndpoint {
   name: string;
@@ -24,6 +25,25 @@ export interface TokenInfo {
   usd_value: number;
 }
 
+export interface TableGroupedHistory {
+  key: string;
+  data: TableGroupedElement;
+  children: Array<TableGroupedHistoryChilds>;
+}
+
+export interface TableGroupedHistoryChilds {
+  key: string;
+  data: TableGroupedElement;
+}
+
+export interface TableGroupedElement {
+  name: string;
+  type: string;
+  size: string;
+  currency_mint: string;
+  price: string;
+}
+
 export const useGlobalStore = defineStore("globalStore", {
   state: () => ({
     rpc: useLocalStorage("rpc_local_store", endpoints_list[0]),
@@ -32,7 +52,7 @@ export const useGlobalStore = defineStore("globalStore", {
       address: "none",
       is_web_wallet_connected: false,
       tokens: [] as Array<TokenInfo>,
-      history: [],
+      historySorted: [] as Array<TableGroupedHistory>,
     },
     sa_api_data: [] as StarAtlasAPIItem[],
   }),
@@ -92,6 +112,57 @@ export const useGlobalStore = defineStore("globalStore", {
       });
     },
 
-    async load_wallet_history() {},
+    async load_wallet_trades() {
+      const api = new Api({ baseUrl: "https://api2.skullnbones.xyz" });
+      api.trades
+        .getAddress({ address: this.wallet.address })
+        .then((resp) => resp.data)
+        .then((api_data) => {
+          let key_idx = 0;
+          for (let type in ItemType) {
+            let filtered_sa_api = this.sa_api_data.filter(
+              (sa) =>
+                sa.attributes.itemType.toUpperCase() === type.toUpperCase()
+            );
+
+            let filtered_trades = api_data.filter((api) =>
+              filtered_sa_api.some((f) => f.mint === api.asset_mint)
+            );
+
+            console.log(filtered_trades);
+
+            if (filtered_trades.length) {
+              this.wallet.historySorted.push({
+                key: key_idx.toString(),
+                data: {
+                  name: type,
+                  type: type,
+                  size: "",
+                  price: "",
+                  currency_mint: "",
+                },
+                children: filtered_trades.flatMap((filtered, idx) => {
+                  {
+                    return {
+                      key: key_idx.toString() + "-" + idx.toString(),
+                      data: {
+                        name:
+                          this.sa_api_data.find(
+                            (api) => api.mint === filtered.asset_mint
+                          )?.name ?? "none",
+                        type: type,
+                        currency_mint: filtered.currency_mint,
+                        size: filtered.asset_change.toString(),
+                        price: filtered.price.toString(),
+                      },
+                    };
+                  }
+                }),
+              });
+            }
+            key_idx++;
+          }
+        });
+    },
   },
 });
