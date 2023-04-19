@@ -77,8 +77,13 @@ import {
   Api,
   Trade,
 } from "../../static/swagger/skullnbones_api/skullnbones_api";
+import { watch } from "vue";
 
 const wallet = useWallet();
+
+if (wallet.publicKey) {
+  useGlobalStore().selected_publicKey = wallet.publicKey;
+}
 </script>
 
 <style scoped></style>

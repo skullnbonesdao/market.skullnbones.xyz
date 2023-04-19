@@ -1,5 +1,5 @@
 <template>
-  <div class="p-card p-fluid flex flex-row items-center">
+  <div class="p-fluid flex flex-row items-center space-x-2">
     <AutoComplete
       class="flex w-full"
       v-model="search_user_selected"
