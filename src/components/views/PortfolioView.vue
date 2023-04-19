@@ -21,7 +21,10 @@
     <div class="p-card">
       <Panel header="Tokens" toggleable>
         <div class="flex flex-row justify-around">
-          <NoData v-if="!useGlobalStore().wallet.tokens.length" />
+          <NoData
+            class="flex justify-center"
+            v-if="!useGlobalStore().wallet.tokens.length"
+          />
           <WalletTokensTable v-else />
         </div>
       </Panel>
@@ -30,7 +33,10 @@
     <div class="p-card">
       <Panel header="History" toggleable>
         <div class="flex flex-row justify-around">
-          <NoData v-if="!useGlobalStore().wallet.historySorted.length" />
+          <NoData
+            class="flex justify-center"
+            v-if="!useGlobalStore().wallet.historySorted.length"
+          />
           <WalletHistoryTable v-else />
         </div>
       </Panel>
