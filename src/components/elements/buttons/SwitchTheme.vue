@@ -2,7 +2,7 @@
   <div>
     <ToggleButton
       @click="darkThemeSwitch"
-      v-model="is_dark"
+      v-model="dark_active"
       onLabel=""
       offLabel=""
       onIcon="pi pi-sun"
@@ -15,8 +15,13 @@
 <script setup>
 import ToggleButton from "primevue/togglebutton";
 import { ref } from "vue";
+import { useGlobalStore } from "@/src/stores/GlobalStore";
 
-const is_dark = ref(false);
+const dark_active = ref(useGlobalStore().is_dark);
+
+if (useGlobalStore().is_dark) {
+  darkThemeSwitch();
+}
 
 function _addDarkTheme() {
   let darkThemeLinkEl = document.createElement("link");
@@ -37,11 +42,11 @@ function _removeDarkTheme() {
 function darkThemeSwitch() {
   let darkThemeLinkEl = document.querySelector("#dark-theme-style");
   if (!darkThemeLinkEl) {
+    useGlobalStore().is_dark = true;
     _addDarkTheme();
-    is_dark.value = false;
   } else {
+    useGlobalStore().is_dark = false;
     _removeDarkTheme();
-    is_dark.value = true;
   }
 }
 </script>

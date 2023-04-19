@@ -47,6 +47,7 @@ export interface TableGroupedElement {
 
 export const useGlobalStore = defineStore("globalStore", {
   state: () => ({
+    is_dark: useLocalStorage("is_dark", false),
     rpc: useLocalStorage("rpc_local_store", endpoints_list[0]),
     connection: {} as Connection,
     wallet: {
@@ -59,6 +60,9 @@ export const useGlobalStore = defineStore("globalStore", {
   }),
   getters: {},
   actions: {
+    async toggleDark() {
+      this.is_dark = !this.is_dark;
+    },
     async init() {
       this.connection = new Connection(this.rpc.url, { httpHeaders: {} });
     },
