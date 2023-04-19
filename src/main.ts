@@ -1,5 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
+import { createPinia } from "pinia";
+
 import PrimeVue from "primevue/config";
 import Button from "primevue/button";
 import Toast from "primevue/toast";
@@ -8,18 +10,18 @@ import ToastService from "primevue/toastservice";
 import "virtual:uno.css";
 import "./style.css";
 //import "./assets/main.css";
-import "../public/css/theme_light.css";
 //import "./theme_dark.css";
-
 import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
+import "../public/css/theme_light.css";
+
 import HomeView from "./components/views/HomeView.vue";
 import MarketView from "./components/views/MarketView.vue";
 import { createRouter, createWebHashHistory } from "vue-router";
 
 // @ts-ignore
 import SolanaWallets from "solana-wallets-vue";
-import "solana-wallets-vue/styles.css";
+
 // @ts-ignore
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 
@@ -30,6 +32,9 @@ import {
   SolflareWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
 import PortfolioView from "./components/views/PortfolioView.vue";
+
+import "./styles_wallet_connect.css";
+import Explorer from "./components/views/Explorer.vue";
 
 const walletOptions = {
   wallets: [
@@ -43,6 +48,7 @@ const walletOptions = {
 const routes = [
   { path: "/", component: HomeView },
   { path: "/market", component: MarketView },
+  { path: "/explorer", component: Explorer },
   { path: "/portfolio", component: PortfolioView },
 ];
 
@@ -54,8 +60,10 @@ const router = createRouter({
 
 const app = createApp(App);
 app.component("Button", Button).component("Toast", Toast);
+const pinia = createPinia();
 
 app
+  .use(pinia)
   .use(PrimeVue)
   .use(ToastService)
   .use(router)

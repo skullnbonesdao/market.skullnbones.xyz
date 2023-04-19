@@ -16,11 +16,18 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import Menubar from "primevue/menubar";
 import InputText from "primevue/inputtext";
 import { WalletMultiButton } from "solana-wallets-vue";
 import SwitchTheme from "@/src/components/elements/buttons/SwitchTheme.vue";
+import { useGlobalStore } from "@/src/stores/GlobalStore";
+const globalStore = useGlobalStore();
+
+onMounted(async () => {
+  await useGlobalStore().load_sa_api_data();
+});
+
 const items = ref([
   {
     label: "Home",

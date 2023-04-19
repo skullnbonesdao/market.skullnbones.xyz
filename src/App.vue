@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import HelloWorld from "./components/HelloWorld.vue";
 import HeaderNavigation from "./components/naviagtion/HeaderNavigation.vue";
 </script>
 
