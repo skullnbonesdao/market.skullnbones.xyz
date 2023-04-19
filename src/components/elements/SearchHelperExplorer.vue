@@ -8,7 +8,7 @@
       optionLabel="label"
       optionGroupLabel="label"
       optionGroupChildren="items"
-      placeholder="Hint: type 'dickhead'"
+      placeholder="Hint: type 'symbol-name'"
     >
       <template #optiongroup="slotProps">
         <div class="flex align-items-center country-item">
@@ -39,7 +39,7 @@ import { SEARCH_TYPE } from "../../static/search_types_api";
 
 defineEmits(["toSearch"]);
 
-const search_user_selected = ref();
+const search_user_selected = ref("PX4USDC");
 const filtered_search = ref();
 
 const groupedSearch = ref([

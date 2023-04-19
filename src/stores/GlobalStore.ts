@@ -1,10 +1,8 @@
 import { defineStore } from "pinia";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { useToast } from "primevue/usetoast";
-import { PropType } from "vue";
 import { ItemType, StarAtlasAPIItem } from "../static/StarAtlasAPIItem";
 import { useLocalStorage } from "@vueuse/core";
-import { CURRENCIES } from "../static/currencies";
+import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
 import { Api } from "../static/swagger/skullnbones_api/skullnbones_api";
 
 export interface RPCEndpoint {
@@ -42,6 +40,8 @@ export interface TableGroupedElement {
   type: string;
   size: string;
   currency_mint: string;
+  currency_string: string;
+  time_string: string;
   price: string;
 }
 
@@ -119,6 +119,8 @@ export const useGlobalStore = defineStore("globalStore", {
 
     async load_wallet_trades() {
       const api = new Api({ baseUrl: "https://api2.skullnbones.xyz" });
+
+      this.wallet.historySorted = [];
       api.trades
         .getAddress({ address: this.wallet.address })
         .then((resp) => resp.data)
@@ -142,10 +144,12 @@ export const useGlobalStore = defineStore("globalStore", {
                 data: {
                   name: type,
                   symbol: "",
-                  type: type,
+                  type: "",
                   size: "",
                   price: "",
                   currency_mint: "",
+                  currency_string: "",
+                  time_string: "",
                 },
                 children: filtered_trades.flatMap((filtered, idx) => {
                   {
@@ -161,6 +165,13 @@ export const useGlobalStore = defineStore("globalStore", {
                         currency_mint: filtered.currency_mint,
                         size: filtered.asset_change.toString(),
                         price: filtered.price.toString(),
+                        currency_string:
+                          CURRENCIES.find(
+                            (c) => c.mint === filtered.currency_mint
+                          )?.name ?? "",
+                        time_string: new Date(
+                          filtered.timestamp * 1000
+                        ).toISOString(),
                       },
                     };
                   }
