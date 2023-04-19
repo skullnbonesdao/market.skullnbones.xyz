@@ -10,7 +10,7 @@
     <div v-if="table_data.length != 0 && !is_loading" class="">
       <DataTable
         resizableColumns
-        columnResizeMode="fit"
+        columnResizeMode="expand"
         style="width: 100%"
         :value="table_data"
         scrollHeight="800px"

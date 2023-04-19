@@ -21,11 +21,11 @@ export const endpoints_list: RPCEndpoint[] = [
 export interface TokenInfo {
   address: String;
   amount: number;
+  usd_value: number;
 }
 
 export const useGlobalStore = defineStore("globalStore", {
   state: () => ({
-    selected_publicKey: "",
     rpc: useLocalStorage("rpc_local_store", endpoints_list[0]),
     connection: {} as Connection,
     wallet: {
@@ -58,10 +58,11 @@ export const useGlobalStore = defineStore("globalStore", {
       //Fetch_sol_token
       this.wallet.tokens.push({
         amount:
-          (await useGlobalStore().connection.getBalance(
+          (await this.connection.getBalance(
             new PublicKey(this.wallet.address)
           )) * Math.pow(10, -9),
         address: "So11111111111111111111111111111111111111112",
+        usd_value: -1.0,
       });
 
       //Fetch other_tokens
@@ -85,9 +86,12 @@ export const useGlobalStore = defineStore("globalStore", {
           this.wallet.tokens.push({
             amount: amount,
             address: parsedAccountInfo["parsed"]["info"]["mint"],
+            usd_value: -1.0,
           });
         }
       });
     },
+
+    async load_wallet_history() {},
   },
 });

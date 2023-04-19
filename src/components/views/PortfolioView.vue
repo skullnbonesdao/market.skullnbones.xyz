@@ -1,14 +1,15 @@
 <template>
+  {{ useGlobalStore().wallet }}
   <div class="m-2 space-y-2">
     <div class="p-card">
       <div class="p-card-body flex flex-row space-x-2">
         <InputText
           class="w-full bg-gray-700"
           type="text"
-          v-model="useGlobalStore().selected_publicKey"
+          v-model="useGlobalStore().wallet.address"
         /><Button
           icon="pi pi-search"
-          @click="useGlobalStore().load_wallet_tokens()"
+          @click="useGlobalStore().load_wallet_tokens"
         />
       </div>
     </div>
@@ -24,8 +25,8 @@
     <div class="p-card">
       <Panel header="Tokens" toggleable>
         <div class="flex flex-row justify-around">
-          <div>NET</div>
-          <div>Staked</div>
+          <NoData v-if="!useGlobalStore().wallet.tokens.length" />
+          <WalletTokensTable v-else />
         </div>
       </Panel>
     </div>
@@ -63,6 +64,8 @@
 </template>
 
 <script setup lang="ts">
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
 import InputText from "primevue/inputtext";
 import TokenPriceElement from "../../components/elements/TokenPriceElement.vue";
 import Panel from "primevue/panel";
@@ -77,12 +80,14 @@ import {
   Api,
   Trade,
 } from "../../static/swagger/skullnbones_api/skullnbones_api";
-import { watch } from "vue";
+import { ref, watch } from "vue";
+import WalletTokensTable from "../elements/tables/WalletTokensTable.vue";
+import NoData from "../elements/NoData.vue";
 
 const wallet = useWallet();
 
 if (wallet.publicKey) {
-  useGlobalStore().selected_publicKey = wallet.publicKey;
+  useGlobalStore().wallet.address = wallet.publicKey.value?.toString() ?? "";
 }
 </script>
 

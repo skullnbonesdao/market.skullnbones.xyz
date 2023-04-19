@@ -25,7 +25,8 @@ import { useGlobalStore } from "@/src/stores/GlobalStore";
 const globalStore = useGlobalStore();
 
 onMounted(async () => {
-  await useGlobalStore().load_sa_api_data();
+  await globalStore.init();
+  await globalStore.load_sa_api();
 });
 
 const items = ref([
