@@ -1,16 +1,12 @@
 <template>
-  <div class="flex flex-row justify-around">
-    <AssetInfo class="p-card" />
+  <div class="m-2 space-y-2">
+    <div class="flex w-full">
+      <AssetInfo class="p-card w-full p-2" />
+    </div>
 
-    <div class="p-card"></div>
-
-    <div class="p-card">{{ useGlobalStore().symbol }}</div>
-
-    <div class="p-card">Some</div>
-  </div>
-
-  <div>
-    <TradingViewChart />
+    <div class="p-card p-2">
+      <TradingViewChart />
+    </div>
   </div>
 </template>
 
