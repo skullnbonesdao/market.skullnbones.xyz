@@ -1,5 +1,5 @@
 <template>
-  <div class="m-2 space-y-2">
+  <div class="space-y-2">
     <div class="flex w-full">
       <AssetInfo class="p-card w-full p-2" />
     </div>

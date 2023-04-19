@@ -8,8 +8,8 @@ import FooterComponent from "./components/naviagtion/FooterComponent.vue";
     <header>
       <HeaderNavigation />
     </header>
-    <router-view class=""></router-view>
-    <FooterComponent />
+    <router-view class="m-2"></router-view>
+    <FooterComponent class="m-2" />
   </div>
 </template>
 
