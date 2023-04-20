@@ -13,6 +13,15 @@
       <NoData class="flex justify-center" />
     </div>
     <div v-else class="flex flex-col space-y-2">
+      <div class="p-card p-2">
+        <div class="flex flex-col">
+          <p>Connected to:</p>
+          <p class="text-xs">
+            {{ useGlobalStore().wallet.address }}
+          </p>
+        </div>
+      </div>
+
       <div class="p-card">
         <NoData
           v-if="!useGlobalStore().wallet.tokenInfo.length"
