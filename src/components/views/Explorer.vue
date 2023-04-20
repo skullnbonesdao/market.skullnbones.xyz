@@ -169,7 +169,7 @@
             </template>
           </Column>
 
-          <Column field="total" header="Total" sortable="">
+          <Column field="total" header="Total" sortable>
             <template #body="slotProps">
               <div class="flex gap-2">
                 <span>{{ slotProps.data.total.value }}</span>

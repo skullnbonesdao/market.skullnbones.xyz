@@ -15,8 +15,7 @@
             v-if="
               useGlobalStore()
                 .wallet.tokenInfo.flatMap((t) => t.usd_value)
-                .reduce((sum, current) => sum + current, 0)
-                .toFixed(2) > 0
+                .reduce((sum, current) => sum + current, 0) > 0
             "
           >
             {{

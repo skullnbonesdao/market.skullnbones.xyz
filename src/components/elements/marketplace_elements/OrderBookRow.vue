@@ -30,9 +30,8 @@
 import { defineProps, PropType } from "vue";
 import { useWallet } from "solana-wallets-vue";
 import { ref, watchEffect, unref } from "vue";
-import { OrderBookOrderMap } from "../../../../stores/StaratlasGmStore";
 import { PublicKey } from "@solana/web3.js";
-import { useGlobalStore } from "../../../../stores/GlobalStore";
+import { OrderBookOrderMap } from "../../../stores/StaratlasGmStore";
 
 const is_user_order = ref(false);
 const { publicKey } = useWallet();
@@ -69,7 +68,7 @@ function isUserOrderBlock(
 
   let userOrderBlock;
   if (publicKey) {
-    userOrderBlock = order.owners.some((owner) =>
+    userOrderBlock = order.owners.some((owner: any) =>
       owner.includes(publicKey.toString())
     );
   }

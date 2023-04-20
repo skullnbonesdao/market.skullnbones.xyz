@@ -27,7 +27,7 @@
               <InputNumber
                 :class="input.price <= 0 ? ' p-invalid' : ''"
                 placeholder="0.0"
-                minFractionDigits="2"
+                :minFractionDigits="2"
                 v-model="input.price"
               />
             </div>
