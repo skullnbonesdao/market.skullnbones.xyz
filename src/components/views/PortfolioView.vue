@@ -50,7 +50,7 @@
               class="flex justify-center"
               v-if="!useGlobalStore().wallet.nfts.data?.length"
             />
-            <WalletNftsTable />
+            <WalletNftsTable v-else />
           </div>
         </Panel>
       </div>

@@ -146,7 +146,11 @@
             </template>
           </Column>
 
-          <Column field="fee" header="Fee" sortable> </Column>
+          <Column field="fee" header="Fee" sortable>
+            <template #body="slotProps">
+              <span>x{{ slotProps.data.fee.toFixed(1) }}%</span>
+            </template>
+          </Column>
 
           <Column field="size" header="Size" sortable>
             <template #body="slotProps">
@@ -155,7 +159,7 @@
               </div>
             </template>
           </Column>
-          <Column field="price" header="Price" sortable>
+          <Column field="price.value" header="Price" sortable>
             <template #body="slotProps">
               <div class="flex gap-2">
                 <span>{{ slotProps.data.price.value }}</span>
@@ -169,7 +173,7 @@
             </template>
           </Column>
 
-          <Column field="total" header="Total" sortable>
+          <Column field="total.value" header="Total" sortable>
             <template #body="slotProps">
               <div class="flex gap-2">
                 <span>{{ slotProps.data.total.value }}</span>
@@ -333,11 +337,7 @@ async function fetch_api_data() {
           taker: trade.order_taker,
           reviver: trade.asset_receiving_wallet,
         },
-        fee:
-          (
-            (trade.market_fee / (trade.asset_change * trade.price)) *
-            100
-          ).toFixed(1) + "%",
+        fee: (trade.market_fee / (trade.asset_change * trade.price)) * 100,
         size: trade.asset_change,
 
         price: {
@@ -345,7 +345,7 @@ async function fetch_api_data() {
           mint: trade.currency_mint,
         },
         total: {
-          value: (trade.price * trade.asset_change).toFixed(2),
+          value: trade.price * trade.asset_change,
           mint: trade.currency_mint,
         },
         explorer: {
