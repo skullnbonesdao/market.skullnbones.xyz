@@ -24,7 +24,11 @@
           <div class="flex flex-col space-y-2">
             <div class="p-inputgroup flex-1">
               <span class="w-15 p-inputgroup-addon uppercase">Price</span>
-              <InputNumber placeholder="0.0" v-model="input.price" />
+              <InputNumber
+                placeholder="0.0"
+                minFractionDigits="2"
+                v-model="input.price"
+              />
             </div>
             <div class="p-inputgroup flex-1">
               <span class="w-15 p-inputgroup-addon uppercase">Size</span>
@@ -64,9 +68,10 @@ const toast = useToast();
 const is_disabled = ref(false);
 
 const tab = ref(1);
+
 const input = ref({
-  price: 0,
-  size: 0,
+  price: 0.0,
+  size: 0.0,
 });
 
 const currentTab = (tabNumber: number) => (tab.value = tabNumber);
