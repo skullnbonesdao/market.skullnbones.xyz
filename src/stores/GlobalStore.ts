@@ -1,5 +1,11 @@
 import { defineStore } from "pinia";
-import { Connection, PublicKey } from "@solana/web3.js";
+import {
+  AccountInfo,
+  Connection,
+  ParsedAccountData,
+  PublicKey,
+  RpcResponseAndContext,
+} from "@solana/web3.js";
 import { ItemType, StarAtlasAPIItem } from "../static/StarAtlasAPIItem";
 import { useLocalStorage } from "@vueuse/core";
 import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
@@ -61,7 +67,11 @@ export const useGlobalStore = defineStore("globalStore", {
     wallet: {
       address: "none",
       is_web_wallet_connected: false,
-      tokens: [] as Array<TokenInfo>,
+      tokenRaw: [] as Array<{
+        pubkey: PublicKey;
+        account: AccountInfo<ParsedAccountData>;
+      }>,
+      tokenInfo: [] as Array<TokenInfo>,
       historySorted: [] as Array<TableGroupedHistory>,
       historyRaw: [] as Array<Trade>,
     },
@@ -110,9 +120,9 @@ export const useGlobalStore = defineStore("globalStore", {
     },
 
     async load_wallet_tokens() {
-      this.wallet.tokens = [];
+      this.wallet.tokenInfo = [];
       //Fetch_sol_token
-      this.wallet.tokens.push({
+      this.wallet.tokenInfo.push({
         amount:
           (await this.connection.getBalance(
             new PublicKey(this.wallet.address)
@@ -135,12 +145,14 @@ export const useGlobalStore = defineStore("globalStore", {
           }
         );
 
+      this.wallet.tokenRaw = response_tokenAccounts.value;
+
       response_tokenAccounts.value.forEach((token_account) => {
         const parsedAccountInfo = token_account.account.data;
         const amount =
           parsedAccountInfo["parsed"]["info"]["tokenAmount"]["uiAmount"];
         if (amount > 0) {
-          this.wallet.tokens.push({
+          this.wallet.tokenInfo.push({
             amount: amount,
             address: parsedAccountInfo["parsed"]["info"]["mint"],
             price: -1.0,
@@ -150,16 +162,19 @@ export const useGlobalStore = defineStore("globalStore", {
       });
 
       //Fetch Prices
-      let addresses = this.wallet.tokens.flatMap((t) => t.address.toString());
+      let addresses = this.wallet.tokenInfo.flatMap((t) =>
+        t.address.toString()
+      );
       let prices_response = await get_multi_price(addresses);
       console.log(prices_response);
       if (prices_response) {
-        this.wallet.tokens.forEach((token, idx) => {
-          this.wallet.tokens[idx].price =
+        this.wallet.tokenInfo.forEach((token, idx) => {
+          this.wallet.tokenInfo[idx].price =
             prices_response?.data[token.address.toString()]?.value ?? 0;
 
-          this.wallet.tokens[idx].usd_value =
-            this.wallet.tokens[idx].price * this.wallet.tokens[idx].amount;
+          this.wallet.tokenInfo[idx].usd_value =
+            this.wallet.tokenInfo[idx].price *
+            this.wallet.tokenInfo[idx].amount;
         });
       }
     },

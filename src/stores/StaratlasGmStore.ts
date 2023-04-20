@@ -186,7 +186,7 @@ export const useStaratlasGmStore = defineStore({
     async getInitializeOrderTransaction(
       playerPublicKey: PublicKey,
       assetMint: string,
-      quoteMint: PublicKey,
+      quoteMint: string,
       quantity: number,
       price: number,
       orderSide: OrderSide
@@ -194,7 +194,7 @@ export const useStaratlasGmStore = defineStore({
       const bnPrice = await this.client.getBnPriceForCurrency(
         new Connection(useGlobalStore().rpc.url),
         price,
-        quoteMint,
+        new PublicKey(quoteMint),
         new PublicKey(GM_PROGRAM_ID)
       );
       return await this.client
@@ -202,7 +202,7 @@ export const useStaratlasGmStore = defineStore({
           new Connection(useGlobalStore().rpc.url),
           playerPublicKey,
           new PublicKey(assetMint),
-          quoteMint,
+          new PublicKey(quoteMint),
           quantity,
           bnPrice,
           new PublicKey(GM_PROGRAM_ID),
