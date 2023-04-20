@@ -41,6 +41,7 @@ export interface TableGroupedElement {
   symbol: string;
   type: string;
   size: string;
+  total_cost: string;
   currency_mint: string;
   currency_string: string;
   time_string: string;
@@ -195,6 +196,7 @@ export const useGlobalStore = defineStore("globalStore", {
                   currency_mint: "",
                   currency_string: "",
                   time_string: "",
+                  total_cost: "",
                 },
                 children: filtered_trades.flatMap((filtered, idx) => {
                   {
@@ -210,6 +212,9 @@ export const useGlobalStore = defineStore("globalStore", {
                         currency_mint: filtered.currency_mint,
                         size: filtered.asset_change.toString(),
                         price: filtered.price.toString(),
+                        total_cost: (
+                          filtered.asset_change * filtered.price
+                        ).toString(),
                         currency_string:
                           CURRENCIES.find(
                             (c) => c.mint === filtered.currency_mint

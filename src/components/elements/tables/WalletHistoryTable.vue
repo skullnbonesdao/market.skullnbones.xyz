@@ -29,6 +29,24 @@
           <p v-if="slotProps.node.data.size">x{{ slotProps.node.data.size }}</p>
         </template>
       </Column>
+      <Column field="cost" header="Cost">
+        <template #body="slotProps">
+          <div
+            v-if="slotProps.node.data.total_cost"
+            class="flex float-right gap-2 items-center"
+          >
+            <p>{{ slotProps.node.data.total_cost }}</p>
+            <CurrencyIcon
+              style="height: 16px"
+              :currency="
+                CURRENCIES.find(
+                  (c) => c.mint === slotProps.node.data.currency_mint
+                )
+              "
+            />
+          </div>
+        </template>
+      </Column>
     </TreeTable>
   </div>
 </template>
