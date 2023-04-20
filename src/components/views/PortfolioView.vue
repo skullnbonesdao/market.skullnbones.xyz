@@ -1,4 +1,5 @@
 <template>
+  {{ has_valid_pubkey }}
   <div class="m-2 space-y-2">
     <div class="p-card p-2">
       <div class="p-fluid flex flex-row space-x-2">
@@ -9,7 +10,7 @@
         /><Button icon="pi pi-search" @click="action_startSearch" />
       </div>
     </div>
-    <div v-if="useGlobalStore().wallet.address === ''" class="p-card">
+    <div v-if="!has_valid_pubkey" class="p-card">
       <NoData class="flex justify-center" />
     </div>
     <div v-else class="flex flex-col space-y-2">
@@ -83,16 +84,37 @@ import NoData from "../elements/NoData.vue";
 import WalletHistoryTable from "../elements/tables/WalletHistoryTable.vue";
 import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
 import OverviewChilds from "../elements/portfolio_elements/OverviewChilds.vue";
+import { computed, watch } from "vue";
+import { PublicKey } from "@solana/web3.js";
 
 const wallet = useWallet();
+
+const has_valid_pubkey = computed(() => {
+  try {
+    return PublicKey.isOnCurve(new PublicKey(useGlobalStore().wallet.address));
+  } catch (err) {
+    return false;
+  }
+});
 
 if (wallet.publicKey) {
   useGlobalStore().wallet.address = wallet.publicKey.value?.toString() ?? "";
 }
 
+action_startSearch();
+
+watch(
+  () => useWallet().publicKey.value,
+  () => {
+    useGlobalStore().wallet.address =
+      useWallet().publicKey.value?.toString() ?? "";
+    action_startSearch();
+  }
+);
+
 async function action_startSearch() {
-  await useGlobalStore().load_wallet_tokens();
   await useGlobalStore().load_wallet_trades();
+  await useGlobalStore().load_wallet_tokens();
 }
 </script>
 
