@@ -14,12 +14,35 @@
       ></NoData>
       <div v-if="table_data.length != 0 && !is_loading" class="">
         <DataTable
+          v-model:filters="table_filters"
+          :globalFilterFields="[
+            'pair.symbol',
+            'info.signature',
+            'mint.asset',
+            'mint.token',
+          ]"
           resizableColumns
           columnResizeMode="expand"
           style="width: 100%"
           :value="table_data"
           scrollHeight="800px"
         >
+          <template #header>
+            <div class="flex">
+              <div class="flex w-full"></div>
+              <span class="p-input-icon-left">
+                <i class="pi pi-search" />
+                <InputText
+                  v
+                  v-model="table_filters['global'].value"
+                  placeholder="Keyword Search"
+                />
+              </span>
+            </div>
+          </template>
+          <template #empty> Nothing found. </template>
+          <template #loading> Loading data. Please wait. </template>
+
           <Column field="pair" header="Pair">
             <template #body="slotProps">
               <div class="flex">
@@ -32,6 +55,14 @@
                   "
                 />
               </div>
+            </template>
+            <template #filter="{ filterModel }">
+              <InputText
+                v-model="filterModel.value"
+                type="text"
+                class="p-column-filter"
+                placeholder="Search by name"
+              />
             </template>
           </Column>
           <Column field="info" header="Info">
@@ -104,45 +135,39 @@
             </template>
           </Column>
 
-          <Column field="fee" header="Fee"> </Column>
+          <Column field="fee" header="Fee" sortable> </Column>
 
-          <Column field="size" header="Size">
+          <Column field="size" header="Size" sortable>
             <template #body="slotProps">
-              <div class="flex float-right gap-2">
+              <div class="flex gap-2">
                 <span>x{{ slotProps.data.size }}</span>
               </div>
             </template>
           </Column>
-          <Column field="price" header="Price">
+          <Column field="price" header="Price" sortable>
             <template #body="slotProps">
-              <div class="flex float-right gap-2">
-                <img
-                  alt="flag"
-                  :src="
-                    CURRENCIES.find((c) => c.mint === slotProps.data.price.mint)
-                      ?.image_path ?? ''
-                  "
-                  :class="`flag flag-${slotProps.data.price.value}`"
-                  style="width: 24px"
-                />
+              <div class="flex gap-2">
                 <span>{{ slotProps.data.price.value }}</span>
+                <CurrencyIcon
+                  style="height: 24px"
+                  :currency="
+                    CURRENCIES.find((c) => c.mint === slotProps.data.mint.token)
+                  "
+                />
               </div>
             </template>
           </Column>
 
-          <Column field="total" header="Total" style="min-width: 200px">
+          <Column field="total" header="Total" sortable="">
             <template #body="slotProps">
-              <div class="flex float-right gap-2">
-                <img
-                  alt="flag"
-                  :src="
-                    CURRENCIES.find((c) => c.mint === slotProps.data.total.mint)
-                      ?.image_path
-                  "
-                  :class="`flag flag-${slotProps.data.total.value}`"
-                  style="width: 24px"
-                />
+              <div class="flex gap-2">
                 <span>{{ slotProps.data.total.value }}</span>
+                <CurrencyIcon
+                  style="height: 24px"
+                  :currency="
+                    CURRENCIES.find((c) => c.mint === slotProps.data.mint.token)
+                  "
+                />
               </div>
             </template>
           </Column>
@@ -175,6 +200,7 @@
 
 <script setup lang="ts">
 import ProgressSpinner from "primevue/progressspinner";
+import InputText from "primevue/inputtext";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import SearchHelperExplorer from "../elements/SearchHelperExplorer.vue";
@@ -190,6 +216,8 @@ import ExplorerIcon from "../elements/icons_images/ExplorerIcon.vue";
 import { E_EXPLORER, EXPLORER } from "../../static/explorer";
 import { SEARCH_TYPE } from "../../static/search_types_api";
 import NoData from "../elements/NoData.vue";
+import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
+import { FilterMatchMode } from "primevue/api";
 
 let search_input_object = ref({
   type: SEARCH_TYPE.SYMBOL,
@@ -198,6 +226,14 @@ let search_input_object = ref({
 
 let is_loading = ref(true);
 let table_data = ref([]);
+
+const table_filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  "pair.symbol": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+  "info.signature": { value: null, matchMode: FilterMatchMode.IN },
+  "mint.asset": { value: null, matchMode: FilterMatchMode.IN },
+  "mint.token": { value: null, matchMode: FilterMatchMode.IN },
+});
 
 watch(
   () => search_input_object.value,

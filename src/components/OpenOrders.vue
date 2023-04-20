@@ -1,7 +1,14 @@
 <template>
   <Toast />
-  <div>
+  <div class="p-card flex items-center p-2">
+    <div class="flex w-full justify-center" v-if="!useWallet().publicKey.value">
+      <WalletMultiButton dark />
+    </div>
+
+    <ProgressSpinner v-else-if="is_loading" class="flex justify-center" />
+
     <DataTable
+      v-else
       resizableColumns
       columnResizeMode="fit"
       style="width: 100%"
@@ -73,7 +80,7 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import { useGlobalStore } from "../stores/GlobalStore";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { useWallet } from "solana-wallets-vue";
+import { useWallet, WalletMultiButton } from "solana-wallets-vue";
 import { GM_PROGRAM_ID } from "../static/constants/StarAtlasConstants";
 import { onMounted, ref, watch } from "vue";
 import CurrencyIcon from "./icon-helper/CurrencyIcon.vue";
@@ -81,9 +88,12 @@ import PairImage from "./elements/PairImage.vue";
 import { CURRENCIES } from "../static/currencies";
 import * as wasi from "wasi";
 import { useToast } from "primevue/usetoast";
+import ProgressSpinner from "primevue/progressspinner";
 
 const open_orders = ref<Order[]>();
 const toast = useToast();
+
+const is_loading = ref(true);
 
 watch(
   () => useWallet().publicKey.value,
@@ -97,6 +107,8 @@ onMounted(async () => {
 });
 
 async function fetch_orders() {
+  is_loading.value = true;
+
   let gm_client = new GmClientService();
 
   open_orders.value = await gm_client.getOpenOrdersForPlayer(
@@ -104,6 +116,8 @@ async function fetch_orders() {
     useWallet().publicKey.value ?? new PublicKey(""),
     new PublicKey(GM_PROGRAM_ID)
   );
+
+  is_loading.value = false;
 }
 const show = () => {
   toast.add({

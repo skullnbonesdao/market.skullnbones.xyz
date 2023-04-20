@@ -1,7 +1,8 @@
 <template>
   <div class="flex flex-col text-sm lg:text-base">
-    <h3 class="text-center pb-2">OrderBook</h3>
-    <div class="flex flex-col">
+    <ProgressSpinner v-if="is_loading" class="flex justify-center" />
+
+    <div v-else class="flex flex-col">
       <div class="flex sm:flex-row flex-col sm:space-x-1">
         <div class="basis-1/2">
           <order-book-header></order-book-header>
@@ -37,6 +38,7 @@ import OrderBookHeader from "./OrderBookHeader.vue";
 import OrderBookRow from "./OrderBookRow.vue";
 import { CURRENCIES } from "../../../static/currencies";
 import { useStaratlasGmStore } from "../../../stores/StaratlasGmStore";
+import ProgressSpinner from "primevue/progressspinner";
 
 const is_loading = ref(true);
 const orders_grouped_buy = ref([]);

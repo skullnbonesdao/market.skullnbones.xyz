@@ -1,5 +1,4 @@
 <template>
-  {{ has_valid_pubkey }}
   <div class="m-2 space-y-2">
     <div class="p-card p-2">
       <div class="p-fluid flex flex-row space-x-2">
