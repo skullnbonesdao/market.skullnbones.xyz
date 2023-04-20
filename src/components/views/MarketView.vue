@@ -27,19 +27,16 @@
         <OpenOrders class="p-card" />
       </div>
 
-      <div
-        :class="show_order_setter ? 'basis-2/5' : ''"
-        class="p-card p-2 flex flex-col"
-      >
+      <div :class="show_order_setter ? 'basis-2/5' : ''" class="flex flex-col">
         <div class="flex justify-end">
           <Button @click="toggle_show_order_setter" severity="info"
             ><i v-if="show_order_setter" class="pi pi-arrow-right"></i>
             <i v-else class="pi pi-arrow-left"></i
           ></Button>
         </div>
-        <div>
-          <OrderSettter />
-          <OrderBook />
+        <div class="flex flex-col space-y-2">
+          <OrderSettter class="p-card p-2" />
+          <OrderBook class="p-card p-2" />
         </div>
       </div>
     </div>
