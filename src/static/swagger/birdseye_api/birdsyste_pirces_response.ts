@@ -1,9 +1,9 @@
-export interface BirdsEyePrices {
-  data: { [key: string]: Data };
+export interface BirdsEyePricesResponse {
+  data: { [key: string]: BirdsEyeData };
   success: boolean;
 }
 
-export interface Data {
+export interface BirdsEyeData {
   value: number;
   updateUnixTime: number;
   updateHumanTime: Date;

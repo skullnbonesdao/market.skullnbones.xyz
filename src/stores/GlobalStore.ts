@@ -4,6 +4,7 @@ import { ItemType, StarAtlasAPIItem } from "../static/StarAtlasAPIItem";
 import { useLocalStorage } from "@vueuse/core";
 import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
 import { Api } from "../static/swagger/skullnbones_api/skullnbones_api";
+import { get_multi_price } from "../static/swagger/birdseye_api/birdseye_api";
 
 export interface RPCEndpoint {
   name: string;
@@ -121,6 +122,17 @@ export const useGlobalStore = defineStore("globalStore", {
           });
         }
       });
+
+      //Fetch Prices
+      let addresses = this.wallet.tokens.flatMap((t) => t.address.toString());
+      let prices_response = await get_multi_price(addresses);
+      console.log(prices_response);
+      if (prices_response) {
+        this.wallet.tokens.forEach((token, idx) => {
+          this.wallet.tokens[idx].usd_value =
+            prices_response?.data[token.address.toString()]?.value ?? 0;
+        });
+      }
     },
 
     async load_wallet_trades() {
@@ -141,8 +153,6 @@ export const useGlobalStore = defineStore("globalStore", {
             let filtered_trades = api_data.filter((api) =>
               filtered_sa_api.some((f) => f.mint === api.asset_mint)
             );
-
-            console.log(filtered_trades);
 
             if (filtered_trades.length) {
               this.wallet.historySorted.push({
