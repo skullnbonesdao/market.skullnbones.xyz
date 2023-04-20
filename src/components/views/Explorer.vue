@@ -283,6 +283,7 @@ async function fetch_api_data() {
           limit: 100,
         })
         .then((resp) => (fetched_trades = resp.data));
+
       break;
   }
 

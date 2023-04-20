@@ -107,6 +107,12 @@ export const useGlobalStore = defineStore("globalStore", {
       this.connection = new Connection(this.rpc.url, { httpHeaders: {} });
     },
 
+    update_symbol(symbol: string, mint_asset: string, mint_currency: string) {
+      this.symbol.name = symbol;
+      this.symbol.mint_asset = new PublicKey(mint_asset);
+      this.symbol.mint_pair = new PublicKey(mint_currency);
+    },
+
     async update_connection(rpc_name: string) {
       this.rpc =
         endpoints_list.find((e) => e.name === rpc_name) ?? endpoints_list[0];

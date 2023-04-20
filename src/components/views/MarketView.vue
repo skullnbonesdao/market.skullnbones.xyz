@@ -68,9 +68,11 @@ const show_order_setter = ref<boolean>();
 show_order_setter.value = true;
 
 function update_from_search(symbol: any) {
-  useGlobalStore().symbol.name = symbol.value;
-  useGlobalStore().symbol.mint_asset = new PublicKey(symbol.mint_asset);
-  useGlobalStore().symbol.mint_pair = new PublicKey(symbol.mint_pair);
+  useGlobalStore().update_symbol(
+    symbol.value,
+    symbol.mint_asset,
+    symbol.mint_currency
+  );
 }
 
 function toggle_show_order_setter() {
