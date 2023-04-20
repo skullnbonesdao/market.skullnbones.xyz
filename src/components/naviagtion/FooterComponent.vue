@@ -1,14 +1,16 @@
 <template>
   <div class="space-y-2">
     <div class="p-card flex flex-row p-2 space-x-2">
-      <div class="flex items-center">RPC:</div>
-      <Dropdown
-        v-model="selected_option"
-        :options="drop_downOptions"
-        optionLabel="name"
-        :placeholder="useGlobalStore().rpc.name"
-        class="w-full md:w-14rem"
-      />
+      <div class="p-inputgroup flex-1">
+        <span class="w-15 p-inputgroup-addon uppercase">RPC</span>
+        <Dropdown
+          v-model="selected_option"
+          :options="drop_downOptions"
+          optionLabel="name"
+          :placeholder="useGlobalStore().rpc.name"
+          class="w-full md:w-14rem"
+        />
+      </div>
     </div>
     <div class="p-card p-2">
       <div class="flex w-full justify-center text-center">Support us:</div>
@@ -40,6 +42,7 @@ import {
   Api,
   Cursor,
 } from "../../static/swagger/skullnbones_api/skullnbones_api";
+import InputNumber from "primevue/inputnumber";
 const version = __APP_VERSION__;
 
 const selected_option = ref();
