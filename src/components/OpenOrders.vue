@@ -1,4 +1,5 @@
 <template>
+  <Toast />
   <div>
     <DataTable
       resizableColumns
@@ -38,7 +39,23 @@
           </div>
         </template>
       </Column>
-      <Column field="orderOriginationQty" header="Quantity"></Column>
+      <Column field="orderOriginationQty" header="Quantity">
+        <template #body="slotProps">
+          <p>x{{ slotProps.data.orderOriginationQty }}</p>
+        </template>
+      </Column>
+      <Column header="">
+        <template #body="slotProps">
+          <div class="flex flex-row space-x-2">
+            <Button @click="show()" severity="warning">
+              <i class="pi pi-pencil"></i
+            ></Button>
+            <Button @click="show()" severity="warning">
+              <i class="pi pi-ban"></i
+            ></Button>
+          </div>
+        </template>
+      </Column>
     </DataTable>
   </div>
 </template>
@@ -50,20 +67,36 @@ import {
   Order,
   OrderAccountItem,
 } from "@staratlas/factory";
+import Toast from "primevue/toast";
+import Button from "primevue/button";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import { useGlobalStore } from "../stores/GlobalStore";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { useWallet } from "solana-wallets-vue";
 import { GM_PROGRAM_ID } from "../static/constants/StarAtlasConstants";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import CurrencyIcon from "./icon-helper/CurrencyIcon.vue";
 import PairImage from "./elements/PairImage.vue";
 import { CURRENCIES } from "../static/currencies";
+import * as wasi from "wasi";
+import { useToast } from "primevue/usetoast";
 
 const open_orders = ref<Order[]>();
+const toast = useToast();
+
+watch(
+  () => useWallet().publicKey.value,
+  async () => {
+    await fetch_orders();
+  }
+);
 
 onMounted(async () => {
+  await fetch_orders();
+});
+
+async function fetch_orders() {
   let gm_client = new GmClientService();
 
   open_orders.value = await gm_client.getOpenOrdersForPlayer(
@@ -71,9 +104,15 @@ onMounted(async () => {
     useWallet().publicKey.value ?? new PublicKey(""),
     new PublicKey(GM_PROGRAM_ID)
   );
-
-  console.log(open_orders.value);
-});
+}
+const show = () => {
+  toast.add({
+    severity: "warning",
+    summary: "Not implemented",
+    detail: "This function is not jet implemented!",
+    life: 3000,
+  });
+};
 </script>
 
 <style scoped></style>

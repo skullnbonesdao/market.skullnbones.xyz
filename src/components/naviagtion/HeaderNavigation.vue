@@ -22,6 +22,7 @@ import InputText from "primevue/inputtext";
 import { WalletMultiButton } from "solana-wallets-vue";
 import SwitchTheme from "@/src/components/elements/buttons/SwitchTheme.vue";
 import { useGlobalStore } from "@/src/stores/GlobalStore";
+import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
 const globalStore = useGlobalStore();
 
 onMounted(async () => {

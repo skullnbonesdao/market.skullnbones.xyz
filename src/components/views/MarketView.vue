@@ -19,9 +19,12 @@
       </div>
     </div>
     <div class="flex gap-2">
-      <div :class="show_order_setter ? 'basis-3/5' : 'basis-5/5'">
+      <div
+        :class="show_order_setter ? 'basis-5/6' : 'basis-6/6'"
+        class="flex flex-col space-y-2"
+      >
         <TradingViewChart class="p-card p-1" />
-        <OpenOrders />
+        <OpenOrders class="p-card" />
       </div>
 
       <div
@@ -34,7 +37,10 @@
             <i v-else class="pi pi-arrow-left"></i
           ></Button>
         </div>
-        <div><OrderSettter /></div>
+        <div>
+          <OrderSettter />
+          <OrderBook />
+        </div>
       </div>
     </div>
   </div>
@@ -52,6 +58,7 @@ import { PublicKey } from "@solana/web3.js";
 import { useToast } from "primevue/usetoast";
 import OrderSettter from "../elements/OrderSettter.vue";
 import OpenOrders from "../OpenOrders.vue";
+import OrderBook from "../elements/marketplace_elements/OrderBook.vue";
 
 const show_search = ref<boolean>();
 show_search.value = false;
