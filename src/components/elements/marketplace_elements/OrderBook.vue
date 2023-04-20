@@ -62,20 +62,21 @@ watchEffect(async () => {
     )?.name ?? "";
 
   if (selectedCurrency.value === "ATLAS") {
-    orders_grouped_buy.value = useStaratlasGmStore().atlasOrders.buyOrders.sort(
-      (a, b) => b.price - a.price
-    );
+    orders_grouped_buy.value =
+      useStaratlasGmStore().atlasOrders.buyOrders?.sort(
+        (a, b) => b.price - a.price
+      );
     orders_grouped_sell.value =
-      useStaratlasGmStore().atlasOrders.sellOrders.sort(
+      useStaratlasGmStore().atlasOrders.sellOrders?.sort(
         (a, b) => a.price - b.price
       );
 
-    max_size_buy.value = useStaratlasGmStore().atlasOrders.buyOrders.reduce(
+    max_size_buy.value = useStaratlasGmStore().atlasOrders.buyOrders?.reduce(
       (max, obj) => {
         return obj.size > max.size ? obj : max;
       }
     ).size;
-    max_size_sell.value = useStaratlasGmStore().atlasOrders.sellOrders.reduce(
+    max_size_sell.value = useStaratlasGmStore().atlasOrders.sellOrders?.reduce(
       (max, obj) => {
         return obj.size > max.size ? obj : max;
       }
@@ -85,16 +86,16 @@ watchEffect(async () => {
       (a, b) => b.price - a.price
     );
     orders_grouped_sell.value =
-      useStaratlasGmStore().usdcOrders.sellOrders.sort(
+      useStaratlasGmStore().usdcOrders.sellOrders?.sort(
         (a, b) => a.price - b.price
       );
 
-    max_size_buy.value = useStaratlasGmStore().usdcOrders.buyOrders.reduce(
+    max_size_buy.value = useStaratlasGmStore().usdcOrders.buyOrders?.reduce(
       (max, obj) => {
         return obj.size > max.size ? obj : max;
       }
     ).size;
-    max_size_sell.value = useStaratlasGmStore().usdcOrders.sellOrders.reduce(
+    max_size_sell.value = useStaratlasGmStore().usdcOrders.sellOrders?.reduce(
       (max, obj) => {
         return obj.size > max.size ? obj : max;
       }

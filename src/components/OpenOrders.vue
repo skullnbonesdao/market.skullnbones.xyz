@@ -57,7 +57,10 @@
             <Button @click="show()" severity="warning">
               <i class="pi pi-pencil"></i
             ></Button>
-            <Button @click="show()" severity="warning">
+            <Button
+              @click="cancel_order(slotProps.data.id.toString()).then(() => {})"
+              severity="warning"
+            >
               <i class="pi pi-ban"></i
             ></Button>
           </div>
@@ -118,6 +121,33 @@ async function fetch_orders() {
   );
 
   is_loading.value = false;
+}
+
+async function cancel_order(order_address: string) {
+  let connection = new Connection(useGlobalStore().rpc.url);
+  let gmClient = new GmClientService();
+
+  console.log(order_address);
+  console.log(useWallet().publicKey.value);
+
+  let tx = await gmClient.getCancelOrderTransaction(
+    connection,
+    new PublicKey(order_address),
+    new PublicKey(useWallet().publicKey.value?.toString() ?? ""),
+    new PublicKey(GM_PROGRAM_ID)
+  );
+
+  console.log(tx);
+
+  let tx_signature: any;
+  await useWallet()
+    .sendTransaction(tx.transaction, connection, {
+      signers: tx.signers,
+    })
+    .then((tx) => (tx_signature = tx))
+    .catch((err) => {
+      console.log(err);
+    });
 }
 const show = () => {
   toast.add({

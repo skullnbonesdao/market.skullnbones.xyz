@@ -14,14 +14,14 @@
           <p
             v-if="
               useGlobalStore()
-                .wallet.tokens.flatMap((t) => t.usd_value)
+                .wallet.tokenInfo.flatMap((t) => t.usd_value)
                 .reduce((sum, current) => sum + current, 0)
                 .toFixed(2) > 0
             "
           >
             {{
               useGlobalStore()
-                .wallet.tokens.flatMap((t) => t.usd_value)
+                .wallet.tokenInfo.flatMap((t) => t.usd_value)
                 .reduce((sum, current) => sum + current, 0)
                 .toFixed(2)
             }}

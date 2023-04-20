@@ -15,7 +15,7 @@
     <div v-else class="flex flex-col space-y-2">
       <div class="p-card">
         <NoData
-          v-if="!useGlobalStore().wallet.tokens.length"
+          v-if="!useGlobalStore().wallet.tokenInfo.length"
           class="flex justify-center"
         />
 
@@ -27,7 +27,7 @@
           <div class="flex justify-around">
             <NoData
               class="flex justify-center"
-              v-if="!useGlobalStore().wallet.tokens.length"
+              v-if="!useGlobalStore().wallet.tokenInfo.length"
             />
             <WalletTokensTable v-else />
           </div>
@@ -99,8 +99,6 @@ const has_valid_pubkey = computed(() => {
 if (wallet.publicKey) {
   useGlobalStore().wallet.address = wallet.publicKey.value?.toString() ?? "";
 }
-
-action_startSearch();
 
 watch(
   () => useWallet().publicKey.value,
