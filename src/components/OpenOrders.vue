@@ -53,7 +53,7 @@
       </Column>
       <Column header="">
         <template #body="slotProps">
-          <div class="flex flex-row space-x-2">
+          <div class="flex w-full flex-row justify-end space-x-2">
             <Button @click="show()" severity="warning">
               <i class="pi pi-pencil"></i
             ></Button>
