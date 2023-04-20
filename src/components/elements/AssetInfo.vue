@@ -22,7 +22,6 @@
               )
             "
           />
-          {{ useGlobalStore().symbol }}
           <div class="flex w-full flex-col sm:flex-row items-baseline">
             <h3 class="w-full">
               {{

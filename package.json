@@ -3,7 +3,7 @@
   "version": "0.3.0-beta",
   "scripts": {
     "create_swagger_interfaces": "npx swagger-typescript-api -p ./api.skullnbones-swapper.json -o ./src/static/swagger/skullnbones_api -n skullnbones_api.ts",
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "run-p type-check build-only",
     "preview": "vite preview",
     "build-only": "vite build",
