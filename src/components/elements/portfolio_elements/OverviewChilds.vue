@@ -1,5 +1,8 @@
 <template>
-  <Panel header="Overview" toggleable>
+  <Panel
+    :header="'Overview for: ' + useGlobalStore().wallet.address.toString()"
+    toggleable
+  >
     <div class="flex flex-row justify-around">
       <Fieldset legend="Tokens-Value" class="flex items-center">
         <div class="flex flex-row space-x-2 items-center">

@@ -9,54 +9,64 @@
         /><Button icon="pi pi-search" @click="action_startSearch" />
       </div>
     </div>
-    <div class="p-card">
-      <OverviewChilds />
+    <div v-if="useGlobalStore().wallet.address === ''" class="p-card">
+      <NoData class="flex justify-center" />
     </div>
+    <div v-else class="flex flex-col space-y-2">
+      <div class="p-card">
+        <NoData
+          v-if="!useGlobalStore().wallet.tokens.length"
+          class="flex justify-center"
+        />
 
-    <div class="p-card">
-      <Panel header="Tokens" toggleable>
-        <div class="flex justify-around">
-          <NoData
-            class="flex justify-center"
-            v-if="!useGlobalStore().wallet.tokens.length"
-          />
-          <WalletTokensTable v-else />
-        </div>
-      </Panel>
+        <OverviewChilds v-else />
+      </div>
+
+      <div class="p-card">
+        <Panel header="Tokens" toggleable>
+          <div class="flex justify-around">
+            <NoData
+              class="flex justify-center"
+              v-if="!useGlobalStore().wallet.tokens.length"
+            />
+            <WalletTokensTable v-else />
+          </div>
+        </Panel>
+      </div>
+
+      <div class="p-card">
+        <Panel header="History" toggleable>
+          <div class="flex flex-row justify-around">
+            <NoData
+              class="flex justify-center"
+              v-if="!useGlobalStore().wallet.historySorted.length"
+            />
+            <WalletHistoryTable v-else />
+          </div>
+        </Panel>
+      </div>
+
+      <!--    <div class="grid grid-cols-3 gap-5">-->
+      <!--      <TokenPriceElement-->
+      <!--        :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)"-->
+      <!--        :price="0.0"-->
+      <!--        :change24h="24"-->
+      <!--        image-name="some"-->
+      <!--      />-->
+      <!--      <TokenPriceElement-->
+      <!--        :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)"-->
+      <!--        :price="0.0"-->
+      <!--        :change24h="24"-->
+      <!--        image-name="some"-->
+      <!--      />-->
+      <!--      <TokenPriceElement-->
+      <!--        :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)"-->
+      <!--        :price="0.0"-->
+      <!--        :change24h="24"-->
+      <!--        image-name="some"-->
+      <!--      />-->
+      <!--    </div>-->
     </div>
-
-    <div class="p-card">
-      <Panel header="History" toggleable>
-        <div class="flex flex-row justify-around">
-          <NoData
-            class="flex justify-center"
-            v-if="!useGlobalStore().wallet.historySorted.length"
-          />
-          <WalletHistoryTable v-else />
-        </div>
-      </Panel>
-    </div>
-
-    <!--    <div class="grid grid-cols-3 gap-5">-->
-    <!--      <TokenPriceElement-->
-    <!--        :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)"-->
-    <!--        :price="0.0"-->
-    <!--        :change24h="24"-->
-    <!--        image-name="some"-->
-    <!--      />-->
-    <!--      <TokenPriceElement-->
-    <!--        :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)"-->
-    <!--        :price="0.0"-->
-    <!--        :change24h="24"-->
-    <!--        image-name="some"-->
-    <!--      />-->
-    <!--      <TokenPriceElement-->
-    <!--        :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)"-->
-    <!--        :price="0.0"-->
-    <!--        :change24h="24"-->
-    <!--        image-name="some"-->
-    <!--      />-->
-    <!--    </div>-->
   </div>
 </template>
 

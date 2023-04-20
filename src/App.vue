@@ -4,13 +4,17 @@ import FooterComponent from "./components/naviagtion/FooterComponent.vue";
 </script>
 
 <template>
-  <div>
+  <body class="flex flex-col min-h-screen">
     <header>
       <HeaderNavigation />
     </header>
-    <router-view class="m-2"></router-view>
-    <FooterComponent class="m-2" />
-  </div>
+    <main class="flex-grow">
+      <router-view class="m-2"></router-view>
+    </main>
+    <footer>
+      <FooterComponent class="m-2" />
+    </footer>
+  </body>
 </template>
 
 <style scoped></style>
