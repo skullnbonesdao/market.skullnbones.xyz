@@ -15,7 +15,7 @@
 
     <div class="p-card">
       <Panel header="Tokens" toggleable>
-        <div class="flex flex-row justify-around">
+        <div class="flex justify-around">
           <NoData
             class="flex justify-center"
             v-if="!useGlobalStore().wallet.tokens.length"

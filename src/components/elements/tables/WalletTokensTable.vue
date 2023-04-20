@@ -1,9 +1,8 @@
 <template>
   <div class="">
     <DataTable
-      class="flex w-full"
-      reorderable-columns
-      columnResizeMode="expand"
+      resizableColumns
+      columnResizeMode="fit"
       style="width: 100%"
       :value="useGlobalStore().wallet.tokens"
       tableStyle="min-width: 50rem"
