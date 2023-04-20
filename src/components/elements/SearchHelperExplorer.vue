@@ -1,33 +1,31 @@
 <template>
-  <div class="p-card p-2">
-    <div class="p-fluid flex flex-row items-center space-x-2">
-      <AutoComplete
-        class="flex w-full"
-        v-model="search_user_selected"
-        :suggestions="filtered_search"
-        @complete="search"
-        optionLabel="label"
-        optionGroupLabel="label"
-        optionGroupChildren="items"
-        placeholder="Hint: type 'symbol-name'"
-      >
-        <template #optiongroup="slotProps">
-          <div class="flex align-items-center country-item">
-            <!--          <img-->
-            <!--            :alt="slotProps.item.label"-->
-            <!--            :src="'/public/webp/' + slotProps.item.mint + '.webp'"-->
-            <!--            :class="`flag flag-${slotProps.item.code.toLowerCase()} mr-2`"-->
-            <!--            style="width: 18px"-->
-            <!--          />-->
-            <div>{{ slotProps.item.label }}</div>
-          </div>
-        </template>
-      </AutoComplete>
-      <Button
-        icon="pi pi-search"
-        @click="$emit('toSearch', search_user_selected)"
-      />
-    </div>
+  <div class="p-fluid flex flex-row items-center space-x-2">
+    <AutoComplete
+      class="flex w-full"
+      v-model="search_user_selected"
+      :suggestions="filtered_search"
+      @complete="search"
+      optionLabel="label"
+      optionGroupLabel="label"
+      optionGroupChildren="items"
+      placeholder="Hint: type 'symbol-name'"
+    >
+      <template #optiongroup="slotProps">
+        <div class="flex align-items-center country-item">
+          <!--          <img-->
+          <!--            :alt="slotProps.item.label"-->
+          <!--            :src="'/public/webp/' + slotProps.item.mint + '.webp'"-->
+          <!--            :class="`flag flag-${slotProps.item.code.toLowerCase()} mr-2`"-->
+          <!--            style="width: 18px"-->
+          <!--          />-->
+          <div>{{ slotProps.item.label }}</div>
+        </div>
+      </template>
+    </AutoComplete>
+    <Button
+      icon="pi pi-search"
+      @click="$emit('toSearch', search_user_selected)"
+    />
   </div>
 </template>
 

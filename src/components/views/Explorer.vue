@@ -1,8 +1,19 @@
 <template>
   <div class="space-y-2">
-    <SearchHelperExplorer
-      @toSearch="(value) => (search_input_object = value.api_search)"
-    />
+    <div class="flex flex-row space-x-2">
+      <SearchHelperExplorer
+        class="flex w-full"
+        @toSearch="(value) => (search_input_object = value.api_search)"
+      />
+      <Dropdown
+        v-model="selected_limit"
+        :options="limits"
+        optionLabel="name"
+        placeholder="limit:100"
+        class="md:w-14rem"
+      />
+    </div>
+
     <div class="p-card p-2">
       <div class="flex w-full">
         <ProgressSpinner v-if="is_loading" class="flex justify-center" />
@@ -200,6 +211,7 @@
 
 <script setup lang="ts">
 import ProgressSpinner from "primevue/progressspinner";
+import Dropdown from "primevue/dropdown";
 import InputText from "primevue/inputtext";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
@@ -235,6 +247,14 @@ const table_filters = ref({
   "mint.token": { value: null, matchMode: FilterMatchMode.IN },
 });
 
+const limits = ref([
+  { name: "limit: 10", value: 10 },
+  { name: "limit: 100", value: 100 },
+  { name: "limit: 1k", value: 1000 },
+]);
+
+const selected_limit = ref(limits.value[1]);
+
 watch(
   () => search_input_object.value,
   async () => await fetch_api_data()
@@ -257,7 +277,10 @@ async function fetch_api_data() {
   switch (search_input_object.value.type) {
     case SEARCH_TYPE.SYMBOL:
       await api.trades
-        .getSymbol({ symbol: search_input_object.value.value, limit: 100 })
+        .getSymbol({
+          symbol: search_input_object.value.value,
+          limit: selected_limit.value.value,
+        })
         .then((resp) => (fetched_trades = resp.data));
       break;
     case SEARCH_TYPE.SIGNATURE:
