@@ -19,10 +19,10 @@
       </div>
     </div>
     <div class="flex gap-2">
-      <TradingViewChart
-        :class="show_order_setter ? 'basis-3/5' : 'basis-5/5'"
-        class="p-card p-1"
-      />
+      <div :class="show_order_setter ? 'basis-3/5' : 'basis-5/5'">
+        <TradingViewChart class="p-card p-1" />
+        <OpenOrders />
+      </div>
 
       <div
         :class="show_order_setter ? 'basis-2/5' : ''"
@@ -51,6 +51,7 @@ import { useGlobalStore } from "../../stores/GlobalStore";
 import { PublicKey } from "@solana/web3.js";
 import { useToast } from "primevue/usetoast";
 import OrderSettter from "../elements/OrderSettter.vue";
+import OpenOrders from "../OpenOrders.vue";
 
 const show_search = ref<boolean>();
 show_search.value = false;
