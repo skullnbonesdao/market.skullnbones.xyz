@@ -9,11 +9,11 @@ import ToastService from "primevue/toastservice";
 
 import "virtual:uno.css";
 import "./style.css";
-//import "./assets/main.css";
-//import "./theme_dark.css";
 import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
-import "../public/css/theme_light.css";
+import "../public/themes/themes/soho/soho-dark/theme.scss";
+
+import "../public/themes/themes/soho/soho-light/theme.scss";
 
 import HomeView from "./components/views/HomeView.vue";
 import MarketView from "./components/views/MarketView.vue";

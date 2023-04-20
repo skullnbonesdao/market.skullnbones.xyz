@@ -26,7 +26,10 @@ if (useGlobalStore().is_dark) {
 function _addDarkTheme() {
   let darkThemeLinkEl = document.createElement("link");
   darkThemeLinkEl.setAttribute("rel", "stylesheet");
-  darkThemeLinkEl.setAttribute("href", "/css/theme_dark.css");
+  darkThemeLinkEl.setAttribute(
+    "href",
+    "../../public/themes/themes/soho/soho-dark/theme.scss"
+  );
   darkThemeLinkEl.setAttribute("id", "dark-theme-style");
 
   let docHead = document.querySelector("head");
