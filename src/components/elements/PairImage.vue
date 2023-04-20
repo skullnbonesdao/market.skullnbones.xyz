@@ -3,7 +3,7 @@
     <div class="avatar bg-gray-200 dark:bg-gray-600 rounded-md p1">
       <div class="w-12">
         <img
-          class="rounded-full"
+          class="object-fill rounded-full h-12 w-12"
           :src="props.asset_image_url"
           alt="asset_image"
         />
