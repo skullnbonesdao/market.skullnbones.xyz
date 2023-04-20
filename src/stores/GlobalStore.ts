@@ -3,7 +3,7 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { ItemType, StarAtlasAPIItem } from "../static/StarAtlasAPIItem";
 import { useLocalStorage } from "@vueuse/core";
 import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
-import { Api } from "../static/swagger/skullnbones_api/skullnbones_api";
+import { Api, Trade } from "../static/swagger/skullnbones_api/skullnbones_api";
 import { get_multi_price } from "../static/swagger/birdseye_api/birdseye_api";
 
 export interface RPCEndpoint {
@@ -61,10 +61,32 @@ export const useGlobalStore = defineStore("globalStore", {
       is_web_wallet_connected: false,
       tokens: [] as Array<TokenInfo>,
       historySorted: [] as Array<TableGroupedHistory>,
+      historyRaw: [] as Array<Trade>,
     },
     sa_api_data: [] as StarAtlasAPIItem[],
   }),
-  getters: {},
+  getters: {
+    get_wallet_volume_usdc(): number {
+      return this.wallet.historyRaw
+        .filter(
+          (h) =>
+            h.currency_mint ===
+            CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint
+        )
+        .flatMap((h) => h.price * h.asset_change)
+        .reduce((sum, current) => sum + current, 0);
+    },
+    get_wallet_volume_atlas(): number {
+      return this.wallet.historyRaw
+        .filter(
+          (h) =>
+            h.currency_mint ===
+            CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint
+        )
+        .flatMap((h) => h.price * h.asset_change)
+        .reduce((sum, current) => sum + current, 0);
+    },
+  },
   actions: {
     async toggleDark() {
       this.is_dark = !this.is_dark;
@@ -98,7 +120,7 @@ export const useGlobalStore = defineStore("globalStore", {
       });
 
       //Fetch other_tokens
-      let token_mints = CURRENCIES.flatMap((c) => new PublicKey(c.mint));
+      //let token_mints = CURRENCIES.flatMap((c) => new PublicKey(c.mint));
 
       let response_tokenAccounts =
         await this.connection.getParsedTokenAccountsByOwner(
@@ -143,6 +165,7 @@ export const useGlobalStore = defineStore("globalStore", {
         .getAddress({ address: this.wallet.address })
         .then((resp) => resp.data)
         .then((api_data) => {
+          this.wallet.historyRaw = api_data;
           let key_idx = 0;
           for (let type in ItemType) {
             let filtered_sa_api = this.sa_api_data.filter(

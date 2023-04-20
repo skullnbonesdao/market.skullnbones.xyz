@@ -10,12 +10,7 @@
       </div>
     </div>
     <div class="p-card">
-      <Panel header="Overview" toggleable>
-        <div class="flex flex-row justify-around">
-          <div>NET</div>
-          <div>Staked</div>
-        </div>
-      </Panel>
+      <OverviewChilds />
     </div>
 
     <div class="p-card">
@@ -66,26 +61,18 @@
 </template>
 
 <script setup lang="ts">
-import DataTable from "primevue/datatable";
-import Column from "primevue/column";
+import Fieldset from "primevue/fieldset";
 import InputText from "primevue/inputtext";
-import TokenPriceElement from "../../components/elements/TokenPriceElement.vue";
+import Skeleton from "primevue/skeleton";
 import Panel from "primevue/panel";
 import { CURRENCIES, E_CURRENCIES } from "../../static/currencies";
 import { useGlobalStore } from "../../stores/GlobalStore";
-import {
-  useWallet,
-  WalletConnectButton,
-  WalletMultiButton,
-} from "solana-wallets-vue";
-import {
-  Api,
-  Trade,
-} from "../../static/swagger/skullnbones_api/skullnbones_api";
-import { ref, watch } from "vue";
+import { useWallet } from "solana-wallets-vue";
 import WalletTokensTable from "../elements/tables/WalletTokensTable.vue";
 import NoData from "../elements/NoData.vue";
 import WalletHistoryTable from "../elements/tables/WalletHistoryTable.vue";
+import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
+import OverviewChilds from "../elements/portfolio_elements/OverviewChilds.vue";
 
 const wallet = useWallet();
 
