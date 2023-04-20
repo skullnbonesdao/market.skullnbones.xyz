@@ -25,6 +25,7 @@
             <div class="p-inputgroup flex-1">
               <span class="w-15 p-inputgroup-addon uppercase">Price</span>
               <InputNumber
+                :class="input.price <= 0 ? ' p-invalid' : ''"
                 placeholder="0.0"
                 minFractionDigits="2"
                 v-model="input.price"
@@ -32,7 +33,11 @@
             </div>
             <div class="p-inputgroup flex-1">
               <span class="w-15 p-inputgroup-addon uppercase">Size</span>
-              <InputNumber placeholder="0.0" v-model="input.size" />
+              <InputNumber
+                :class="input.size <= 0 ? ' p-invalid' : ''"
+                placeholder="0.0"
+                v-model="input.size"
+              />
             </div>
           </div>
         </div>
