@@ -21,6 +21,7 @@ export const endpoints_list: RPCEndpoint[] = [
 export interface TokenInfo {
   address: String;
   amount: number;
+  price: number;
   usd_value: number;
 }
 
@@ -116,6 +117,7 @@ export const useGlobalStore = defineStore("globalStore", {
             new PublicKey(this.wallet.address)
           )) * Math.pow(10, -9),
         address: "So11111111111111111111111111111111111111112",
+        price: -1.0,
         usd_value: -1.0,
       });
 
@@ -140,6 +142,7 @@ export const useGlobalStore = defineStore("globalStore", {
           this.wallet.tokens.push({
             amount: amount,
             address: parsedAccountInfo["parsed"]["info"]["mint"],
+            price: -1.0,
             usd_value: -1.0,
           });
         }
@@ -151,8 +154,11 @@ export const useGlobalStore = defineStore("globalStore", {
       console.log(prices_response);
       if (prices_response) {
         this.wallet.tokens.forEach((token, idx) => {
-          this.wallet.tokens[idx].usd_value =
+          this.wallet.tokens[idx].price =
             prices_response?.data[token.address.toString()]?.value ?? 0;
+
+          this.wallet.tokens[idx].usd_value =
+            this.wallet.tokens[idx].price * this.wallet.tokens[idx].amount;
         });
       }
     },

@@ -2,7 +2,7 @@
   <div class="">
     <DataTable
       resizableColumns
-      columnResizeMode="fit"
+      columnResizeMode="expand"
       style="width: 100%"
       :value="useGlobalStore().wallet.tokens"
       tableStyle="min-width: 50rem"
@@ -17,7 +17,16 @@
           </div>
         </template>
       </Column>
-      <Column field="usd_value" header="USD">
+      <Column field="price" header="Price">
+        <template #body="slotProps">
+          <div class="flex float-right">
+            <p>
+              {{ slotProps.data.price.toFixed(2) }}
+            </p>
+          </div>
+        </template>
+      </Column>
+      <Column field="usd_value" header="Value">
         <template #body="slotProps">
           <div class="flex float-right">
             <p>
