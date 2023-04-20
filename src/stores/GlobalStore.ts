@@ -11,6 +11,9 @@ import { useLocalStorage } from "@vueuse/core";
 import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
 import { Api, Trade } from "../static/swagger/skullnbones_api/skullnbones_api";
 import { get_multi_price } from "../static/swagger/birdseye_api/birdseye_api";
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+import { FindNftsByOwnerOutput, Metaplex, Nft } from "@metaplex-foundation/js";
+import { useWallet } from "solana-wallets-vue";
 
 export interface RPCEndpoint {
   name: string;
@@ -54,6 +57,11 @@ export interface TableGroupedElement {
   price: string;
 }
 
+export interface NftsData {
+  is_loading: boolean;
+  data: Array<{ key: string; metadata: Nft; json: Object }>;
+}
+
 export const useGlobalStore = defineStore("globalStore", {
   state: () => ({
     is_dark: useLocalStorage("is_dark", false),
@@ -74,6 +82,7 @@ export const useGlobalStore = defineStore("globalStore", {
       tokenInfo: [] as Array<TokenInfo>,
       historySorted: [] as Array<TableGroupedHistory>,
       historyRaw: [] as Array<Trade>,
+      nfts: {} as NftsData,
     },
     sa_api_data: [] as StarAtlasAPIItem[],
   }),
@@ -252,6 +261,38 @@ export const useGlobalStore = defineStore("globalStore", {
             key_idx++;
           }
         });
+    },
+
+    async load_wallet_nfts() {
+      this.wallet.nfts.is_loading = true;
+      const connection = new Connection(
+        "https://api.metaplex.solana.com",
+        "confirmed"
+      );
+      const metaplex = new Metaplex(connection);
+
+      const data = await metaplex.nfts().findAllByOwner({
+        owner: new PublicKey(useWallet().publicKey.value?.toString() ?? ""),
+      });
+
+      this.wallet.nfts.data = [];
+
+      for (const d of data) {
+        let json_data = "";
+        await fetch(d.uri)
+          .then((resp) => resp.json())
+          .then((json) => (json_data = json))
+          .catch((err) => console.log(err));
+
+        this.wallet.nfts.data.push({
+          key: "0",
+          metadata: d as Nft,
+          json: json_data,
+        });
+      }
+
+      this.wallet.nfts.is_loading = false;
+      console.log(this.wallet.nfts);
     },
   },
 });

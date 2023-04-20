@@ -35,7 +35,19 @@
       </div>
 
       <div class="p-card">
-        <Panel header="History" toggleable>
+        <Panel header="NFTs" toggleable>
+          <div class="flex justify-around">
+            <NoData
+              class="flex justify-center"
+              v-if="!useGlobalStore().wallet.nfts.data?.length"
+            />
+            <WalletNftsTable />
+          </div>
+        </Panel>
+      </div>
+
+      <div class="p-card">
+        <Panel header="Market-History" toggleable>
           <div class="flex flex-row justify-around">
             <NoData
               class="flex justify-center"
@@ -85,6 +97,7 @@ import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
 import OverviewChilds from "../elements/portfolio_elements/OverviewChilds.vue";
 import { computed, watch } from "vue";
 import { PublicKey } from "@solana/web3.js";
+import WalletNftsTable from "../elements/tables/WalletNftsTable.vue";
 
 const wallet = useWallet();
 
@@ -110,8 +123,9 @@ watch(
 );
 
 async function action_startSearch() {
-  await useGlobalStore().load_wallet_trades();
-  await useGlobalStore().load_wallet_tokens();
+  useGlobalStore().load_wallet_trades();
+  useGlobalStore().load_wallet_tokens();
+  useGlobalStore().load_wallet_nfts();
 }
 </script>
 
