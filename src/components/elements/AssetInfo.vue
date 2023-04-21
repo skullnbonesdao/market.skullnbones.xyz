@@ -12,9 +12,7 @@
         <div class="flex w-full flex-row items-center space-x-3">
           <PairImage
             :asset_image_url="
-              '/public/webp/' +
-              useGlobalStore().symbol.mint_asset.toString() +
-              '.webp'
+              '/webp/' + useGlobalStore().symbol.mint_asset.toString() + '.webp'
             "
             :currency="
               CURRENCIES.find(

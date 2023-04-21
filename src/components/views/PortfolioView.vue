@@ -14,7 +14,7 @@
     </div>
     <div v-else class="flex flex-col space-y-2">
       <div class="p-card flex flex-row p-2">
-        <div class="flex flex-col">
+        <div class="flex flex-col justify-center">
           <p>Connected to:</p>
           <p class="text-xs">
             {{ useGlobalStore().wallet.address }}
