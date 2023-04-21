@@ -14,7 +14,28 @@
     <div class="p-card flex flex-col">
       <ProgressSpinner v-if="is_loading" />
 
-      <DataTable :value="table_data" tableStyle="min-width: 50rem">
+      <DataTable
+        v-else
+        v-model:filters="table_filters"
+        :globalFilterFields="['api_data.name']"
+        :value="table_data"
+        tableStyle="min-width: 50rem"
+        :filters="table_filters"
+      >
+        <template #header>
+          <div class="flex">
+            <div class="flex w-full"></div>
+            <span class="p-input-icon-left">
+              <i class="pi pi-search" />
+              <InputText
+                v
+                v-model="table_filters['global'].value"
+                placeholder="Search (name)"
+              />
+            </span>
+          </div>
+        </template>
+
         <ColumnGroup type="header">
           <Row>
             <Column
@@ -220,6 +241,8 @@ import { CURRENCIES, E_CURRENCIES, I_CURRENCY } from "../../static/currencies";
 import { GmClientService, Order, OrderSide } from "@staratlas/factory";
 import { Connection } from "@solana/web3.js";
 import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
+import { FilterMatchMode } from "primevue/api";
+import InputText from "primevue/inputtext";
 
 const is_loading = ref(true);
 
@@ -241,6 +264,10 @@ interface OptionType {
   value: string;
 }
 const table_data = ref<TableType[]>([]);
+const table_filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  "api_data.name": { value: null, matchMode: FilterMatchMode.IN },
+});
 
 const option_selected = ref();
 const options_values = ref<OptionType[]>([]);
