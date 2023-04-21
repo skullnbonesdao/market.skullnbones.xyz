@@ -15,7 +15,60 @@
       <ProgressSpinner v-if="is_loading" />
 
       <DataTable :value="table_data" tableStyle="min-width: 50rem">
-        <Column>
+        <ColumnGroup type="header">
+          <Row>
+            <Column
+              header="Name"
+              :rowspan="3"
+              :colspan="2"
+              sortable
+              field="api_data.name"
+            />
+
+            <Column
+              header="VWAP"
+              :rowspan="3"
+              :colspan="1"
+              sortable
+              field="api_data.tradeSettings.vwap"
+            />
+            <Column header="BUY" :colspan="4" />
+            <Column header="SELL" :colspan="4" />
+          </Row>
+          <Row>
+            <Column
+              header="USDC"
+              :colspan="1"
+              sortable
+              field="orders_usdc.buy_max"
+            />
+            <Column header="%" :colspan="1" />
+            <Column
+              header="ATLAS"
+              :colspan="1"
+              sortable
+              field="orders_atlas.buy_max"
+            />
+            <Column header="%" :colspan="1" />
+
+            <Column
+              header="USDC"
+              :colspan="1"
+              sortable
+              field="orders_usdc.sell_min"
+            />
+            <Column header="%" :colspan="1" />
+            <Column
+              header="ATLAS"
+              :colspan="1"
+              sortable
+              field="orders_atlas.sell_min"
+            />
+            <Column header="%" :colspan="1" />
+          </Row>
+        </ColumnGroup>
+
+        <Column field="api_data.mint">
           <template #body="slotProps">
             <Avatar
               :image="'/webp/' + slotProps.data.api_data.mint + '.webp'"
@@ -26,8 +79,8 @@
           </template>
         </Column>
 
-        <Column field="api_data.name" header="Name" sortable></Column>
-        <Column field="api_data.tradeSettings.vwap" header="VWAP" sortable>
+        <Column field="api_data.name"></Column>
+        <Column>
           <template #body="slotProps">
             <div class="flex flex-row space-x-1">
               <CurrencyIcon
@@ -41,28 +94,111 @@
           </template>
         </Column>
 
-        <Column field="orders.atlas.ask_max" header="ATLAS"></Column>
-
-        <Column field="orders.usdc.ask_max" header="USDC"></Column>
-
-        <Column field="category" header="ASK2"></Column>
-
-        <Column field="category" header="ASK2"></Column>
-        <Column field="orders" header="ASK">
+        <!-- BUY -->
+        <Column>
           <template #body="slotProps">
-            <p>{{ slotProps.data.orders.atlas.ask_max }}</p>
-
-            <p>{{ slotProps.data.orders.atlas.ask_min }}</p>
-
-            <p>{{ slotProps.data.orders.atlas.bid_max }}</p>
-            <p>{{ slotProps.data.orders.atlas.bid_min }}</p>
+            <div class="flex flex-row space-x-1">
+              <CurrencyIcon
+                style="width: 24px"
+                :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
+              />
+              <p>
+                {{ slotProps.data.orders_usdc.buy_max.toFixed(2) }}
+              </p>
+            </div>
+          </template>
+        </Column>
+        <Column>
+          <template #body="slotProps">
+            <div class="flex flex-row space-x-1">
+              <p>
+                {{
+                  (
+                    (slotProps.data.orders_usdc.buy_max /
+                      (slotProps.data.api_data.tradeSettings?.vwap ?? 0)) *
+                    100
+                  ).toFixed()
+                }}%
+              </p>
+            </div>
           </template>
         </Column>
 
-        <Column field="category" header="ASK1"></Column>
+        <Column>
+          <template #body="slotProps">
+            <div class="flex flex-row space-x-1">
+              <CurrencyIcon
+                style="width: 24px"
+                :currency="
+                  CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
+                "
+              />
+              <p>
+                {{ slotProps.data.orders_atlas.buy_max.toFixed(2) }}
+              </p>
+            </div>
+          </template>
+        </Column>
+        <Column>
+          <template #body="slotProps">
+            <div class="flex flex-row space-x-1">
+              <p>0.0%</p>
+            </div>
+          </template>
+        </Column>
 
-        <Column field="category" header="ASK2"></Column>
-        <Column field="quantity" header="BID"></Column>
+        <!-- SELL -->
+        <Column>
+          <template #body="slotProps">
+            <div class="flex flex-row space-x-1">
+              <CurrencyIcon
+                style="width: 24px"
+                :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
+              />
+              <p>
+                {{ slotProps.data.orders_usdc.sell_min.toFixed(2) }}
+              </p>
+            </div>
+          </template>
+        </Column>
+        <Column>
+          <template #body="slotProps">
+            <div class="flex flex-row space-x-1">
+              <p>
+                {{
+                  (
+                    (slotProps.data.orders_usdc.sell_min /
+                      (slotProps.data.api_data.tradeSettings?.vwap ?? 0)) *
+                    100
+                  ).toFixed()
+                }}%
+              </p>
+            </div>
+          </template>
+        </Column>
+
+        <Column>
+          <template #body="slotProps">
+            <div class="flex flex-row space-x-1">
+              <CurrencyIcon
+                style="width: 24px"
+                :currency="
+                  CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
+                "
+              />
+              <p>
+                {{ slotProps.data.orders_atlas.sell_min.toFixed(2) }}
+              </p>
+            </div>
+          </template>
+        </Column>
+        <Column>
+          <template #body="slotProps">
+            <div class="flex flex-row space-x-1">
+              <p>0.0%</p>
+            </div>
+          </template>
+        </Column>
       </DataTable>
     </div>
   </div>
@@ -73,6 +209,8 @@ import ProgressSpinner from "primevue/progressspinner";
 import SelectButton from "primevue/selectbutton";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
+import ColumnGroup from "primevue/columngroup";
+import Row from "primevue/row";
 import Avatar from "primevue/avatar";
 import { onMounted, ref, watch } from "vue";
 import { ItemType, StarAtlasAPIItem } from "../../static/StarAtlasAPIItem";
@@ -80,28 +218,23 @@ import { useGlobalStore } from "../../stores/GlobalStore";
 import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
 import { CURRENCIES, E_CURRENCIES, I_CURRENCY } from "../../static/currencies";
 import { GmClientService, Order, OrderSide } from "@staratlas/factory";
-import { Connection, PublicKey } from "@solana/web3.js";
-import { GM_PROGRAM_ID } from "../../static/constants/StarAtlasConstants";
+import { Connection } from "@solana/web3.js";
 import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
 
 const is_loading = ref(true);
 
+export interface MarketValues {
+  itemType: E_CURRENCIES;
+  sell_min: number;
+  sell_max: number;
+  buy_min: number;
+  buy_max: number;
+}
+
 export interface TableType {
   api_data: StarAtlasAPIItem;
-  orders: {
-    atlas: {
-      ask_min: number;
-      ask_max: number;
-      bid_min: number;
-      bid_max: number;
-    };
-    usdc: {
-      ask_min: number;
-      ask_max: number;
-      bid_min: number;
-      bid_max: number;
-    };
-  };
+  orders_atlas: MarketValues;
+  orders_usdc: MarketValues;
 }
 
 interface OptionType {
@@ -134,7 +267,7 @@ onMounted(async () => {
     value: "Ship",
   };
 
-  await filter_api_data_by_itemType();
+  //await filter_api_data_by_itemType();
 });
 
 async function filter_api_data_by_itemType() {
@@ -156,51 +289,74 @@ async function filter_api_data_by_itemType() {
 
     console.log(orders);
 
+    let orders_usdc: MarketValues = {
+      itemType: E_CURRENCIES.USDC,
+      buy_max: get_order(
+        orders,
+        CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC) ?? CURRENCIES[0],
+        filtered.mint.toString(),
+        OrderSide.Buy,
+        1
+      ),
+      buy_min: get_order(
+        orders,
+        CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC) ?? CURRENCIES[0],
+        filtered.mint.toString(),
+        OrderSide.Buy,
+        -1
+      ),
+      sell_max: get_order(
+        orders,
+        CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC) ?? CURRENCIES[0],
+        filtered.mint.toString(),
+        OrderSide.Sell,
+        1
+      ),
+      sell_min: get_order(
+        orders,
+        CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC) ?? CURRENCIES[0],
+        filtered.mint.toString(),
+        OrderSide.Sell,
+        -1
+      ),
+    };
+
+    let orders_atlas: MarketValues = {
+      itemType: E_CURRENCIES.ATLAS,
+      buy_max: get_order(
+        orders,
+        CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ?? CURRENCIES[0],
+        filtered.mint.toString(),
+        OrderSide.Buy,
+        1
+      ),
+      buy_min: get_order(
+        orders,
+        CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ?? CURRENCIES[0],
+        filtered.mint.toString(),
+        OrderSide.Buy,
+        -1
+      ),
+      sell_max: get_order(
+        orders,
+        CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ?? CURRENCIES[0],
+        filtered.mint.toString(),
+        OrderSide.Sell,
+        1
+      ),
+      sell_min: get_order(
+        orders,
+        CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ?? CURRENCIES[0],
+        filtered.mint.toString(),
+        OrderSide.Sell,
+        -1
+      ),
+    };
+
     table_data.value.push({
       api_data: filtered,
-      orders: {
-        atlas: {
-          ask_min: get_order(
-            orders,
-            CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ??
-              CURRENCIES[0],
-            filtered.mint.toString(),
-            OrderSide.Sell,
-            1
-          ),
-          ask_max: get_order(
-            orders,
-            CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ??
-              CURRENCIES[0],
-            filtered.mint.toString(),
-            OrderSide.Sell,
-            1
-          ),
-          bid_min: get_order(
-            orders,
-            CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ??
-              CURRENCIES[0],
-            filtered.mint.toString(),
-            OrderSide.Buy,
-            -1
-          ),
-          bid_max: get_order(
-            orders,
-            CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ??
-              CURRENCIES[0],
-            filtered.mint.toString(),
-            OrderSide.Buy,
-            -1
-          ),
-        },
-
-        usdc: {
-          ask_min: 0.0,
-          ask_max: 0.0,
-          bid_min: 0.0,
-          bid_max: 0.0,
-        },
-      },
+      orders_usdc: orders_usdc,
+      orders_atlas: orders_atlas,
     });
   }
 
