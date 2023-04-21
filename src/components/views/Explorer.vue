@@ -36,7 +36,8 @@
           columnResizeMode="expand"
           style="width: 100%"
           :value="table_data"
-          scrollHeight="800px"
+          scrollable
+          scrollHeight="1000px"
         >
           <template #header>
             <div class="flex">
