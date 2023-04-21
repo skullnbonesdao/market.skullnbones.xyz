@@ -9,6 +9,7 @@ import nodePolyfills from "vite-plugin-node-stdlib-browser";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: "./",
   plugins: [vue(), UnoCSS(), nodePolyfills()],
   define: {
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
