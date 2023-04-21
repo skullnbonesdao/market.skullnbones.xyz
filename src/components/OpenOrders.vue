@@ -54,12 +54,17 @@
       <Column header="">
         <template #body="slotProps">
           <div class="flex w-full flex-row justify-end space-x-2">
-            <Button @click="show()" severity="warning">
+            <Button
+              v-tooltip.bottom="'Edit order'"
+              @click="show()"
+              class="p-button-info"
+            >
               <i class="pi pi-pencil"></i
             ></Button>
             <Button
               @click="cancel_order(slotProps.data.id.toString()).then(() => {})"
-              severity="warning"
+              v-tooltip.bottom="'Close order'"
+              class="p-button-warning"
             >
               <i class="pi pi-ban"></i
             ></Button>

@@ -5,6 +5,7 @@ import { createPinia } from "pinia";
 import PrimeVue from "primevue/config";
 import Button from "primevue/button";
 import Toast from "primevue/toast";
+import Tooltip from "primevue/tooltip";
 import ToastService from "primevue/toastservice";
 
 import "virtual:uno.css";
@@ -58,7 +59,10 @@ const router = createRouter({
 });
 
 const app = createApp(App);
-app.component("Button", Button).component("Toast", Toast);
+app
+  .component("Button", Button)
+  .component("Toast", Toast)
+  .directive("tooltip", Tooltip);
 const pinia = createPinia();
 
 app
