@@ -24,6 +24,10 @@ if (useGlobalStore().is_dark) {
 }
 
 function _addDarkTheme() {
+  let themeElement = document.getElementById("theme-link");
+  console.log(themeElement);
+  themeElement.setAttribute("href", "/theme_dark.css");
+
   let darkThemeLinkEl = document.createElement("link");
   darkThemeLinkEl.setAttribute("rel", "stylesheet");
   darkThemeLinkEl.setAttribute("href", "/theme_dark.css");
@@ -34,6 +38,11 @@ function _addDarkTheme() {
 }
 
 function _removeDarkTheme() {
+  let themeElement = document.getElementById("theme-link");
+  console.log(themeElement);
+  themeElement.setAttribute("href", "/theme_light.css");
+
+  //
   let darkThemeLinkEl = document.querySelector("#dark-theme-style");
   let parentNode = darkThemeLinkEl.parentNode;
   parentNode.removeChild(darkThemeLinkEl);
