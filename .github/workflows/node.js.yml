@@ -23,7 +23,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - run: npm ci
-      - run: npm run build-only --if-present
+      - run: |
+          export NODE_OPTIONS="--max_old_space_size=4096"
+          npm run build-only --if-present
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
