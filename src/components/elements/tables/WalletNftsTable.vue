@@ -18,14 +18,38 @@
       <Column header="Actions">
         <template #body="slotProps"
           ><div class="flex flex-row space-x-2">
-            <Button><i class="pi pi-send"></i></Button>
+            <Button
+              disabled
+              v-tooltip.bottom="'Send NFT'"
+              class="p-button-secondary"
+              ><i class="pi pi-send"></i
+            ></Button>
 
-            <Button><i class="pi pi-send pi-reply"></i></Button>
+            <Button
+              disabled
+              v-tooltip.bottom="'Send to dumpster!'"
+              class="p-button-secondary"
+              ><i class="pi pi-send pi-reply"></i
+            ></Button>
 
-            <Button v-if="!is_unsecured" @click="is_unsecured = true"
+            <Button
+              v-tooltip.bottom="'Burn NFT (unlock)'"
+              v-if="!is_unsecured"
+              class="p-button-secondary"
+              @click="is_unsecured = true"
               ><i class="pi pi-trash"></i
             ></Button>
-            <Button v-else @click="is_unsecured = false"
+            <Button
+              v-else
+              @click="
+                btn_action_burn(
+                  slotProps.data.metadata.mintAddress.toString()
+                ).then(() => {
+                  is_unsecured = false;
+                })
+              "
+              v-tooltip.bottom="'Burn NFT (unlocked)'"
+              class="p-button-danger"
               ><i class="pi pi-exclamation-triangle"></i
             ></Button>
           </div>
@@ -46,21 +70,71 @@ import Image from "primevue/image";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
 import { ref } from "vue";
+import { Connection, PublicKey, Transaction } from "@solana/web3.js";
+import * as spl from "@solana/spl-token";
+import { useWallet } from "solana-wallets-vue";
+import { createBurnNftInstruction } from "@metaplex-foundation/mpl-token-metadata";
+import {
+  keypairIdentity,
+  Metaplex,
+  WalletAdapter,
+  walletAdapterIdentity,
+} from "@metaplex-foundation/js";
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  Token,
+  TOKEN_PROGRAM_ID,
+} from "@solana/spl-token";
 
 const is_unsecured = ref(false);
 
-function resolveUrl(url_json: string): string {
-  let img_url = "";
-  fetch(url_json)
-    .then((resp) => resp.json())
-    .then((json) => {
-      img_url = json.image;
-      console.log(img_url);
-    })
-    .catch((err) => {
-      img_url = "";
-    });
-  return img_url;
+async function btn_action_burn(nft_mint_to_burn: string) {
+  const connection = new Connection(useGlobalStore().rpc.url);
+
+  const associatedAddress = await Token.getAssociatedTokenAddress(
+    ASSOCIATED_TOKEN_PROGRAM_ID,
+    TOKEN_PROGRAM_ID,
+    new PublicKey(nft_mint_to_burn),
+    new PublicKey(useWallet().publicKey.value ?? "")
+  );
+
+  const burn_instruction = spl.Token.createBurnInstruction(
+    TOKEN_PROGRAM_ID,
+    new PublicKey(nft_mint_to_burn),
+    associatedAddress,
+    new PublicKey(useWallet().publicKey.value ?? ""),
+    [],
+    1
+  );
+
+  const close_account_instruction = spl.Token.createCloseAccountInstruction(
+    TOKEN_PROGRAM_ID,
+    associatedAddress,
+    new PublicKey(useWallet().publicKey.value ?? ""),
+    new PublicKey(useWallet().publicKey.value ?? ""),
+    []
+  );
+
+  const instuctions = new Transaction().add(
+    burn_instruction,
+    close_account_instruction
+  );
+
+  const tx_signature = await useWallet().sendTransaction(
+    instuctions,
+    connection
+  );
+
+  const is_confirmed = await connection.confirmTransaction(
+    tx_signature,
+    "processed"
+  );
+
+  if (is_confirmed) {
+    console.log("Burned");
+  } else {
+    console.log("errror buring");
+  }
 }
 </script>
 

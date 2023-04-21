@@ -10,6 +10,7 @@
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@solana/spl-token": "^0.1.8",
     "@solana/web3.js": "^1.75.0",
     "bignumber.js": "^9.1.1",
     "node-stdlib-browser": "^1.2.0",
