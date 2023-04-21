@@ -223,7 +223,7 @@ import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
 
 const is_loading = ref(true);
 
-export interface MarketValues {
+interface MarketValues {
   itemType: E_CURRENCIES;
   sell_min: number;
   sell_max: number;
@@ -231,7 +231,7 @@ export interface MarketValues {
   buy_max: number;
 }
 
-export interface TableType {
+interface TableType {
   api_data: StarAtlasAPIItem;
   orders_atlas: MarketValues;
   orders_usdc: MarketValues;
