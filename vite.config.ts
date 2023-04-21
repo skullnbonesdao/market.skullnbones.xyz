@@ -1,5 +1,3 @@
-import { fileURLToPath, URL } from "node:url";
-
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import UnoCSS from "unocss/vite";
@@ -18,6 +16,11 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.join(__dirname, ""),
+    },
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: "es2020",
     },
   },
   build: {
