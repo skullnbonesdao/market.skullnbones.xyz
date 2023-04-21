@@ -13,12 +13,21 @@
       <NoData class="flex justify-center" />
     </div>
     <div v-else class="flex flex-col space-y-2">
-      <div class="p-card p-2">
+      <div class="p-card flex flex-row p-2">
         <div class="flex flex-col">
           <p>Connected to:</p>
           <p class="text-xs">
             {{ useGlobalStore().wallet.address }}
           </p>
+        </div>
+        <div class="flex w-full justify-end items-center">
+          <p>
+            {{ useGlobalStore().wallet.tokenInfo[0].amount.toFixed(3) }}
+          </p>
+          <CurrencyIcon
+            style="width: 50px"
+            :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)"
+          />
         </div>
       </div>
 
@@ -92,9 +101,7 @@
 </template>
 
 <script setup lang="ts">
-import Fieldset from "primevue/fieldset";
 import InputText from "primevue/inputtext";
-import Skeleton from "primevue/skeleton";
 import Panel from "primevue/panel";
 import { CURRENCIES, E_CURRENCIES } from "../../static/currencies";
 import { useGlobalStore } from "../../stores/GlobalStore";
