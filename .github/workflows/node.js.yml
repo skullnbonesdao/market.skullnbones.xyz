@@ -24,7 +24,7 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: |
-          export NODE_OPTIONS="--max_old_space_size=4096"
+          export NODE_OPTIONS="--max_old_space_size=4096" &&
           npm run build-only --if-present
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
