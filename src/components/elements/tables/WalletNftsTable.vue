@@ -56,6 +56,24 @@
           </div>
         </template>
       </Column>
+      <Column header="Explorer">
+        <template #body="slotProps">
+          <div class="flex flex-row items-center space-x-2">
+            <Button class="p-button-outlined p-button-info">
+              <ExplorerIcon
+                class="w-5"
+                :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)"
+              />
+            </Button>
+            <Button class="p-button-outlined p-button-info">
+              <ExplorerIcon
+                class="w-5"
+                :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)"
+              />
+            </Button>
+          </div>
+        </template>
+      </Column>
     </DataTable>
     <ProgressSpinner v-if="useGlobalStore().wallet.nfts.is_loading" />
   </div>
@@ -87,6 +105,8 @@ import {
 } from "@solana/spl-token";
 import { useToast } from "primevue/usetoast";
 import Toast from "primevue/toast";
+import { E_EXPLORER, EXPLORER } from "../../../static/explorer";
+import ExplorerIcon from "../icons_images/ExplorerIcon.vue";
 
 const is_unsecured = ref(false);
 const toast = useToast();
