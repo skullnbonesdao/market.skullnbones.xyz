@@ -1,5 +1,10 @@
 import { defineStore } from "pinia";
-import { GmClientService, Order, OrderSide } from "@staratlas/factory";
+import {
+  GmClientService,
+  GmOrderbookService,
+  Order,
+  OrderSide,
+} from "@staratlas/factory";
 import { Connection, Keypair, PublicKey, Transaction } from "@solana/web3.js";
 
 export interface OrderBookOrderMap {
@@ -23,6 +28,10 @@ export const useStaratlasGmStore = defineStore({
   state: () => ({
     client: new GmClientService(),
     connection: new Connection(useGlobalStore().rpc.url),
+    order_book_service: new GmOrderbookService(
+      new Connection(useGlobalStore().rpc.url),
+      new PublicKey(GM_PROGRAM_ID)
+    ),
     orders: [] as Order[],
     playerOrders: [] as Order[],
     atlasOrders: {
