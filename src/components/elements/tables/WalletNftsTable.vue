@@ -1,4 +1,5 @@
 <template>
+  <Toast />
   <div class="flex flex-col w-full">
     <DataTable
       resizableColumns
@@ -36,7 +37,7 @@
               v-tooltip.bottom="'Burn NFT (unlock)'"
               v-if="!is_unsecured"
               class="p-button-secondary"
-              @click="is_unsecured = true"
+              @click="btn_make_unsecure"
               ><i class="pi pi-trash"></i
             ></Button>
             <Button
@@ -66,7 +67,6 @@ import ProgressSpinner from "primevue/progressspinner";
 import { useGlobalStore } from "../../../stores/GlobalStore";
 import Skeleton from "primevue/skeleton";
 import Image from "primevue/image";
-
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
 import { ref } from "vue";
@@ -85,8 +85,21 @@ import {
   Token,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
+import { useToast } from "primevue/usetoast";
+import Toast from "primevue/toast";
 
 const is_unsecured = ref(false);
+const toast = useToast();
+
+function btn_make_unsecure() {
+  is_unsecured.value = true;
+  toast.add({
+    severity: "warn",
+    summary: "Burning - active",
+    detail: "Click again to burn your NFT!",
+    life: 3000,
+  });
+}
 
 async function btn_action_burn(nft_mint_to_burn: string) {
   const connection = new Connection(useGlobalStore().rpc.url);

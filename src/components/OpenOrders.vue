@@ -156,7 +156,7 @@ async function cancel_order(order_address: string) {
 }
 const show = () => {
   toast.add({
-    severity: "warning",
+    severity: "warn",
     summary: "Not implemented",
     detail: "This function is not jet implemented!",
     life: 3000,
