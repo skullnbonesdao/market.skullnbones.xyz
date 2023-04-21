@@ -20,4 +20,7 @@ export default defineConfig({
       "@": path.join(__dirname, ""),
     },
   },
+  build: {
+    target: "es2020",
+  },
 });
