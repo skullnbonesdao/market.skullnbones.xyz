@@ -28,7 +28,7 @@ function _addDarkTheme() {
   darkThemeLinkEl.setAttribute("rel", "stylesheet");
   darkThemeLinkEl.setAttribute(
     "href",
-    "../../public/themes/themes/soho/soho-dark/theme.scss"
+    "public/themes/themes/soho/soho-dark/theme.scss"
   );
   darkThemeLinkEl.setAttribute("id", "dark-theme-style");
 
