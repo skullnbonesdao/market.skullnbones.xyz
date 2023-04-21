@@ -60,5 +60,10 @@ const items = ref([
     icon: "pi pi-fw pi-book",
     to: "/portfolio",
   },
+  {
+    label: "About",
+    icon: "pi pi-fw pi-info",
+    to: "/about",
+  },
 ]);
 </script>
