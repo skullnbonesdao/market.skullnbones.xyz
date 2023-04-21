@@ -45,8 +45,8 @@ const items = ref([
         to: "market",
       },
       {
-        label: "Orders",
-        to: "orders",
+        label: "Table",
+        to: "market_table",
       },
     ],
   },

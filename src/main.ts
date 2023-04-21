@@ -34,6 +34,7 @@ import PortfolioView from "./components/views/PortfolioView.vue";
 
 import "./styles_wallet_connect.css";
 import Explorer from "./components/views/Explorer.vue";
+import MarketTable from "./components/views/MarketTable.vue";
 
 const walletOptions = {
   wallets: [
@@ -47,6 +48,7 @@ const walletOptions = {
 const routes = [
   { path: "/", component: HomeView },
   { path: "/market", component: MarketView },
+  { path: "/market_table", component: MarketTable },
   { path: "/explorer", component: Explorer },
   { path: "/portfolio", component: PortfolioView },
 ];

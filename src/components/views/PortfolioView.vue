@@ -22,7 +22,7 @@
         </div>
         <div class="flex w-full justify-end items-center">
           <p>
-            {{ useGlobalStore().wallet.tokenInfo[0].amount.toFixed(3) }}
+            {{ useGlobalStore().wallet.tokenInfo[0]?.amount.toFixed(3) }}
           </p>
           <CurrencyIcon
             style="width: 50px"
