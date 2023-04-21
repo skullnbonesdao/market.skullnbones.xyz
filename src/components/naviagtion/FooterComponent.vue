@@ -18,11 +18,27 @@
         FULRbdyHJ7AzRCNVjA6NZoUD19EQ5a9swWdyaN4d9d7P
       </div>
     </div>
-    <div class="p-card p-2">
-      <div class="flex w-full justify-center text-center">
-        © [2022 S&B + HEIM] All Rights Reserved.
+    <div class="flex flex-row gap-2">
+      <div class="p-card flex flex-col w-full p-2">
+        <div class="flex w-full justify-center text-center">
+          © [2022 S&B + HEIM] All Rights Reserved.
+        </div>
+        <div class="flex w-full justify-center">{{ version }}</div>
       </div>
-      <div class="flex w-full justify-center">{{ version }}</div>
+
+      <Button
+        icon="pi pi-github"
+        aria-label="Filter"
+        @click="open_url('https://github.com/skullnbonesdao')"
+      >
+      </Button>
+
+      <Button
+        icon="pi pi-discord"
+        aria-label="Filter"
+        @click="open_url('https://discord.gg/eQZQaF5Qk6')"
+      >
+      </Button>
     </div>
     <div class="p-card p-2">
       <ProgressBar
@@ -43,6 +59,7 @@ import {
   Cursor,
 } from "../../static/swagger/skullnbones_api/skullnbones_api";
 import InputNumber from "primevue/inputnumber";
+import { open_url } from "../../static/url_tools";
 const version = __APP_VERSION__;
 
 const selected_option = ref();
