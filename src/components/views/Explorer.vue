@@ -320,7 +320,7 @@ async function fetch_api_data() {
         id: idx,
         pair: {
           symbol: trade.symbol,
-          asset_image_url: "/public/webp/" + trade.asset_mint + ".webp",
+          asset_image_url: "/webp/" + trade.asset_mint + ".webp",
           currency_mint: trade.currency_mint,
         },
         info: {

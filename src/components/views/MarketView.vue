@@ -57,7 +57,7 @@ import { useGlobalStore } from "../../stores/GlobalStore";
 import { PublicKey } from "@solana/web3.js";
 import { useToast } from "primevue/usetoast";
 import OrderSettter from "../elements/OrderSettter.vue";
-import OpenOrders from "../OpenOrders.vue";
+import OpenOrders from "../elements/OpenOrders.vue";
 import OrderBook from "../elements/marketplace_elements/OrderBook.vue";
 
 const show_search = ref<boolean>();
