@@ -14,6 +14,7 @@ import { get_multi_price } from "../static/swagger/birdseye_api/birdseye_api";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { FindNftsByOwnerOutput, Metaplex, Nft } from "@metaplex-foundation/js";
 import { useWallet } from "solana-wallets-vue";
+import { BirdsEyePricesResponse } from "../static/swagger/birdseye_api/birdsyste_pirces_response";
 
 export interface RPCEndpoint {
   name: string;
@@ -66,6 +67,7 @@ export const useGlobalStore = defineStore("globalStore", {
   state: () => ({
     is_dark: useLocalStorage("is_dark", false),
     rpc: useLocalStorage("rpc_local_store", endpoints_list[0]),
+    currencyPrice: {} as BirdsEyePricesResponse,
     connection: {} as Connection,
     symbol: {
       name: "FOODATLAS",
@@ -126,6 +128,14 @@ export const useGlobalStore = defineStore("globalStore", {
       this.rpc =
         endpoints_list.find((e) => e.name === rpc_name) ?? endpoints_list[0];
       this.connection = new Connection(this.rpc.url, { httpHeaders: {} });
+    },
+
+    async load_currency_prices() {
+      const mapped_currency_mints = CURRENCIES.flatMap((c) => c.mint);
+      const price_response = await get_multi_price(mapped_currency_mints);
+      if (price_response) {
+        this.currencyPrice = price_response;
+      }
     },
 
     async load_sa_api() {
