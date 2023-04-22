@@ -28,6 +28,7 @@ export const useStaratlasGmStore = defineStore({
   state: () => ({
     client: new GmClientService(),
     connection: new Connection(useGlobalStore().rpc.url),
+
     order_book_service: new GmOrderbookService(
       new Connection(useGlobalStore().rpc.url),
       new PublicKey(GM_PROGRAM_ID)
