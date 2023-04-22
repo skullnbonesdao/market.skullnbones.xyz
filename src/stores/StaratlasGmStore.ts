@@ -1,9 +1,12 @@
 import { defineStore } from "pinia";
 import {
+  getAllFleetsForUserPublicKey,
+  getScoreVarsShipInfo,
   GmClientService,
   GmOrderbookService,
   Order,
   OrderSide,
+  ScoreVarsShipInfo,
 } from "@staratlas/factory";
 import { Connection, Keypair, PublicKey, Transaction } from "@solana/web3.js";
 
@@ -13,19 +16,39 @@ export interface OrderBookOrderMap {
   owners: string[];
 }
 
-import { useGlobalStore } from "./GlobalStore";
-import { GM_PROGRAM_ID } from "../static/constants/StarAtlasConstants";
+import { _update_status, Status, useGlobalStore } from "./GlobalStore";
+import {
+  GM_PROGRAM_ID,
+  SCORE_FLEET_PROGRAM_ID,
+} from "../static/constants/StarAtlasConstants";
 import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
+import { ShipStakingInfo } from "@staratlas/factory/dist/score";
 
 type getInitializeOrderTransactionResponse = {
   transaction: Transaction;
   signers: Keypair[];
 };
 
+interface ScoreParsedShipInfo {
+  food_remaining_time: number;
+  fuel_remaining_time: number;
+  arms_remaining_time: number;
+  tools_remaining_time: number;
+}
+
+interface TableData {
+  shipStatkingInfo: ShipStakingInfo;
+  scoreVarsShipInfo: ScoreVarsShipInfo;
+  parsed: ScoreParsedShipInfo;
+}
+
 export const useStaratlasGmStore = defineStore({
   id: "staratlasGmStore",
 
   state: () => ({
+    status: {} as Status,
+    score_table_data: [] as TableData[],
+
     client: new GmClientService(),
     connection: new Connection(useGlobalStore().rpc.url),
 
@@ -243,9 +266,54 @@ export const useStaratlasGmStore = defineStore({
         new PublicKey(GM_PROGRAM_ID)
       );
     },
+
+    async update_score_data() {
+      this.status = _update_status(true, "Loading score data", 0, 3);
+      await this._fetch_and_map_score_data();
+      this.status = _update_status(false, "Updated score data", 3, 3);
+    },
+
+    async _fetch_and_map_score_data() {
+      this.status = _update_status(true, "Get User Fleet", 1, 3);
+      const ship_staking_infos = await getAllFleetsForUserPublicKey(
+        new Connection(useGlobalStore().rpc.url),
+        new PublicKey(useGlobalStore().wallet.address ?? ""),
+        new PublicKey(SCORE_FLEET_PROGRAM_ID)
+      );
+
+      this.status = _update_status(true, "Map User Fleet", 2, 3);
+
+      this.score_table_data = [];
+      for (const ship of ship_staking_infos) {
+        this.score_table_data.push({
+          shipStatkingInfo: ship,
+          scoreVarsShipInfo: await getScoreVarsShipInfo(
+            new Connection(useGlobalStore().rpc.url),
+            new PublicKey(SCORE_FLEET_PROGRAM_ID),
+            new PublicKey(ship.shipMint.toString())
+          ),
+          parsed: {
+            food_remaining_time:
+              ship.foodCurrentCapacity.toNumber() - get_time_last_action(ship),
+            arms_remaining_time:
+              ship.armsCurrentCapacity.toNumber() - get_time_last_action(ship),
+            fuel_remaining_time:
+              ship.fuelCurrentCapacity.toNumber() - get_time_last_action(ship),
+            tools_remaining_time:
+              ship.healthCurrentCapacity.toNumber() -
+              get_time_last_action(ship),
+          },
+        });
+      }
+    },
   },
 });
 
 function sort_prices(a: any, b: any): number {
   return a.uiPrice > b.uiPrice ? -1 : 1;
+}
+
+function get_time_last_action(ship_staking_info: ShipStakingInfo): number {
+  let capacity_max = ship_staking_info.currentCapacityTimestamp.toNumber();
+  return Date.now() / 1000 - capacity_max;
 }

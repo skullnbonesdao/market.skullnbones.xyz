@@ -24,11 +24,11 @@ import SwitchTheme from "@/src/components/elements/buttons/SwitchTheme.vue";
 import { useGlobalStore } from "@/src/stores/GlobalStore";
 import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
 const globalStore = useGlobalStore();
+const staratlasGmStore = useStaratlasGmStore();
 
 onMounted(async () => {
   await globalStore.init();
-  await globalStore.load_sa_api();
-  await globalStore.load_currency_prices();
+  //await staratlasGmStore.init();
 });
 
 const items = ref([

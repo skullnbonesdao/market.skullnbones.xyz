@@ -7,8 +7,17 @@
           type="text"
           placeholder="Enter a wallet address"
           v-model="useGlobalStore().wallet.address"
-        /><Button icon="pi pi-search" @click="action_startSearch" />
+        /><Button
+          icon="pi pi-search"
+          @click="
+            useGlobalStore().update_wallet() &&
+              useStaratlasGmStore().update_score_data()
+          "
+        />
       </div>
+    </div>
+    <div>
+      <StatusStoreTemplate />
     </div>
     <div v-if="!has_valid_pubkey" class="p-card">
       <NoData class="flex justify-center" />
@@ -89,6 +98,7 @@
 
 <script setup lang="ts">
 import InputText from "primevue/inputtext";
+import ProgressBar from "primevue/progressbar";
 import Panel from "primevue/panel";
 import { CURRENCIES, E_CURRENCIES } from "../../static/currencies";
 import { useGlobalStore } from "../../stores/GlobalStore";
@@ -102,6 +112,8 @@ import { computed, watch } from "vue";
 import { PublicKey } from "@solana/web3.js";
 import WalletNftsTable from "../elements/tables/WalletNftsTable.vue";
 import ScoreElement from "../elements/score/ScoreElement.vue";
+import StatusStoreTemplate from "../elements/templates/StatusStoreTemplate.vue";
+import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
 
 const wallet = useWallet();
 
@@ -128,11 +140,11 @@ watch(
   }
 );
 
-async function action_startSearch() {
-  useGlobalStore().load_wallet_trades();
-  useGlobalStore().load_wallet_tokens();
-  useGlobalStore().load_wallet_nfts();
-}
+// async function action_startSearch() {
+//   useGlobalStore().load_wallet_trades();
+//   useGlobalStore().load_wallet_tokens();
+//   useGlobalStore().load_wallet_nfts();
+// }
 </script>
 
 <style scoped></style>
