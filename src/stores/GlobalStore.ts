@@ -161,7 +161,9 @@ export const useGlobalStore = defineStore("globalStore", {
       await this._load_wallet_trades();
 
       this.status = _update_status(true, "Loading wallet NFTs...", 2, 3);
-      await this._load_wallet_nfts();
+      await this._load_wallet_nfts().catch((err) =>
+        console.log("error fetching nfts")
+      );
 
       this.status = _update_status(false, "Updated Wallet", 3, 3);
     },
@@ -348,7 +350,7 @@ export function _update_status(
   step_total?: number
 ): Status {
   return {
-    is_initalized: true,
+    is_initalized: false,
     is_loading: is_loading,
     message: message,
     step: step,
