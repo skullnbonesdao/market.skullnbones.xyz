@@ -14,9 +14,9 @@
       />
     </div>
 
-    <div class="p-card p-2">
-      <div class="flex w-full">
-        <ProgressSpinner v-if="is_loading" class="flex justify-center" />
+    <div class="">
+      <div v-if="is_loading" class="flex w-full p-card p-2">
+        <ProgressSpinner class="flex justify-center" />
       </div>
 
       <NoData
