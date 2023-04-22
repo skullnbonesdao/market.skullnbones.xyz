@@ -11,8 +11,7 @@
           parseInt(
             (
               (useGlobalStore().status.step /
-                useGlobalStore().status.step_total) *
-              100
+                useGlobalStore().status.step_total ?? 0) * 100
             ).toFixed(0)
           )
         "
@@ -30,8 +29,8 @@
         :value="
           parseInt(
             (
-              (useStaratlasGmStore().status.step /
-                useStaratlasGmStore().status.step_total) *
+              ((useStaratlasGmStore().status.step ?? 0) /
+                (useStaratlasGmStore().status.step_total ?? 0)) *
               100
             ).toFixed(0)
           )

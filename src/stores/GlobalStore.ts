@@ -17,6 +17,7 @@ import { useWallet } from "solana-wallets-vue";
 import { BirdsEyePricesResponse } from "../static/swagger/birdseye_api/birdsyste_pirces_response";
 
 export interface Status {
+  is_initalized: boolean;
   is_loading: boolean;
   message: string;
   step?: number;
@@ -124,6 +125,8 @@ export const useGlobalStore = defineStore("globalStore", {
     },
     async init() {
       this.connection = new Connection(this.rpc.url, { httpHeaders: {} });
+      await this._currency_update();
+      await this.sa_api_update();
     },
 
     update_symbol(symbol: string, mint_asset: string, mint_currency: string) {
@@ -138,7 +141,7 @@ export const useGlobalStore = defineStore("globalStore", {
       this.connection = new Connection(this.rpc.url, { httpHeaders: {} });
     },
 
-    async currency_update() {
+    async _currency_update() {
       this.status = _update_status(true, "Loading Currency Prices", 0, 1);
       await this._load_currency_prices();
       this.status = _update_status(false, "Updated Currency Prices", 1, 1);
@@ -345,6 +348,7 @@ export function _update_status(
   step_total?: number
 ): Status {
   return {
+    is_initalized: true,
     is_loading: is_loading,
     message: message,
     step: step,

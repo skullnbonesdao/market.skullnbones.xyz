@@ -2,6 +2,16 @@
 import HeaderNavigation from "./components/naviagtion/HeaderNavigation.vue";
 import FooterComponent from "./components/naviagtion/FooterComponent.vue";
 import { useGlobalStore } from "./stores/GlobalStore";
+import { useStaratlasGmStore } from "./stores/StaratlasGmStore";
+import { onMounted } from "vue";
+
+const globalStore = useGlobalStore();
+const staratlasGmStore = useStaratlasGmStore();
+useGlobalStore()
+  .init()
+  .then(() => {});
+
+useStaratlasGmStore().init().then();
 </script>
 
 <template>

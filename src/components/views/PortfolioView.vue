@@ -10,8 +10,10 @@
         /><Button
           icon="pi pi-search"
           @click="
-            useGlobalStore().update_wallet() &&
-              useStaratlasGmStore().update_score_data()
+            useGlobalStore()
+              .update_wallet()
+              .then(useStaratlasGmStore().update_score_data)
+              .then(() => {})
           "
         />
       </div>

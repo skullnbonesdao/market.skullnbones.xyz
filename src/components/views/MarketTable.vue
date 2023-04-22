@@ -1,13 +1,11 @@
 <template>
   <div class="flex flex-col space-y-2">
     <div class="flex flex-col w-full justify-center">
-      <div class="flex w-full justify-center">
-        <ProgressSpinner
-          v-if="!useGlobalStore().currencyPrice.success"
-          class="p-card"
-        />
-      </div>
-      <div class="flex flex-row w-full justify-around">
+      <StatusStoreTemplate class="p-card p-2" />
+      <div
+        class="flex flex-row w-full justify-around"
+        v-if="useGlobalStore().currencyPrice.success"
+      >
         <TokenPriceElement
           class="p-card px-5 py-2"
           image-name="BTC/USDC"
@@ -82,14 +80,17 @@
     </div>
 
     <div class="flex flex-col">
-      <div v-if="is_loading" class="flex w-full justify-center">
+      <div
+        v-if="useStaratlasGmStore().status.is_loading"
+        class="flex w-full justify-center"
+      >
         <ProgressSpinner class="p-card" />
       </div>
 
       <DataTable
         v-else
         :globalFilterFields="['api_data.name']"
-        :value="table_data"
+        :value="useStaratlasGmStore().market_table_data"
         tableStyle="min-width: 50rem"
         :filters="table_filters"
         sortField="api_data.tradeSettings.vwap"
@@ -306,7 +307,7 @@ import { ItemType, StarAtlasAPIItem } from "../../static/StarAtlasAPIItem";
 import { useGlobalStore } from "../../stores/GlobalStore";
 import { CURRENCIES, E_CURRENCIES, I_CURRENCY } from "../../static/currencies";
 import { GmClientService, Order, OrderSide } from "@staratlas/factory";
-import { Connection } from "@solana/web3.js";
+
 import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
 import { FilterMatchMode } from "primevue/api";
 import InputText from "primevue/inputtext";
@@ -317,37 +318,22 @@ import VwapTemplate from "../elements/templates/VwapTemplate.vue";
 import ExplorerIcon from "../elements/icons_images/ExplorerIcon.vue";
 import { E_EXPLORER, EXPLORER } from "../../static/explorer";
 import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
+import StatusStoreTemplate from "../elements/templates/StatusStoreTemplate.vue";
 
 const is_loading = ref(true);
-
-interface MarketValues {
-  itemType: E_CURRENCIES;
-  sell_min: number;
-  sell_max: number;
-  buy_min: number;
-  buy_max: number;
-}
-
-interface TableType {
-  api_data: StarAtlasAPIItem;
-  orders_atlas: MarketValues;
-  orders_usdc: MarketValues;
-}
 
 interface OptionType {
   value: string;
 }
-const table_data = ref<TableType[]>([]);
 const table_filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   "api_data.name": { value: null, matchMode: FilterMatchMode.IN },
 });
 
-const option_selected = ref();
+const option_selected = ref({
+  value: "Ship",
+});
 const options_values = ref<OptionType[]>([]);
-
-const orders_gm = ref<Order[]>([]);
-
 for (let itemTypeKey in ItemType) {
   options_values.value.push({
     value: itemTypeKey,
@@ -356,142 +342,22 @@ for (let itemTypeKey in ItemType) {
 
 watch(
   () => option_selected.value,
-  () => {
-    filter_api_data_by_itemType();
+  async () => {
+    await useStaratlasGmStore().update_filtered_market_table_data(
+      option_selected.value.value.toString()
+    );
   }
 );
-
+watch(
+  () => useStaratlasGmStore().status.is_initalized,
+  async () => {
+    if (useStaratlasGmStore().status.is_initalized) console.log("initalized");
+    await useStaratlasGmStore().update_filtered_market_table_data("Ship");
+  }
+);
 onMounted(async () => {
-  await useStaratlasGmStore().order_book_service.initialize();
-
-  option_selected.value = {
-    value: "Ship",
-  };
-
-  //await filter_api_data_by_itemType();
+  if (useStaratlasGmStore().status.is_initalized) {
+    await useStaratlasGmStore().update_filtered_market_table_data("Ship");
+  }
 });
-
-async function filter_api_data_by_itemType() {
-  let connection = new Connection(useGlobalStore().rpc.url);
-  let gm_client = new GmClientService();
-
-  if (!option_selected.value) return;
-  table_data.value = [];
-  for (const filtered of useGlobalStore().sa_api_data.filter(
-    (api) =>
-      api.attributes.itemType.toLowerCase() ===
-      option_selected.value.value?.toLowerCase()
-  )) {
-    let orders = Array.from(
-      await useStaratlasGmStore()
-        .order_book_service.getAllOrdersByItemMint(filtered.mint)
-        .values()
-    );
-
-    console.log(orders);
-
-    let orders_usdc: MarketValues = {
-      itemType: E_CURRENCIES.USDC,
-      buy_max: get_order(
-        orders,
-        CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC) ?? CURRENCIES[0],
-        filtered.mint.toString(),
-        OrderSide.Buy,
-        1
-      ),
-      buy_min: get_order(
-        orders,
-        CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC) ?? CURRENCIES[0],
-        filtered.mint.toString(),
-        OrderSide.Buy,
-        -1
-      ),
-      sell_max: get_order(
-        orders,
-        CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC) ?? CURRENCIES[0],
-        filtered.mint.toString(),
-        OrderSide.Sell,
-        1
-      ),
-      sell_min: get_order(
-        orders,
-        CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC) ?? CURRENCIES[0],
-        filtered.mint.toString(),
-        OrderSide.Sell,
-        -1
-      ),
-    };
-
-    let orders_atlas: MarketValues = {
-      itemType: E_CURRENCIES.ATLAS,
-      buy_max: get_order(
-        orders,
-        CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ?? CURRENCIES[0],
-        filtered.mint.toString(),
-        OrderSide.Buy,
-        1
-      ),
-      buy_min: get_order(
-        orders,
-        CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ?? CURRENCIES[0],
-        filtered.mint.toString(),
-        OrderSide.Buy,
-        -1
-      ),
-      sell_max: get_order(
-        orders,
-        CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ?? CURRENCIES[0],
-        filtered.mint.toString(),
-        OrderSide.Sell,
-        1
-      ),
-      sell_min: get_order(
-        orders,
-        CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ?? CURRENCIES[0],
-        filtered.mint.toString(),
-        OrderSide.Sell,
-        -1
-      ),
-    };
-
-    table_data.value.push({
-      api_data: filtered,
-      orders_usdc: orders_usdc,
-      orders_atlas: orders_atlas,
-    });
-  }
-
-  is_loading.value = false;
-}
-
-function get_order(
-  orders: Order[],
-  currency: I_CURRENCY,
-  mint: string,
-  side: OrderSide,
-  direction: number
-): number {
-  let orders_filtered = orders
-    ?.filter((o) => o.orderMint.toString() === mint)
-    ?.filter((o) => o.currencyMint?.toString() === currency.mint)
-    ?.filter((o) => o.orderType === side);
-
-  let order;
-
-  if (orders_filtered.length) {
-    if (direction === -1) {
-      order = orders_filtered?.reduce((a, b) =>
-        a.uiPrice < b.uiPrice ? a : b
-      )?.uiPrice;
-    } else {
-      order = orders_filtered?.reduce((a, b) =>
-        a?.uiPrice > b.uiPrice ? a : b
-      )?.uiPrice;
-    }
-  }
-
-  if (order) {
-    return order;
-  } else return 0.0;
-}
 </script>

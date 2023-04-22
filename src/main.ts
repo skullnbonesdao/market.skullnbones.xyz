@@ -36,6 +36,8 @@ import "./styles_wallet_connect.css";
 import Explorer from "./components/views/Explorer.vue";
 import MarketTable from "./components/views/MarketTable.vue";
 import AboutView from "./components/views/AboutView.vue";
+import { useStaratlasGmStore } from "./stores/StaratlasGmStore";
+import { useGlobalStore } from "./stores/GlobalStore";
 
 const walletOptions = {
   wallets: [
