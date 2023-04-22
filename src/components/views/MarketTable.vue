@@ -130,6 +130,8 @@
             />
             <Column header="BUY" :colspan="4" class="bg-green-400" />
             <Column header="SELL" :colspan="4" class="bg-red-400" />
+
+            <Column header="" :colspan="1" :rowspan="3" class="bg-green-400" />
           </Row>
           <Row>
             <Column
@@ -273,6 +275,20 @@
             </div>
           </template>
         </Column>
+        <Column>
+          <template #body="slotProps">
+            <div class="flex flex-row justify-center items-center space-x-2">
+              <ExplorerIcon
+                :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)"
+                :address="slotProps.data.api_data.mint.toString()"
+              />
+              <ExplorerIcon
+                :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)"
+                :address="slotProps.data.api_data.mint.toString()"
+              />
+            </div>
+          </template>
+        </Column>
       </DataTable>
     </div>
   </div>
@@ -289,7 +305,6 @@ import Avatar from "primevue/avatar";
 import { onMounted, ref, watch } from "vue";
 import { ItemType, StarAtlasAPIItem } from "../../static/StarAtlasAPIItem";
 import { useGlobalStore } from "../../stores/GlobalStore";
-import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
 import { CURRENCIES, E_CURRENCIES, I_CURRENCY } from "../../static/currencies";
 import { GmClientService, Order, OrderSide } from "@staratlas/factory";
 import { Connection } from "@solana/web3.js";
@@ -300,6 +315,9 @@ import TokenPriceElement from "../elements/TokenPriceElement.vue";
 import PercentageVwapTemplate from "../elements/templates/PercentageTemplate.vue";
 import PriceTemplate from "../elements/templates/PriceTemplate.vue";
 import VwapTemplate from "../elements/templates/VwapTemplate.vue";
+import ExplorerIcon from "../elements/icons_images/ExplorerIcon.vue";
+import { E_EXPLORER, EXPLORER } from "../../static/explorer";
+import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
 
 const is_loading = ref(true);
 
