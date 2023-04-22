@@ -1,6 +1,10 @@
 <template>
   <div class="flex flex-col">
-    <DataTable :value="table_data" tableStyle="min-width: 50rem">
+    <DataTable
+      v-if="table_data.length"
+      :value="table_data"
+      tableStyle="min-width: 50rem"
+    >
       <Column field="shipMint" header="Name">
         <template #body="slotPros">
           <p>
@@ -51,6 +55,7 @@
         </template>
       </Column>
     </DataTable>
+    <NoData v-else class="flex justify-center" v-if="table_data.length" />
   </div>
 </template>
 
@@ -69,6 +74,7 @@ import {
 import { useWallet } from "solana-wallets-vue";
 import { SCORE_FLEET_PROGRAM_ID } from "../../../static/constants/StarAtlasConstants";
 import { ShipStakingInfo } from "@staratlas/factory/dist/score";
+import NoData from "../NoData.vue";
 
 interface ScoreParsedShipInfo {
   food_remaining_time: number;
@@ -83,13 +89,13 @@ interface TableData {
   parsed: ScoreParsedShipInfo;
 }
 
-const table_data = ref<TableData[]>();
+const table_data = ref<TableData[]>([]);
 const temp = ref();
 
 onMounted(async () => {
   const ship_staking_infos = await getAllFleetsForUserPublicKey(
     new Connection(useGlobalStore().rpc.url),
-    new PublicKey(useWallet().publicKey.value ?? ""),
+    new PublicKey(useGlobalStore().wallet.address ?? ""),
     new PublicKey(SCORE_FLEET_PROGRAM_ID)
   );
 

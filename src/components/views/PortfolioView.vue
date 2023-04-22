@@ -5,6 +5,7 @@
         <InputText
           class="w-full"
           type="text"
+          placeholder="Enter a wallet address"
           v-model="useGlobalStore().wallet.address"
         /><Button icon="pi pi-search" @click="action_startSearch" />
       </div>
@@ -66,10 +67,6 @@
       <div class="p-card">
         <Panel header="Score" toggleable>
           <div class="flex justify-around">
-            <!--            <NoData-->
-            <!--              class="flex justify-center"-->
-            <!--              v-if="!useGlobalStore().wallet.nfts.data?.length"-->
-            <!--            />-->
             <ScoreElement />
           </div>
         </Panel>
@@ -86,27 +83,6 @@
           </div>
         </Panel>
       </div>
-
-      <!--    <div class="grid grid-cols-3 gap-5">-->
-      <!--      <TokenPriceElement-->
-      <!--        :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)"-->
-      <!--        :price="0.0"-->
-      <!--        :change24h="24"-->
-      <!--        image-name="some"-->
-      <!--      />-->
-      <!--      <TokenPriceElement-->
-      <!--        :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)"-->
-      <!--        :price="0.0"-->
-      <!--        :change24h="24"-->
-      <!--        image-name="some"-->
-      <!--      />-->
-      <!--      <TokenPriceElement-->
-      <!--        :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)"-->
-      <!--        :price="0.0"-->
-      <!--        :change24h="24"-->
-      <!--        image-name="some"-->
-      <!--      />-->
-      <!--    </div>-->
     </div>
   </div>
 </template>
@@ -138,7 +114,9 @@ const has_valid_pubkey = computed(() => {
 });
 
 if (wallet.publicKey) {
-  useGlobalStore().wallet.address = wallet.publicKey.value?.toString() ?? "";
+  useGlobalStore().wallet.address =
+    wallet.publicKey.value?.toString() ??
+    "NPCxfjPxh6pvRJbGbWZjxfkqWfGBvKkqPbtiJar3mom";
 }
 
 watch(
@@ -146,7 +124,7 @@ watch(
   () => {
     useGlobalStore().wallet.address =
       useWallet().publicKey.value?.toString() ?? "";
-    action_startSearch();
+    //action_startSearch();
   }
 );
 

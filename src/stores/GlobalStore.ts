@@ -75,7 +75,7 @@ export const useGlobalStore = defineStore("globalStore", {
       mint_pair: new PublicKey("ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx"),
     },
     wallet: {
-      address: "none",
+      address: "",
       is_web_wallet_connected: false,
       tokenRaw: [] as Array<{
         pubkey: PublicKey;

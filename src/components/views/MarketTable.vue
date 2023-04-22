@@ -95,7 +95,6 @@
         sortField="api_data.tradeSettings.vwap"
         :sortOrder="1"
         scrollable
-        scrollHeight="800px"
       >
         <template #header>
           <div class="flex">
