@@ -1,6 +1,12 @@
 <template>
   <div class="flex flex-col space-y-2">
-    <div class="flex w-full justify-center">
+    <div class="flex flex-col w-full justify-center">
+      <div class="flex w-full justify-center">
+        <ProgressSpinner
+          v-if="!useGlobalStore().currencyPrice.success"
+          class="p-card"
+        />
+      </div>
       <div class="flex flex-row w-full justify-around">
         <TokenPriceElement
           class="p-card px-5 py-2"
@@ -62,20 +68,23 @@
           "
           :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
         />
-      </div>
-      <div class="p-card p-2 flex items-center">
-        <Dropdown
-          v-model="option_selected"
-          :options="options_values"
-          optionLabel="value"
-          placeholder="Select a item type"
-          class="md:w-14rem"
-        />
+
+        <div class="p-card p-2 flex items-center">
+          <Dropdown
+            v-model="option_selected"
+            :options="options_values"
+            optionLabel="value"
+            placeholder="Select a item type"
+            class="md:w-14rem"
+          />
+        </div>
       </div>
     </div>
 
-    <div class="p-card p-2 flex flex-col">
-      <ProgressSpinner v-if="is_loading" />
+    <div class="flex flex-col">
+      <div v-if="is_loading" class="flex w-full justify-center">
+        <ProgressSpinner class="p-card" />
+      </div>
 
       <DataTable
         v-else
@@ -85,6 +94,8 @@
         :filters="table_filters"
         sortField="api_data.tradeSettings.vwap"
         :sortOrder="1"
+        scrollable
+        scrollHeight="1000px"
       >
         <template #header>
           <div class="flex">

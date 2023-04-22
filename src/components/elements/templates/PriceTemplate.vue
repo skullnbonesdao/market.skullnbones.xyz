@@ -16,19 +16,16 @@
       <p
         v-if="props.currency?.type === E_CURRENCIES.USDC"
         class="flex justify-end"
-        :class="props.currency?.type === E_CURRENCIES.USDC ? 'underline' : ''"
+        :class="props.currency.type === E_CURRENCIES.USDC ? 'underline' : ''"
       >
         {{ format_price_reasonable(props.price) }}
       </p>
-      <p
-        v-else
-        class="flex justify-end"
-        :class="props.currency?.type === E_CURRENCIES.USDC ? 'underline' : ''"
-      >
+      <p v-else class="flex justify-end">
         {{
           format_price_reasonable(
             props.price *
-              useGlobalStore().currencyPrice.data[props.currency.mint].value
+              useGlobalStore().currencyPrice.data[props.currency?.mint ?? ""]
+                .value
           )
         }}
       </p>
@@ -62,7 +59,7 @@ const props = defineProps({
   },
   currency: {
     type: Object as PropType<I_CURRENCY>,
-    default: undefined,
+    default: CURRENCIES[0],
   },
 });
 
