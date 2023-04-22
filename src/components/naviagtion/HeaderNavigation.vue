@@ -28,6 +28,7 @@ const globalStore = useGlobalStore();
 onMounted(async () => {
   await globalStore.init();
   await globalStore.load_sa_api();
+  await globalStore.load_currency_prices();
 });
 
 const items = ref([

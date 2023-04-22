@@ -39,7 +39,7 @@ export const CURRENCIES: Array<I_CURRENCY> = [
   {
     type: E_CURRENCIES.BTC,
     name: "BTC",
-    mint: "9n4nbM75f5Ui33ZbPYXn59EwSgE8CGsHtAeTH5YFeJ9E",
+    mint: "3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh",
     char: "b",
     image_path: "tokens/BTC.webp",
   },

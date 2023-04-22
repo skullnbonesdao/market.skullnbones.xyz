@@ -10,7 +10,7 @@
       </div>
       <div class="flex items-center">
         <div class="text-right">
-          {{ props.price?.toString().substring(0, 5) }}
+          {{ props.price }}
         </div>
         <div class="i-carbon-currency-dollar"></div>
       </div>
@@ -42,7 +42,7 @@ import type { I_CURRENCY } from "../../static/currencies";
 
 const props = defineProps({
   imageName: String,
-  price: Number,
+  price: String,
   change24h: Number,
   currency: Object as PropType<I_CURRENCY>,
 });

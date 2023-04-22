@@ -1,26 +1,101 @@
 <template>
   <div class="flex flex-col space-y-2">
-    <div class="flex w-full justify-center">
-      <SelectButton
-        v-model="option_selected"
-        :options="options_values"
-        optionLabel="value"
-        dataKey="value"
-        aria-labelledby="custom"
-      >
-      </SelectButton>
+    <div class="flex flex-col w-full justify-center">
+      <div class="flex w-full justify-center">
+        <ProgressSpinner
+          v-if="!useGlobalStore().currencyPrice.success"
+          class="p-card"
+        />
+      </div>
+      <div class="flex flex-row w-full justify-around">
+        <TokenPriceElement
+          class="p-card px-5 py-2"
+          image-name="BTC/USDC"
+          :price="
+            useGlobalStore().currencyPrice.data[
+              CURRENCIES.find((c) => c.type === E_CURRENCIES.BTC)?.mint ?? ''
+            ].value.toFixed(2)
+          "
+          :change24h="
+            useGlobalStore().currencyPrice.data[
+              CURRENCIES.find((c) => c.type === E_CURRENCIES.BTC)?.mint ?? ''
+            ].priceChange24h ?? 0.0
+          "
+          :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.BTC)"
+        />
+        <TokenPriceElement
+          class="p-card px-5 py-2"
+          image-name="SOL/USDC"
+          :price="
+            useGlobalStore().currencyPrice.data[
+              CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)?.mint ?? ''
+            ].value.toFixed(2)
+          "
+          :change24h="
+            useGlobalStore().currencyPrice.data[
+              CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)?.mint ?? ''
+            ].priceChange24h ?? 0.0
+          "
+          :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)"
+        />
+        <TokenPriceElement
+          class="p-card px-5 py-2"
+          image-name="POLIS/USDC"
+          :price="
+            useGlobalStore().currencyPrice.data[
+              CURRENCIES.find((c) => c.type === E_CURRENCIES.POLIS)?.mint ?? ''
+            ].value.toFixed(2)
+          "
+          :change24h="
+            useGlobalStore().currencyPrice.data[
+              CURRENCIES.find((c) => c.type === E_CURRENCIES.POLIS)?.mint ?? ''
+            ].priceChange24h ?? 0.0
+          "
+          :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.POLIS)"
+        />
+        <TokenPriceElement
+          class="p-card px-5 py-2"
+          image-name="ATLAS/USDC"
+          :price="
+            useGlobalStore().currencyPrice.data[
+              CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ?? ''
+            ].value.toFixed(4)
+          "
+          :change24h="
+            useGlobalStore().currencyPrice.data[
+              CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ?? ''
+            ].priceChange24h ?? 0.0
+          "
+          :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
+        />
+
+        <div class="p-card p-2 flex items-center">
+          <Dropdown
+            v-model="option_selected"
+            :options="options_values"
+            optionLabel="value"
+            placeholder="Select a item type"
+            class="md:w-14rem"
+          />
+        </div>
+      </div>
     </div>
 
-    <div class="p-card flex flex-col">
-      <ProgressSpinner v-if="is_loading" />
+    <div class="flex flex-col">
+      <div v-if="is_loading" class="flex w-full justify-center">
+        <ProgressSpinner class="p-card" />
+      </div>
 
       <DataTable
         v-else
-        v-model:filters="table_filters"
         :globalFilterFields="['api_data.name']"
         :value="table_data"
         tableStyle="min-width: 50rem"
         :filters="table_filters"
+        sortField="api_data.tradeSettings.vwap"
+        :sortOrder="1"
+        scrollable
+        scrollHeight="1000px"
       >
         <template #header>
           <div class="flex">
@@ -53,8 +128,8 @@
               sortable
               field="api_data.tradeSettings.vwap"
             />
-            <Column header="BUY" :colspan="4" />
-            <Column header="SELL" :colspan="4" />
+            <Column header="BUY" :colspan="4" class="bg-green-400" />
+            <Column header="SELL" :colspan="4" class="bg-red-400" />
           </Row>
           <Row>
             <Column
@@ -103,120 +178,98 @@
         <Column field="api_data.name"></Column>
         <Column>
           <template #body="slotProps">
-            <div class="flex flex-row space-x-1">
-              <CurrencyIcon
-                style="width: 24px"
-                :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
-              />
-              <p>
-                {{ slotProps.data.api_data.tradeSettings?.vwap?.toFixed(2) }}
-              </p>
-            </div>
+            <VwapTemplate
+              :vwap="slotProps.data.api_data.tradeSettings?.vwap?.toFixed(2)"
+            />
           </template>
         </Column>
 
         <!-- BUY -->
-        <Column>
+        <Column class="bg-green-400">
           <template #body="slotProps">
-            <div class="flex flex-row space-x-1">
-              <CurrencyIcon
-                style="width: 24px"
-                :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
-              />
-              <p>
-                {{ slotProps.data.orders_usdc.buy_max.toFixed(2) }}
-              </p>
-            </div>
+            <PriceTemplate
+              :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
+              :price="slotProps.data.orders_usdc.buy_max"
+            />
           </template>
         </Column>
-        <Column>
+        <Column class="bg-green-400">
           <template #body="slotProps">
             <div class="flex flex-row space-x-1">
-              <p>
-                {{
-                  (
-                    (slotProps.data.orders_usdc.buy_max /
-                      (slotProps.data.api_data.tradeSettings?.vwap ?? 0)) *
-                    100
-                  ).toFixed()
-                }}%
-              </p>
+              <PercentageVwapTemplate
+                :vwap="slotProps.data.api_data.tradeSettings?.vwap ?? 0"
+                :price="slotProps.data.orders_usdc.buy_max"
+              />
             </div>
           </template>
         </Column>
 
-        <Column>
+        <Column class="bg-green-400">
           <template #body="slotProps">
-            <div class="flex flex-row space-x-1">
-              <CurrencyIcon
-                style="width: 24px"
-                :currency="
-                  CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
-                "
-              />
-              <p>
-                {{ slotProps.data.orders_atlas.buy_max.toFixed(2) }}
-              </p>
-            </div>
+            <PriceTemplate
+              :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
+              :price="slotProps.data.orders_atlas.buy_max"
+            />
           </template>
         </Column>
-        <Column>
+        <Column class="bg-green-400">
           <template #body="slotProps">
             <div class="flex flex-row space-x-1">
-              <p>0.0%</p>
+              <PercentageVwapTemplate
+                :vwap="slotProps.data.api_data.tradeSettings?.vwap ?? 0"
+                :price="
+                  slotProps.data.orders_atlas.buy_max *
+                  useGlobalStore().currencyPrice.data[
+                    CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
+                      ?.mint ?? ''
+                  ].value
+                "
+              />
             </div>
           </template>
         </Column>
 
         <!-- SELL -->
-        <Column>
+        <Column class="bg-red-400">
           <template #body="slotProps">
-            <div class="flex flex-row space-x-1">
-              <CurrencyIcon
-                style="width: 24px"
-                :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
-              />
-              <p>
-                {{ slotProps.data.orders_usdc.sell_min.toFixed(2) }}
-              </p>
-            </div>
+            <PriceTemplate
+              :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
+              :price="slotProps.data.orders_usdc.sell_min"
+            />
           </template>
         </Column>
-        <Column>
+        <Column class="bg-red-400">
           <template #body="slotProps">
             <div class="flex flex-row space-x-1">
-              <p>
-                {{
-                  (
-                    (slotProps.data.orders_usdc.sell_min /
-                      (slotProps.data.api_data.tradeSettings?.vwap ?? 0)) *
-                    100
-                  ).toFixed()
-                }}%
-              </p>
+              <PercentageVwapTemplate
+                :vwap="slotProps.data.api_data.tradeSettings?.vwap ?? 0"
+                :price="slotProps.data.orders_usdc.sell_min"
+              />
             </div>
           </template>
         </Column>
 
-        <Column>
+        <Column class="bg-red-400">
           <template #body="slotProps">
-            <div class="flex flex-row space-x-1">
-              <CurrencyIcon
-                style="width: 24px"
-                :currency="
-                  CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
-                "
-              />
-              <p>
-                {{ slotProps.data.orders_atlas.sell_min.toFixed(2) }}
-              </p>
-            </div>
+            <PriceTemplate
+              :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
+              :price="slotProps.data.orders_atlas.sell_min"
+            />
           </template>
         </Column>
-        <Column>
+        <Column class="bg-red-400">
           <template #body="slotProps">
             <div class="flex flex-row space-x-1">
-              <p>0.0%</p>
+              <PercentageVwapTemplate
+                :vwap="slotProps.data.api_data.tradeSettings?.vwap ?? 0"
+                :price="
+                  slotProps.data.orders_atlas.sell_min *
+                  useGlobalStore().currencyPrice.data[
+                    CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
+                      ?.mint ?? ''
+                  ].value
+                "
+              />
             </div>
           </template>
         </Column>
@@ -226,8 +279,8 @@
 </template>
 
 <script setup lang="ts">
+import Dropdown from "primevue/dropdown";
 import ProgressSpinner from "primevue/progressspinner";
-import SelectButton from "primevue/selectbutton";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import ColumnGroup from "primevue/columngroup";
@@ -243,6 +296,10 @@ import { Connection } from "@solana/web3.js";
 import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
 import { FilterMatchMode } from "primevue/api";
 import InputText from "primevue/inputtext";
+import TokenPriceElement from "../elements/TokenPriceElement.vue";
+import PercentageVwapTemplate from "../elements/templates/PercentageTemplate.vue";
+import PriceTemplate from "../elements/templates/PriceTemplate.vue";
+import VwapTemplate from "../elements/templates/VwapTemplate.vue";
 
 const is_loading = ref(true);
 

@@ -36,12 +36,11 @@
           v-if="!useGlobalStore().wallet.tokenInfo.length"
           class="flex justify-center"
         />
-
         <OverviewChilds v-else />
       </div>
 
       <div class="p-card">
-        <Panel header="Tokens" toggleable>
+        <Panel header="Tokens" toggleable collapsed>
           <div class="flex justify-around">
             <NoData
               class="flex justify-center"
@@ -53,13 +52,25 @@
       </div>
 
       <div class="p-card">
-        <Panel header="NFTs" toggleable>
+        <Panel header="NFTs" toggleable collapsed>
           <div class="flex justify-around">
             <NoData
               class="flex justify-center"
               v-if="!useGlobalStore().wallet.nfts.data?.length"
             />
             <WalletNftsTable v-else />
+          </div>
+        </Panel>
+      </div>
+
+      <div class="p-card">
+        <Panel header="Score" toggleable>
+          <div class="flex justify-around">
+            <!--            <NoData-->
+            <!--              class="flex justify-center"-->
+            <!--              v-if="!useGlobalStore().wallet.nfts.data?.length"-->
+            <!--            />-->
+            <ScoreElement />
           </div>
         </Panel>
       </div>
@@ -114,6 +125,7 @@ import OverviewChilds from "../elements/portfolio_elements/OverviewChilds.vue";
 import { computed, watch } from "vue";
 import { PublicKey } from "@solana/web3.js";
 import WalletNftsTable from "../elements/tables/WalletNftsTable.vue";
+import ScoreElement from "../elements/score/ScoreElement.vue";
 
 const wallet = useWallet();
 
