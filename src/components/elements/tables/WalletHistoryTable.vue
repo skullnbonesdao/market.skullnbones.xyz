@@ -23,7 +23,6 @@
             v-if="slotProps.node.data.currency_mint"
             class="flex float-right gap-2 items-center"
           >
-            <p>{{ slotProps.node.data.price }}</p>
             <CurrencyIcon
               style="height: 16px"
               :currency="
@@ -32,6 +31,7 @@
                 )
               "
             />
+            <p>{{ slotProps.node.data.price }}</p>
           </div>
         </template>
       </Column>
@@ -47,7 +47,6 @@
             v-if="slotProps.node.data.total_cost"
             class="flex float-right gap-2 items-center"
           >
-            <p>{{ slotProps.node.data.total_cost }}</p>
             <CurrencyIcon
               style="height: 16px"
               :currency="
@@ -56,6 +55,7 @@
                 )
               "
             />
+            <p>{{ parseFloat(slotProps.node.data.total_cost).toFixed(2) }}</p>
           </div>
         </template>
       </Column>
