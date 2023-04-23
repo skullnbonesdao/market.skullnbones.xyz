@@ -351,8 +351,10 @@ watch(
 watch(
   () => useStaratlasGmStore().status.is_initalized,
   async () => {
-    if (useStaratlasGmStore().status.is_initalized) console.log("initalized");
-    await useStaratlasGmStore().update_filtered_market_table_data("Ship");
+    // if (useStaratlasGmStore().status.is_initalized) {
+    //   console.log("initalized");
+    //   await useStaratlasGmStore().update_filtered_market_table_data("Ship");
+    // }
   }
 );
 onMounted(async () => {
