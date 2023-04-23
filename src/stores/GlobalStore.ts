@@ -190,7 +190,8 @@ export const useGlobalStore = defineStore("globalStore", {
       this.status = _update_status(false, "Updated SA API Data", 0, 1);
     },
 
-    async update_wallet() {
+    async update_wallet(wallet: string) {
+      this.wallet.address = wallet;
       if (this.toggleables.load_tokens) {
         this.status = _update_status(true, "Loading wallet tokens...", 0, 3);
         await this._load_wallet_tokens();

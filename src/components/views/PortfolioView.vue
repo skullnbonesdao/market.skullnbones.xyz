@@ -6,12 +6,12 @@
           class="w-full"
           type="text"
           placeholder="Enter a wallet address"
-          v-model="useGlobalStore().wallet.address"
+          v-model="text_user_wallet_input"
         /><Button
           icon="pi pi-search"
           @click="
             useGlobalStore()
-              .update_wallet()
+              .update_wallet(text_user_wallet_input)
               .then(() => {})
           "
         />
@@ -113,13 +113,15 @@ import NoData from "../elements/NoData.vue";
 import WalletHistoryTable from "../elements/tables/WalletHistoryTable.vue";
 import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
 import OverviewChilds from "../elements/portfolio_elements/OverviewChilds.vue";
-import { computed, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { PublicKey } from "@solana/web3.js";
 import WalletNftsTable from "../elements/tables/WalletNftsTable.vue";
 import ScoreElement from "../elements/score/ScoreElement.vue";
 import StatusStoreTemplate from "../elements/templates/StatusStoreTemplate.vue";
 import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
 import ToggleablesTemplate from "../elements/templates/ToggleablesTemplate.vue";
+
+const text_user_wallet_input = ref(useGlobalStore().wallet.address);
 
 const wallet = useWallet();
 
