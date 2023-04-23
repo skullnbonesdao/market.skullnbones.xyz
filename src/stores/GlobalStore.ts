@@ -23,6 +23,7 @@ import { useWallet } from "solana-wallets-vue";
 import { BirdsEyePricesResponse } from "../static/swagger/birdseye_api/birdsyste_pirces_response";
 import * as metadata from "@metaplex-foundation/mpl-token-metadata";
 import { Token } from "@solana/spl-token";
+import { useStaratlasGmStore } from "./StaratlasGmStore";
 
 export interface Status {
   is_initalized: boolean;
@@ -84,13 +85,19 @@ export interface NftsData {
 export interface Toggables {
   load_tokens: boolean;
   load_nfts: boolean;
+  load_score: boolean;
   load_history: boolean;
 }
 
 export const useGlobalStore = defineStore("globalStore", {
   state: () => ({
     status: {} as Status,
-    toggleables: {} as Toggables,
+    toggleables: useLocalStorage("toggables", {
+      load_tokens: true,
+      load_nfts: true,
+      load_history: true,
+      load_score: true,
+    }) as unknown as Toggables,
     is_dark: useLocalStorage("is_dark", false),
     rpc: useLocalStorage("rpc_local_store", endpoints_list[0]),
     currencyPrice: {} as BirdsEyePricesResponse,
@@ -142,10 +149,6 @@ export const useGlobalStore = defineStore("globalStore", {
       this.is_dark = !this.is_dark;
     },
     async init() {
-      this.toggleables.load_tokens = true;
-      this.toggleables.load_nfts = true;
-      this.toggleables.load_history = true;
-
       this.connection = new Connection(this.rpc.url, { httpHeaders: {} });
       await this._currency_update();
       await this.sa_api_update();
@@ -154,10 +157,12 @@ export const useGlobalStore = defineStore("globalStore", {
     update_toggables(
       load_tokens: boolean,
       load_nfts: boolean,
+      load_score: boolean,
       load_history: boolean
     ) {
       this.toggleables.load_tokens = load_tokens;
       this.toggleables.load_nfts = load_nfts;
+      this.toggleables.load_score = load_score;
       this.toggleables.load_history = load_history;
     },
 
@@ -201,6 +206,10 @@ export const useGlobalStore = defineStore("globalStore", {
         await this._load_wallet_nfts().catch((err) =>
           console.log("error fetching nfts")
         );
+      }
+
+      if (this.toggleables.load_score) {
+        await useStaratlasGmStore().update_score_data();
       }
 
       this.status = _update_status(false, "Updated Wallet", 3, 3);

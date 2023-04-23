@@ -12,14 +12,14 @@
           @click="
             useGlobalStore()
               .update_wallet()
-              .then(useStaratlasGmStore().update_score_data)
               .then(() => {})
           "
         />
+
+        <div>
+          <ToggleablesTemplate />
+        </div>
       </div>
-    </div>
-    <div>
-      <ToggleablesTemplate />
     </div>
     <div>
       <StatusStoreTemplate />
@@ -54,7 +54,7 @@
         <OverviewChilds v-else />
       </div>
 
-      <div class="p-card">
+      <div v-if="useGlobalStore().toggleables.load_tokens" class="p-card">
         <Panel header="Tokens" toggleable collapsed>
           <div class="flex justify-around">
             <NoData
@@ -66,7 +66,7 @@
         </Panel>
       </div>
 
-      <div class="p-card">
+      <div v-if="useGlobalStore().toggleables.load_nfts" class="p-card">
         <Panel header="NFTs" toggleable collapsed>
           <div class="flex justify-around">
             <NoData
@@ -78,7 +78,7 @@
         </Panel>
       </div>
 
-      <div class="p-card">
+      <div v-if="useGlobalStore().toggleables.load_score" class="p-card">
         <Panel header="Score" toggleable>
           <div class="flex justify-around">
             <ScoreElement />
@@ -86,7 +86,7 @@
         </Panel>
       </div>
 
-      <div class="p-card">
+      <div v-if="useGlobalStore().toggleables.load_history" class="p-card">
         <Panel header="Market-History" toggleable>
           <div class="flex flex-row justify-around">
             <NoData
