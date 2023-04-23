@@ -11,6 +11,17 @@
           <p class="text-xs">{{ slotProps.data.address }}</p>
         </template>
       </Column>
+      <Column>
+        <template #body="slotProps">
+          <Avatar
+            :image="slotProps.data.meta?.uri"
+            class="mr-2"
+            size="xlarge"
+            shape="circle"
+          />
+        </template>
+      </Column>
+
       <Column field="" header="Name">
         <template #body="slotProps">
           <p class="text-xs">{{ slotProps.data.meta?.name }}</p>
@@ -89,6 +100,7 @@ import Column from "primevue/column";
 import DataTable from "primevue/datatable";
 import { E_EXPLORER, EXPLORER } from "../../../static/explorer";
 import ExplorerIcon from "../icons_images/ExplorerIcon.vue";
+import Avatar from "primevue/avatar";
 </script>
 
 <style scoped></style>

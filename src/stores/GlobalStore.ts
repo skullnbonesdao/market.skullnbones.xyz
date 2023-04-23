@@ -17,10 +17,11 @@ import {
   Metaplex,
   Nft,
   Sft,
+  SftWithToken,
 } from "@metaplex-foundation/js";
 import { useWallet } from "solana-wallets-vue";
 import { BirdsEyePricesResponse } from "../static/swagger/birdseye_api/birdsyste_pirces_response";
-import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+import * as metadata from "@metaplex-foundation/mpl-token-metadata";
 import { Token } from "@solana/spl-token";
 
 export interface Status {
@@ -48,7 +49,8 @@ export interface TokenInfo {
   amount: number;
   price: number;
   usd_value: number;
-  meta?: Token;
+  meta?: SftWithToken;
+  image_url?: string;
 }
 
 export interface TableGroupedHistory {
@@ -251,21 +253,19 @@ export const useGlobalStore = defineStore("globalStore", {
           response_tokenAccounts.value.length
         );
 
+        let token_meta = undefined;
+        // let token_meta = await metaplex_connection
+        //   .nfts()
+        //   .findAllByOwner({
+        //     owner: new PublicKey(token_account.account.data.parsed.info.mint),
+        //   })
+        //   .catch((err) => {
+        //     console.log(err);
+        //   });
+
         const parsedAccountInfo = token_account.account.data;
 
-        let token_meta = await metaplex_connection
-          .nfts()
-          .findByMint({
-            mintAddress: new PublicKey(
-              parsedAccountInfo["parsed"]["info"]["mint"]
-            ),
-            loadJsonMetadata: true,
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-
-        //        console.log(token_meta);
+        console.log(token_meta);
 
         const amount =
           parsedAccountInfo["parsed"]["info"]["tokenAmount"]["uiAmount"];
@@ -275,7 +275,10 @@ export const useGlobalStore = defineStore("globalStore", {
             address: parsedAccountInfo["parsed"]["info"]["mint"],
             price: -1.0,
             usd_value: -1.0,
-            meta: token_meta ? (token_meta as unknown as Token) : undefined,
+            meta: token_meta
+              ? (token_meta as unknown as SftWithToken)
+              : undefined,
+            image_url: "",
           });
         }
       }
@@ -374,9 +377,14 @@ export const useGlobalStore = defineStore("globalStore", {
         "confirmed"
       );
       const metaplex = new Metaplex(connection);
-      const data = await metaplex.nfts().findAllByOwner({
-        owner: new PublicKey(useWallet().publicKey.value?.toString() ?? ""),
-      });
+      const data = await metaplex.nfts().findAllByOwner(
+        {
+          owner: new PublicKey(useWallet().publicKey.value?.toString() ?? ""),
+        },
+        {}
+      );
+
+      console.log(data);
 
       this.wallet.nfts.data = [];
 
