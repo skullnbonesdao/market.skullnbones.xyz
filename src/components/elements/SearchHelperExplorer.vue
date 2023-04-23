@@ -32,7 +32,7 @@
 <script setup lang="ts">
 import { useGlobalStore } from "../../stores/GlobalStore";
 import AutoComplete from "primevue/autocomplete";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { FilterMatchMode, FilterService } from "primevue/api";
 import { ItemType } from "../../static/StarAtlasAPIItem";
 import { SEARCH_TYPE } from "../../static/search_types_api";
@@ -57,45 +57,55 @@ const groupedSearch = ref([
 ]);
 
 groupedSearch.value = [];
+init();
 
-for (let item_type in ItemType) {
-  groupedSearch.value.push({
-    label: item_type,
-    code: item_type,
-    items: useGlobalStore()
-      .sa_api_data.filter(
-        (asset) =>
-          asset.attributes.itemType.toLowerCase() === item_type.toLowerCase()
-      )
-      .flatMap((asset) => {
-        return [
-          {
-            label: asset.symbol + "ATLAS" + " - " + asset.name,
-            value: asset.symbol + "ATLAS" + " - " + asset.name,
-            api_search: {
-              type: SEARCH_TYPE.SYMBOL,
-              value: asset.symbol + "ATLAS",
-              mint_asset: asset.mint,
-              mint_currency: CURRENCIES.find(
-                (c) => c.type === E_CURRENCIES.USDC
-              )?.mint,
+watch(
+  () => useGlobalStore().sa_api_data,
+  () => {
+    init();
+  }
+);
+
+function init() {
+  for (let item_type in ItemType) {
+    groupedSearch.value.push({
+      label: item_type,
+      code: item_type,
+      items: useGlobalStore()
+        .sa_api_data.filter(
+          (asset) =>
+            asset.attributes.itemType.toLowerCase() === item_type.toLowerCase()
+        )
+        .flatMap((asset) => {
+          return [
+            {
+              label: asset.symbol + "ATLAS" + " - " + asset.name,
+              value: asset.symbol + "ATLAS" + " - " + asset.name,
+              api_search: {
+                type: SEARCH_TYPE.SYMBOL,
+                value: asset.symbol + "ATLAS",
+                mint_asset: asset.mint,
+                mint_currency: CURRENCIES.find(
+                  (c) => c.type === E_CURRENCIES.USDC
+                )?.mint,
+              },
             },
-          },
-          {
-            label: asset.symbol + "USDC" + " - " + asset.name,
-            value: asset.symbol + "USDC" + " - " + asset.name,
-            api_search: {
-              type: SEARCH_TYPE.SYMBOL,
-              value: asset.symbol + "USDC",
-              mint_asset: asset.mint,
-              mint_currency: CURRENCIES.find(
-                (c) => c.type === E_CURRENCIES.USDC
-              )?.mint,
+            {
+              label: asset.symbol + "USDC" + " - " + asset.name,
+              value: asset.symbol + "USDC" + " - " + asset.name,
+              api_search: {
+                type: SEARCH_TYPE.SYMBOL,
+                value: asset.symbol + "USDC",
+                mint_asset: asset.mint,
+                mint_currency: CURRENCIES.find(
+                  (c) => c.type === E_CURRENCIES.USDC
+                )?.mint,
+              },
             },
-          },
-        ];
-      }),
-  });
+          ];
+        }),
+    });
+  }
 }
 
 const search = (event: any) => {
