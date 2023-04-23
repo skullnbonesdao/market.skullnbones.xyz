@@ -1,28 +1,32 @@
 <template>
   <div class="m-2 space-y-2">
+    <div>
+      <StatusStoreTemplate />
+    </div>
+
     <div class="p-card p-2">
       <div class="p-fluid flex flex-row space-x-2">
         <InputText
           class="w-full"
           type="text"
           placeholder="Enter a wallet address"
-          v-model="useGlobalStore().wallet.address"
+          v-model="text_user_wallet_input"
         /><Button
           icon="pi pi-search"
           @click="
             useGlobalStore()
-              .update_wallet()
-              .then(useStaratlasGmStore().update_score_data)
+              .update_wallet(text_user_wallet_input)
               .then(() => {})
           "
         />
+
+        <div>
+          <ToggleablesTemplate />
+        </div>
       </div>
     </div>
-    <div>
-      <StatusStoreTemplate />
-    </div>
     <div v-if="!has_valid_pubkey" class="p-card">
-      <NoData class="flex justify-center" />
+      <NoData text="Invalid PublicKey!" class="flex justify-center" />
     </div>
     <div v-else class="flex flex-col space-y-2">
       <div class="p-card flex flex-row p-2">
@@ -32,9 +36,9 @@
             {{ useGlobalStore().wallet.address }}
           </p>
         </div>
-        <div class="flex w-full justify-end items-center">
+        <div class="flex w-full justify-end items-center space-x-2">
           <p>
-            {{ useGlobalStore().wallet.tokenInfo[0]?.amount.toFixed(3) }}
+            {{ useGlobalStore().wallet.sol_balance.toFixed(3) }}
           </p>
           <CurrencyIcon
             style="width: 50px"
@@ -51,7 +55,7 @@
         <OverviewChilds v-else />
       </div>
 
-      <div class="p-card">
+      <div v-if="useGlobalStore().toggleables.load_tokens" class="p-card">
         <Panel header="Tokens" toggleable collapsed>
           <div class="flex justify-around">
             <NoData
@@ -63,7 +67,7 @@
         </Panel>
       </div>
 
-      <div class="p-card">
+      <div v-if="useGlobalStore().toggleables.load_nfts" class="p-card">
         <Panel header="NFTs" toggleable collapsed>
           <div class="flex justify-around">
             <NoData
@@ -75,7 +79,7 @@
         </Panel>
       </div>
 
-      <div class="p-card">
+      <div v-if="useGlobalStore().toggleables.load_score" class="p-card">
         <Panel header="Score" toggleable>
           <div class="flex justify-around">
             <ScoreElement />
@@ -83,7 +87,7 @@
         </Panel>
       </div>
 
-      <div class="p-card">
+      <div v-if="useGlobalStore().toggleables.load_history" class="p-card">
         <Panel header="Market-History" toggleable>
           <div class="flex flex-row justify-around">
             <NoData
@@ -110,12 +114,17 @@ import NoData from "../elements/NoData.vue";
 import WalletHistoryTable from "../elements/tables/WalletHistoryTable.vue";
 import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
 import OverviewChilds from "../elements/portfolio_elements/OverviewChilds.vue";
-import { computed, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { PublicKey } from "@solana/web3.js";
 import WalletNftsTable from "../elements/tables/WalletNftsTable.vue";
 import ScoreElement from "../elements/score/ScoreElement.vue";
 import StatusStoreTemplate from "../elements/templates/StatusStoreTemplate.vue";
 import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
+import ToggleablesTemplate from "../elements/templates/ToggleablesTemplate.vue";
+
+const text_user_wallet_input = ref(
+  "NPCxfjPxh6pvRJbGbWZjxfkqWfGBvKkqPbtiJar3mom"
+);
 
 const wallet = useWallet();
 

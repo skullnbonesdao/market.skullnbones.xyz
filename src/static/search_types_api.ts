@@ -1,4 +1,5 @@
 export enum SEARCH_TYPE {
+  BASE,
   SIGNATURE,
   MINT,
   ADDRESS,

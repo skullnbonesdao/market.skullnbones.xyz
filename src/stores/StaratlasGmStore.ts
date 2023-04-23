@@ -95,6 +95,15 @@ export const useStaratlasGmStore = defineStore({
         step_total: 1,
       };
       await this.order_book_service.initialize();
+
+      this.status = {
+        is_initalized: false,
+        is_loading: true,
+        message: "GM OrderUser",
+        step: 1,
+        step_total: 2,
+      };
+      await this.update_filtered_market_table_data("Ship");
       this.status = _update_status(false, "GM init done", 1, 1);
     },
 

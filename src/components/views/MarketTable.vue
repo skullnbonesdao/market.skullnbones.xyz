@@ -1,7 +1,8 @@
 <template>
   <div class="flex flex-col space-y-2">
+    <StatusStoreTemplate class="p-card p-2" />
+
     <div class="flex flex-col w-full justify-center">
-      <StatusStoreTemplate class="p-card p-2" />
       <div
         class="flex flex-row w-full justify-around"
         v-if="useGlobalStore().currencyPrice.success"

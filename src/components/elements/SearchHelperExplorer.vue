@@ -40,7 +40,7 @@ import { CURRENCIES, E_CURRENCIES } from "../../static/currencies";
 
 defineEmits(["toSearch"]);
 
-const search_user_selected = ref("PX4USDC");
+const search_user_selected = ref();
 const filtered_search = ref();
 
 const groupedSearch = ref([

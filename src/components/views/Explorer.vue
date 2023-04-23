@@ -3,7 +3,7 @@
     <div class="flex flex-row space-x-2">
       <SearchHelperExplorer
         class="flex w-full"
-        @toSearch="(value) => (search_input_object = value.api_search)"
+        @toSearch="(value) => fetch_api_data(value)"
       />
       <Dropdown
         v-model="selected_limit"
@@ -149,7 +149,7 @@
 
           <Column field="fee" header="Fee" sortable>
             <template #body="slotProps">
-              <span>x{{ slotProps.data.fee.toFixed(1) }}%</span>
+              <span>{{ slotProps.data.fee.toFixed(1) }}%</span>
             </template>
           </Column>
 
@@ -163,13 +163,13 @@
           <Column field="price.value" header="Price" sortable>
             <template #body="slotProps">
               <div class="flex gap-2">
-                <span>{{ slotProps.data.price.value }}</span>
                 <CurrencyIcon
                   style="height: 24px"
                   :currency="
                     CURRENCIES.find((c) => c.mint === slotProps.data.mint.token)
                   "
                 />
+                <span>{{ slotProps.data.price.value }}</span>
               </div>
             </template>
           </Column>
@@ -177,13 +177,13 @@
           <Column field="total.value" header="Total" sortable>
             <template #body="slotProps">
               <div class="flex gap-2">
-                <span>{{ slotProps.data.total.value }}</span>
                 <CurrencyIcon
                   style="height: 24px"
                   :currency="
                     CURRENCIES.find((c) => c.mint === slotProps.data.mint.token)
                   "
                 />
+                <span>{{ slotProps.data.total.value.toFixed(2) }}</span>
               </div>
             </template>
           </Column>
@@ -237,8 +237,8 @@ import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
 import { FilterMatchMode } from "primevue/api";
 
 let search_input_object = ref({
-  type: SEARCH_TYPE.SYMBOL,
-  value: "PX4USDC",
+  type: SEARCH_TYPE.BASE,
+  value: "",
 });
 
 let is_loading = ref(true);
@@ -260,16 +260,17 @@ const limits = ref([
 
 const selected_limit = ref(limits.value[1]);
 
-watch(
-  () => search_input_object.value,
-  async () => await fetch_api_data()
-);
+// watch(
+//   () => search_input_object.value,
+//   async () => await fetch_api_data()
+// );
 
 onMounted(async () => {
-  await fetch_api_data();
+  await fetch_api_data(search_input_object);
 });
 
-async function fetch_api_data() {
+async function fetch_api_data(new_search_value: any) {
+  search_input_object.value = new_search_value;
   is_loading.value = true;
 
   const api = new Api({
@@ -279,7 +280,7 @@ async function fetch_api_data() {
   let fetched_trades: Trade[] = [];
   table_data.value = [];
 
-  switch (search_input_object.value.type) {
+  switch (search_input_object.value?.type) {
     case SEARCH_TYPE.SYMBOL:
       await api.trades
         .getSymbol({
@@ -311,7 +312,14 @@ async function fetch_api_data() {
           limit: 100,
         })
         .then((resp) => (fetched_trades = resp.data));
-
+      break;
+    default:
+      console.log("default");
+      await api.trades
+        .getBase({
+          limit: selected_limit.value.value,
+        })
+        .then((resp) => (fetched_trades = resp.data));
       break;
   }
 
