@@ -149,7 +149,7 @@
 
           <Column field="fee" header="Fee" sortable>
             <template #body="slotProps">
-              <span>x{{ slotProps.data.fee.toFixed(1) }}%</span>
+              <span>{{ slotProps.data.fee.toFixed(1) }}%</span>
             </template>
           </Column>
 
@@ -163,13 +163,13 @@
           <Column field="price.value" header="Price" sortable>
             <template #body="slotProps">
               <div class="flex gap-2">
-                <span>{{ slotProps.data.price.value }}</span>
                 <CurrencyIcon
                   style="height: 24px"
                   :currency="
                     CURRENCIES.find((c) => c.mint === slotProps.data.mint.token)
                   "
                 />
+                <span>{{ slotProps.data.price.value }}</span>
               </div>
             </template>
           </Column>
@@ -177,13 +177,13 @@
           <Column field="total.value" header="Total" sortable>
             <template #body="slotProps">
               <div class="flex gap-2">
-                <span>{{ slotProps.data.total.value }}</span>
                 <CurrencyIcon
                   style="height: 24px"
                   :currency="
                     CURRENCIES.find((c) => c.mint === slotProps.data.mint.token)
                   "
                 />
+                <span>{{ slotProps.data.total.value.toFixed(2) }}</span>
               </div>
             </template>
           </Column>
