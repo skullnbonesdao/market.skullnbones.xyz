@@ -150,8 +150,8 @@ export const useGlobalStore = defineStore("globalStore", {
     },
     async init() {
       this.connection = new Connection(this.rpc.url, { httpHeaders: {} });
-      await this._currency_update();
       await this.sa_api_update();
+      await this._currency_update();
     },
 
     update_toggables(
