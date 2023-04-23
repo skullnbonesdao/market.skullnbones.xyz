@@ -11,10 +11,17 @@ import { useLocalStorage } from "@vueuse/core";
 import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
 import { Api, Trade } from "../static/swagger/skullnbones_api/skullnbones_api";
 import { get_multi_price } from "../static/swagger/birdseye_api/birdseye_api";
-import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
-import { FindNftsByOwnerOutput, Metaplex, Nft } from "@metaplex-foundation/js";
+
+import {
+  FindNftsByOwnerOutput,
+  Metaplex,
+  Nft,
+  Sft,
+} from "@metaplex-foundation/js";
 import { useWallet } from "solana-wallets-vue";
 import { BirdsEyePricesResponse } from "../static/swagger/birdseye_api/birdsyste_pirces_response";
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+import { Token } from "@solana/spl-token";
 
 export interface Status {
   is_initalized: boolean;
@@ -41,6 +48,7 @@ export interface TokenInfo {
   amount: number;
   price: number;
   usd_value: number;
+  meta?: Token;
 }
 
 export interface TableGroupedHistory {
@@ -71,9 +79,16 @@ export interface NftsData {
   data: Array<{ key: string; metadata: Nft; json: Object }>;
 }
 
+export interface Toggables {
+  load_tokens: boolean;
+  load_nfts: boolean;
+  load_history: boolean;
+}
+
 export const useGlobalStore = defineStore("globalStore", {
   state: () => ({
     status: {} as Status,
+    toggleables: {} as Toggables,
     is_dark: useLocalStorage("is_dark", false),
     rpc: useLocalStorage("rpc_local_store", endpoints_list[0]),
     currencyPrice: {} as BirdsEyePricesResponse,
@@ -85,6 +100,7 @@ export const useGlobalStore = defineStore("globalStore", {
     },
     wallet: {
       address: "",
+      sol_balance: 0,
       is_web_wallet_connected: false,
       tokenRaw: [] as Array<{
         pubkey: PublicKey;
@@ -124,9 +140,23 @@ export const useGlobalStore = defineStore("globalStore", {
       this.is_dark = !this.is_dark;
     },
     async init() {
+      this.toggleables.load_tokens = true;
+      this.toggleables.load_nfts = true;
+      this.toggleables.load_history = true;
+
       this.connection = new Connection(this.rpc.url, { httpHeaders: {} });
       await this._currency_update();
       await this.sa_api_update();
+    },
+
+    update_toggables(
+      load_tokens: boolean,
+      load_nfts: boolean,
+      load_history: boolean
+    ) {
+      this.toggleables.load_tokens = load_tokens;
+      this.toggleables.load_nfts = load_nfts;
+      this.toggleables.load_history = load_history;
     },
 
     update_symbol(symbol: string, mint_asset: string, mint_currency: string) {
@@ -154,16 +184,22 @@ export const useGlobalStore = defineStore("globalStore", {
     },
 
     async update_wallet() {
-      this.status = _update_status(true, "Loading wallet tokens...", 0, 3);
-      await this._load_wallet_tokens();
+      if (this.toggleables.load_tokens) {
+        this.status = _update_status(true, "Loading wallet tokens...", 0, 3);
+        await this._load_wallet_tokens();
+      }
 
-      this.status = _update_status(true, "Loading wallet trades...", 1, 3);
-      await this._load_wallet_trades();
+      if (this.toggleables.load_history) {
+        this.status = _update_status(true, "Loading wallet trades...", 1, 3);
+        await this._load_wallet_trades();
+      }
 
-      this.status = _update_status(true, "Loading wallet NFTs...", 2, 3);
-      await this._load_wallet_nfts().catch((err) =>
-        console.log("error fetching nfts")
-      );
+      if (this.toggleables.load_nfts) {
+        this.status = _update_status(true, "Loading wallet NFTs...", 2, 3);
+        await this._load_wallet_nfts().catch((err) =>
+          console.log("error fetching nfts")
+        );
+      }
 
       this.status = _update_status(false, "Updated Wallet", 3, 3);
     },
@@ -185,15 +221,9 @@ export const useGlobalStore = defineStore("globalStore", {
     async _load_wallet_tokens() {
       this.wallet.tokenInfo = [];
       //Fetch_sol_token
-      this.wallet.tokenInfo.push({
-        amount:
-          (await this.connection.getBalance(
-            new PublicKey(this.wallet.address)
-          )) * Math.pow(10, -9),
-        address: "So11111111111111111111111111111111111111112",
-        price: -1.0,
-        usd_value: -1.0,
-      });
+      this.wallet.sol_balance =
+        (await this.connection.getBalance(new PublicKey(this.wallet.address))) *
+        Math.pow(10, -9);
 
       //Fetch other_tokens
       let response_tokenAccounts =
@@ -206,10 +236,37 @@ export const useGlobalStore = defineStore("globalStore", {
           }
         );
 
-      this.wallet.tokenRaw = response_tokenAccounts.value;
+      //filter for tokens and remove nfts
+      this.wallet.tokenRaw = response_tokenAccounts.value.filter(
+        (resp) => resp.account.data.parsed.info.tokenAmount.decimals > 0
+      );
 
-      response_tokenAccounts.value.forEach((token_account) => {
+      const metaplex_connection = Metaplex.make(new Connection(this.rpc.url));
+
+      for (let [idx, token_account] of this.wallet.tokenRaw.entries()) {
+        this.status = _update_status(
+          true,
+          "Loading metadata...",
+          idx,
+          response_tokenAccounts.value.length
+        );
+
         const parsedAccountInfo = token_account.account.data;
+
+        let token_meta = await metaplex_connection
+          .nfts()
+          .findByMint({
+            mintAddress: new PublicKey(
+              parsedAccountInfo["parsed"]["info"]["mint"]
+            ),
+            loadJsonMetadata: true,
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+
+        //        console.log(token_meta);
+
         const amount =
           parsedAccountInfo["parsed"]["info"]["tokenAmount"]["uiAmount"];
         if (amount > 0) {
@@ -218,9 +275,10 @@ export const useGlobalStore = defineStore("globalStore", {
             address: parsedAccountInfo["parsed"]["info"]["mint"],
             price: -1.0,
             usd_value: -1.0,
+            meta: token_meta ? (token_meta as unknown as Token) : undefined,
           });
         }
-      });
+      }
 
       //Fetch Prices
       let addresses = this.wallet.tokenInfo.flatMap((t) =>
@@ -316,7 +374,6 @@ export const useGlobalStore = defineStore("globalStore", {
         "confirmed"
       );
       const metaplex = new Metaplex(connection);
-
       const data = await metaplex.nfts().findAllByOwner({
         owner: new PublicKey(useWallet().publicKey.value?.toString() ?? ""),
       });

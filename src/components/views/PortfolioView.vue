@@ -19,6 +19,9 @@
       </div>
     </div>
     <div>
+      <ToggleablesTemplate />
+    </div>
+    <div>
       <StatusStoreTemplate />
     </div>
     <div v-if="!has_valid_pubkey" class="p-card">
@@ -32,9 +35,9 @@
             {{ useGlobalStore().wallet.address }}
           </p>
         </div>
-        <div class="flex w-full justify-end items-center">
+        <div class="flex w-full justify-end items-center space-x-2">
           <p>
-            {{ useGlobalStore().wallet.tokenInfo[0]?.amount.toFixed(3) }}
+            {{ useGlobalStore().wallet.sol_balance.toFixed(3) }}
           </p>
           <CurrencyIcon
             style="width: 50px"
@@ -116,6 +119,7 @@ import WalletNftsTable from "../elements/tables/WalletNftsTable.vue";
 import ScoreElement from "../elements/score/ScoreElement.vue";
 import StatusStoreTemplate from "../elements/templates/StatusStoreTemplate.vue";
 import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
+import ToggleablesTemplate from "../elements/templates/ToggleablesTemplate.vue";
 
 const wallet = useWallet();
 

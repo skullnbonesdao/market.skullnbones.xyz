@@ -94,7 +94,7 @@ export const useStaratlasGmStore = defineStore({
         step: 0,
         step_total: 1,
       };
-      await this.order_book_service.initialize();
+      this.order_book_service.initialize().then(() => {});
       this.status = _update_status(false, "GM init done", 1, 1);
     },
 

@@ -6,7 +6,23 @@
       style="width: 100%"
       :value="useGlobalStore().wallet.tokenInfo"
     >
-      <Column field="address" header="Mint"></Column>
+      <Column field="address" header="Mint">
+        <template #body="slotProps">
+          <p class="text-xs">{{ slotProps.data.address }}</p>
+        </template>
+      </Column>
+      <Column field="" header="Name">
+        <template #body="slotProps">
+          <p class="text-xs">{{ slotProps.data.meta?.name }}</p>
+        </template>
+      </Column>
+
+      <Column field="" header="Model">
+        <template #body="slotProps">
+          <p class="text-xs">{{ slotProps.data.meta?.model }}</p>
+        </template>
+      </Column>
+
       <Column field="amount" header="Amount" sortable>
         <template #body="slotProps">
           <div class="flex float-right">
@@ -46,6 +62,22 @@
           </div>
         </template>
       </Column>
+      <Column field="explorer" header="Explorer" style="min-width: 200px">
+        <template #body="slotProps">
+          <div class="flex flex-row justify-center items-center space-x-2">
+            <ExplorerIcon
+              class="w-5"
+              :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)"
+              :address="slotProps.data.address"
+            />
+            <ExplorerIcon
+              class="w-5"
+              :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)"
+              :address="slotProps.data.address"
+            />
+          </div>
+        </template>
+      </Column>
     </DataTable>
   </div>
 </template>
@@ -55,6 +87,8 @@ import { useGlobalStore } from "../../../stores/GlobalStore";
 import Skeleton from "primevue/skeleton";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
+import { E_EXPLORER, EXPLORER } from "../../../static/explorer";
+import ExplorerIcon from "../icons_images/ExplorerIcon.vue";
 </script>
 
 <style scoped></style>

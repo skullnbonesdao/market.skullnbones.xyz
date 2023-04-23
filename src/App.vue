@@ -7,11 +7,9 @@ import { onMounted } from "vue";
 
 const globalStore = useGlobalStore();
 const staratlasGmStore = useStaratlasGmStore();
-useGlobalStore()
-  .init()
-  .then(() => {});
+globalStore.init().then(() => {});
 
-useStaratlasGmStore().init().then();
+//useStaratlasGmStore().init();
 </script>
 
 <template>
