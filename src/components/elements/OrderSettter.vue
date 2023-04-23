@@ -85,7 +85,7 @@ const { publicKey, sendTransaction } = useWallet();
 const globalStore = useGlobalStore();
 
 onMounted(async () => {
-  await useGlobalStore().load_wallet_tokens();
+  //await useGlobalStore().load_wallet_tokens();
 });
 
 async function submitOrder() {

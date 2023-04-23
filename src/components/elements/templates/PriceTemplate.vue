@@ -24,8 +24,8 @@
         {{
           format_price_reasonable(
             props.price *
-              useGlobalStore().currencyPrice.data[props.currency?.mint ?? ""]
-                .value
+              useGlobalStore().currencyPrice?.data[props.currency?.mint ?? ""]
+                ?.value ?? 0
           )
         }}
       </p>
@@ -63,8 +63,9 @@ const props = defineProps({
   },
 });
 
-function format_price_reasonable(price: number) {
-  return price.toFixed(2);
+function format_price_reasonable(price: number | undefined) {
+  if (price) return price.toFixed(2);
+  else return 0;
 }
 </script>
 

@@ -18,6 +18,8 @@ import HomeView from "./components/views/HomeView.vue";
 import MarketView from "./components/views/MarketView.vue";
 import { createRouter, createWebHashHistory } from "vue-router";
 
+import "chartjs-adapter-date-fns";
+
 // @ts-ignore
 import SolanaWallets from "solana-wallets-vue";
 
@@ -36,6 +38,8 @@ import "./styles_wallet_connect.css";
 import Explorer from "./components/views/Explorer.vue";
 import MarketTable from "./components/views/MarketTable.vue";
 import AboutView from "./components/views/AboutView.vue";
+import { useStaratlasGmStore } from "./stores/StaratlasGmStore";
+import { useGlobalStore } from "./stores/GlobalStore";
 
 const walletOptions = {
   wallets: [

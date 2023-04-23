@@ -16,6 +16,14 @@ import { FindNftsByOwnerOutput, Metaplex, Nft } from "@metaplex-foundation/js";
 import { useWallet } from "solana-wallets-vue";
 import { BirdsEyePricesResponse } from "../static/swagger/birdseye_api/birdsyste_pirces_response";
 
+export interface Status {
+  is_initalized: boolean;
+  is_loading: boolean;
+  message: string;
+  step?: number;
+  step_total?: number;
+}
+
 export interface RPCEndpoint {
   name: string;
   url: string;
@@ -65,6 +73,7 @@ export interface NftsData {
 
 export const useGlobalStore = defineStore("globalStore", {
   state: () => ({
+    status: {} as Status,
     is_dark: useLocalStorage("is_dark", false),
     rpc: useLocalStorage("rpc_local_store", endpoints_list[0]),
     currencyPrice: {} as BirdsEyePricesResponse,
@@ -75,7 +84,7 @@ export const useGlobalStore = defineStore("globalStore", {
       mint_pair: new PublicKey("ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx"),
     },
     wallet: {
-      address: "none",
+      address: "",
       is_web_wallet_connected: false,
       tokenRaw: [] as Array<{
         pubkey: PublicKey;
@@ -116,6 +125,8 @@ export const useGlobalStore = defineStore("globalStore", {
     },
     async init() {
       this.connection = new Connection(this.rpc.url, { httpHeaders: {} });
+      await this._currency_update();
+      await this.sa_api_update();
     },
 
     update_symbol(symbol: string, mint_asset: string, mint_currency: string) {
@@ -130,7 +141,34 @@ export const useGlobalStore = defineStore("globalStore", {
       this.connection = new Connection(this.rpc.url, { httpHeaders: {} });
     },
 
-    async load_currency_prices() {
+    async _currency_update() {
+      this.status = _update_status(true, "Loading Currency Prices", 0, 1);
+      await this._load_currency_prices();
+      this.status = _update_status(false, "Updated Currency Prices", 1, 1);
+    },
+
+    async sa_api_update() {
+      this.status = _update_status(true, "Loading SA API Data", 0, 1);
+      await this._load_sa_api();
+      this.status = _update_status(false, "Updated SA API Data", 0, 1);
+    },
+
+    async update_wallet() {
+      this.status = _update_status(true, "Loading wallet tokens...", 0, 3);
+      await this._load_wallet_tokens();
+
+      this.status = _update_status(true, "Loading wallet trades...", 1, 3);
+      await this._load_wallet_trades();
+
+      this.status = _update_status(true, "Loading wallet NFTs...", 2, 3);
+      await this._load_wallet_nfts().catch((err) =>
+        console.log("error fetching nfts")
+      );
+
+      this.status = _update_status(false, "Updated Wallet", 3, 3);
+    },
+
+    async _load_currency_prices() {
       const mapped_currency_mints = CURRENCIES.flatMap((c) => c.mint);
       const price_response = await get_multi_price(mapped_currency_mints);
       if (price_response) {
@@ -138,13 +176,13 @@ export const useGlobalStore = defineStore("globalStore", {
       }
     },
 
-    async load_sa_api() {
+    async _load_sa_api() {
       await fetch("https://galaxy.staratlas.com/nfts")
         .then((resp) => resp.json())
         .then((data) => (this.sa_api_data = data));
     },
 
-    async load_wallet_tokens() {
+    async _load_wallet_tokens() {
       this.wallet.tokenInfo = [];
       //Fetch_sol_token
       this.wallet.tokenInfo.push({
@@ -158,8 +196,6 @@ export const useGlobalStore = defineStore("globalStore", {
       });
 
       //Fetch other_tokens
-      //let token_mints = CURRENCIES.flatMap((c) => new PublicKey(c.mint));
-
       let response_tokenAccounts =
         await this.connection.getParsedTokenAccountsByOwner(
           new PublicKey(this.wallet.address),
@@ -204,7 +240,7 @@ export const useGlobalStore = defineStore("globalStore", {
       }
     },
 
-    async load_wallet_trades() {
+    async _load_wallet_trades() {
       const api = new Api({ baseUrl: "https://api2.skullnbones.xyz" });
 
       this.wallet.historySorted = [];
@@ -273,7 +309,7 @@ export const useGlobalStore = defineStore("globalStore", {
         });
     },
 
-    async load_wallet_nfts() {
+    async _load_wallet_nfts() {
       this.wallet.nfts.is_loading = true;
       const connection = new Connection(
         "https://api.metaplex.solana.com",
@@ -306,3 +342,18 @@ export const useGlobalStore = defineStore("globalStore", {
     },
   },
 });
+
+export function _update_status(
+  is_loading: boolean,
+  message: string,
+  step?: number,
+  step_total?: number
+): Status {
+  return {
+    is_initalized: false,
+    is_loading: is_loading,
+    message: message,
+    step: step,
+    step_total: step_total,
+  };
+}
