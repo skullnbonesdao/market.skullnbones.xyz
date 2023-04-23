@@ -201,7 +201,7 @@ export const useGlobalStore = defineStore("globalStore", {
 
       if (this.toggleables.load_history) {
         this.status = _update_status(true, "Loading wallet trades...", 1, 3);
-        await this._load_wallet_trades();
+        await this._load_wallet_history();
       }
 
       if (this.toggleables.load_nfts) {
@@ -313,12 +313,12 @@ export const useGlobalStore = defineStore("globalStore", {
       }
     },
 
-    async _load_wallet_trades() {
+    async _load_wallet_history() {
       const api = new Api({ baseUrl: "https://api2.skullnbones.xyz" });
 
       this.wallet.historySorted = [];
       api.trades
-        .getAddress({ address: this.wallet.address })
+        .getAddress({ address: this.wallet.address, limit: 1000 })
         .then((resp) => resp.data)
         .then((api_data) => {
           this.wallet.historyRaw = api_data;
