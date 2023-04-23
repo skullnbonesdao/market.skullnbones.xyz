@@ -1,5 +1,9 @@
 <template>
   <div class="m-2 space-y-2">
+    <div>
+      <StatusStoreTemplate />
+    </div>
+
     <div class="p-card p-2">
       <div class="p-fluid flex flex-row space-x-2">
         <InputText
@@ -20,9 +24,6 @@
           <ToggleablesTemplate />
         </div>
       </div>
-    </div>
-    <div>
-      <StatusStoreTemplate />
     </div>
     <div v-if="!has_valid_pubkey" class="p-card">
       <NoData text="Invalid PublicKey!" class="flex justify-center" />
@@ -121,7 +122,9 @@ import StatusStoreTemplate from "../elements/templates/StatusStoreTemplate.vue";
 import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
 import ToggleablesTemplate from "../elements/templates/ToggleablesTemplate.vue";
 
-const text_user_wallet_input = ref(useGlobalStore().wallet.address);
+const text_user_wallet_input = ref(
+  "NPCxfjPxh6pvRJbGbWZjxfkqWfGBvKkqPbtiJar3mom"
+);
 
 const wallet = useWallet();
 

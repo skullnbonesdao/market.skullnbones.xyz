@@ -1,8 +1,8 @@
 <template>
   <div class="" v-if="useGlobalStore().status.is_loading">
-    <div class="flex flex-row items-center">
+    <div class="p-card p-2 flex flex-row items-center">
       <span
-        class="p-card border-2 text-center text-lg rounded-xl p-2 uppercase basis-1/3"
+        class="p-card border-1 text-center text-lg rounded-xl p-2 uppercase basis-1/3"
         >{{ useGlobalStore().status.message }}</span
       >
       <ProgressBar
@@ -20,9 +20,9 @@
     </div>
   </div>
   <div v-if="useStaratlasGmStore().status.is_loading">
-    <div class="flex flex-row items-center">
+    <div class="p-card p-2 flex flex-row items-center">
       <span
-        class="p-card border-2 text-center text-lg rounded-xl p-2 uppercase basis-1/3"
+        class="p-card border-1 text-center text-lg rounded-xl p-2 uppercase basis-1/3"
         >{{ useStaratlasGmStore().status.message }}</span
       >
       <ProgressBar
