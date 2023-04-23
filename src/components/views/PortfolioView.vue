@@ -25,7 +25,7 @@
       <StatusStoreTemplate />
     </div>
     <div v-if="!has_valid_pubkey" class="p-card">
-      <NoData class="flex justify-center" />
+      <NoData text="Invalid PublicKey!" class="flex justify-center" />
     </div>
     <div v-else class="flex flex-col space-y-2">
       <div class="p-card flex flex-row p-2">
