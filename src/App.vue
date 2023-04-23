@@ -5,9 +5,10 @@ import { useGlobalStore } from "./stores/GlobalStore";
 import { useStaratlasGmStore } from "./stores/StaratlasGmStore";
 import { onMounted } from "vue";
 
-const globalStore = useGlobalStore();
-const staratlasGmStore = useStaratlasGmStore();
-globalStore.init().then(() => {});
+onMounted(async () => {
+  await useGlobalStore().init();
+  await useStaratlasGmStore().init();
+});
 
 //useStaratlasGmStore().init();
 </script>
