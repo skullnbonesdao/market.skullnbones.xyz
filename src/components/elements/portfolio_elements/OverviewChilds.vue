@@ -1,6 +1,6 @@
 <template>
   <Panel :header="'Overview'" toggleable>
-    <div class="flex flex-row justify-around">
+    <div class="grid md:grid-cols-3 gap-2">
       <Fieldset legend="Tokens-Value" class="flex items-center">
         <div class="flex flex-row space-x-2 items-center">
           <CurrencyIcon

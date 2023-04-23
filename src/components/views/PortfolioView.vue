@@ -4,8 +4,8 @@
       <StatusStoreTemplate />
     </div>
 
-    <div class="p-card p-2">
-      <div class="p-fluid flex flex-row space-x-2">
+    <div class="p-card p-2 flex flex-col md:flex-row w-full gap-2">
+      <div class="p-fluid flex w-full gap-2">
         <InputText
           class="w-full"
           type="text"
@@ -19,10 +19,9 @@
               .then(() => {})
           "
         />
-
-        <div>
-          <ToggleablesTemplate />
-        </div>
+      </div>
+      <div>
+        <ToggleablesTemplate />
       </div>
     </div>
     <div v-if="!has_valid_pubkey" class="p-card">
@@ -84,7 +83,7 @@
       </div>
 
       <div v-if="useGlobalStore().toggleables.load_score" class="p-card">
-        <Panel header="Score" toggleable>
+        <Panel header="Score" toggleable collapsed>
           <div class="flex justify-around">
             <ScoreElement />
           </div>
@@ -93,7 +92,7 @@
 
       <div v-if="useGlobalStore().toggleables.load_history" class="p-card">
         <Panel header="Market-History" toggleable>
-          <div class="flex flex-row justify-around">
+          <div class="flex justify-around">
             <NoData
               class="flex justify-center"
               v-if="!useGlobalStore().wallet.historySorted.length"

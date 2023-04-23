@@ -1,7 +1,8 @@
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col w-full">
     <ProgressSpinner v-if="useStaratlasGmStore().status.is_loading" />
     <DataTable
+      scrollable
       v-else-if="useStaratlasGmStore().score_table_data.length > 1"
       :value="useStaratlasGmStore().score_table_data"
       tableStyle="min-width: 50rem"
