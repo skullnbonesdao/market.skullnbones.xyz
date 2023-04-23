@@ -4,11 +4,11 @@
 
     <div class="flex flex-col w-full justify-center">
       <div
-        class="flex flex-row w-full justify-around"
+        class="grid grid-cols-2 md:grid-cols-5 gap-2 w-full"
         v-if="useGlobalStore().currencyPrice.success"
       >
         <TokenPriceElement
-          class="p-card px-5 py-2"
+          class="p-card justify-center px-5 py-2"
           image-name="BTC/USDC"
           :price="
             useGlobalStore().currencyPrice.data[
@@ -23,7 +23,7 @@
           :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.BTC)"
         />
         <TokenPriceElement
-          class="p-card px-5 py-2"
+          class="p-card justify-center px-5 py-2"
           image-name="SOL/USDC"
           :price="
             useGlobalStore().currencyPrice.data[
@@ -38,7 +38,7 @@
           :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)"
         />
         <TokenPriceElement
-          class="p-card px-5 py-2"
+          class="p-card justify-center px-5 py-2"
           image-name="POLIS/USDC"
           :price="
             useGlobalStore().currencyPrice.data[
@@ -53,7 +53,7 @@
           :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.POLIS)"
         />
         <TokenPriceElement
-          class="p-card px-5 py-2"
+          class="p-card justify-center px-5 py-2"
           image-name="ATLAS/USDC"
           :price="
             useGlobalStore().currencyPrice.data[
@@ -68,7 +68,7 @@
           :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
         />
 
-        <div class="p-card p-2 flex items-center">
+        <div class="p-card p-2 flex justify-center col-span-2 md:col-span-1">
           <Dropdown
             v-model="option_selected"
             :options="options_values"
