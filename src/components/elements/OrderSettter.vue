@@ -2,12 +2,12 @@
   <div>
     <Toast />
     <BlockUI :blocked="is_disabled">
-      <div class="container mx-auto">
+      <div class="mx-auto">
         <div class="flex flex-row space-x-2">
           <button
             @click="currentTab(1)"
             v-bind:class="tab === 1 ? 'bg-green-500' : 'border-2'"
-            class="w-full block font-medium leading-tight uppercase px-6 py-3 my-2 hoverable"
+            class="w-full block font-medium leading-tight uppercase px-6 py-3 hoverable"
           >
             Buy
           </button>
@@ -15,7 +15,7 @@
           <button
             @click="currentTab(2)"
             v-bind:class="tab === 2 ? 'bg-red-500' : 'border-2'"
-            class="w-full block font-medium leading-tight uppercase px-6 py-3 my-2 hoverable"
+            class="w-full block font-medium leading-tight uppercase px-6 py-3 hoverable"
           >
             Sell
           </button>
@@ -45,7 +45,7 @@
           @click.prevent="submitOrder().then(() => {})"
           id="order-submit-btn"
           :class="tab === 1 ? 'bg-green-500' : 'bg-red-500'"
-          class="nav-link w-full block font-medium leading-tight uppercase px-6 py-3 my-2 hoverable"
+          class="nav-link w-full block font-medium leading-tight uppercase px-6 py-3 hoverable"
         >
           {{ tab === 1 ? "Buy" : "Sell" }}
         </button>
