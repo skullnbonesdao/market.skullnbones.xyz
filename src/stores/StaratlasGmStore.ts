@@ -37,7 +37,7 @@ interface ScoreParsedShipInfo {
   tools_remaining_time: number;
 }
 
-interface TableData {
+interface ScoreTableData {
   shipStatkingInfo: ShipStakingInfo;
   scoreVarsShipInfo: ScoreVarsShipInfo;
   parsed: ScoreParsedShipInfo;
@@ -62,7 +62,7 @@ export const useStaratlasGmStore = defineStore({
 
   state: () => ({
     status: {} as Status,
-    score_table_data: [] as TableData[],
+    score_table_data: [] as ScoreTableData[],
     market_table_data: [] as MarketTablData[],
     order_book_service: new GmOrderbookService(
       new Connection(useGlobalStore().rpc.url),
