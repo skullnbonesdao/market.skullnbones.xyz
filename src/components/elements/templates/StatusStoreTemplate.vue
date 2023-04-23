@@ -10,8 +10,9 @@
         :value="
           parseInt(
             (
-              (useGlobalStore().status.step /
-                useGlobalStore().status.step_total ?? 0) * 100
+              ((useGlobalStore().status.step ?? 0) /
+                (useGlobalStore().status.step_total ?? 0)) *
+              100
             ).toFixed(0)
           )
         "
