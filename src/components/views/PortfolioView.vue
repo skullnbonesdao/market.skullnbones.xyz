@@ -28,6 +28,10 @@
     <div v-if="!has_valid_pubkey" class="p-card">
       <NoData text="Invalid PublicKey!" class="flex justify-center" />
     </div>
+
+    <div v-if="!useGlobalStore().wallet.address" class="p-card">
+      <NoData text="No Wallet searched!" class="flex justify-center" />
+    </div>
     <div v-else class="flex flex-col space-y-2">
       <div class="p-card flex flex-row p-2">
         <div class="flex flex-col justify-center">
