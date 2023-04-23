@@ -405,6 +405,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   };
   trades = {
     /**
+     * @description Get x trade from Database Responses with a last trade for a given symbol. [default 10]
+     *
+     * @tags trades
+     * @name GetBase
+     * @summary Get x trade from Database
+     * @request GET:/trades
+     */
+    getBase: (
+      query?: {
+        /** @format int64 */
+        limit?: number;
+        /** @format int64 */
+        to?: number;
+        /** @format int64 */
+        from?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<Trade[], any>({
+        path: `/trades`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description Get trade for address Responses with an array of trades for buy/sell-wallet-address.
      *
      * @tags trades

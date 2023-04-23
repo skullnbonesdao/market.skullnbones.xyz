@@ -192,6 +192,8 @@ export const useGlobalStore = defineStore("globalStore", {
 
     async update_wallet(wallet: string) {
       this.wallet.address = wallet;
+      PublicKey.isOnCurve(new PublicKey(wallet));
+
       if (this.toggleables.load_tokens) {
         this.status = _update_status(true, "Loading wallet tokens...", 0, 3);
         await this._load_wallet_tokens();
