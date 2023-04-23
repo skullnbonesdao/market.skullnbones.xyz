@@ -1,14 +1,18 @@
 <template>
-  <div class="">
+  <div class="flex flex-col w-full">
     <div class="card">
       <Chart
         type="line"
-        :data="chartData"
+        :data="wallet_history_chartData"
         :options="chartOptions"
         class="h-30rem"
       />
     </div>
-    <TreeTable :value="useGlobalStore().wallet.historySorted">
+    <TreeTable
+      scrollable
+      :value="useGlobalStore().wallet.historySorted"
+      tableStyle="min-width: 50rem"
+    >
       <Column field="name" header="" expander> </Column>
       <Column field="symbol" header="Symbol"></Column>
       <Column field="type" header="Type"></Column>
@@ -57,7 +61,6 @@
       </Column>
     </TreeTable>
   </div>
-  {{ wallet_history_chartData }}
 </template>
 
 <script setup lang="ts">
@@ -68,13 +71,15 @@ import { useGlobalStore } from "../../../stores/GlobalStore";
 import CurrencyIcon from "../../icon-helper/CurrencyIcon.vue";
 import { CURRENCIES, E_CURRENCIES } from "../../../static/currencies";
 import { computed, onMounted, ref } from "vue";
-
-onMounted(() => {
-  chartOptions.value = setChartOptions();
-});
+import DataTable from "primevue/datatable";
 
 const chartData = ref();
 const chartOptions = ref();
+
+onMounted(() => {
+  chartData.value = wallet_history_chartData;
+  chartOptions.value = setChartOptions();
+});
 
 const test_data = {
   datasets: [
@@ -143,7 +148,7 @@ const wallet_history_chartData = computed(() => {
         break;
     }
   });
-  chartData.value = {
+  return {
     labels: useGlobalStore().wallet.historyRaw.flatMap((h) => {
       let date = new Date(h.timestamp * 1000);
       return (

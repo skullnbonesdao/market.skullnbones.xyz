@@ -1,7 +1,10 @@
 <template>
-  <Toast />
-  <div class="p-card flex items-center p-2">
-    <div class="flex w-full justify-center" v-if="!useWallet().publicKey.value">
+  <div class="flex items-center">
+    <Toast />
+    <div
+      class="flex m-2 w-full justify-center"
+      v-if="!useWallet().publicKey.value"
+    >
       <WalletMultiButton dark />
     </div>
 

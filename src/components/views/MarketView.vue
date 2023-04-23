@@ -18,29 +18,14 @@
         />
       </div>
     </div>
-    <div class="flex gap-2">
-      <div
-        :class="show_order_setter ? 'basis-5/6' : 'basis-6/6'"
-        class="flex flex-col space-y-2"
-      >
-        <TradingViewChart class="p-card p-1" />
-        <OpenOrders class="o-card" />
+    <div class="flex flex-col md:flex-row gap-2">
+      <div class="flex w-full flex-col space-y-2">
+        <TradingViewChart class="p-card" />
+        <OpenOrders class="p-card" />
       </div>
-
-      <div
-        :class="show_order_setter ? 'basis-2/5' : ''"
-        class="flex flex-col space-y-2"
-      >
-        <div class="flex justify-end p-card">
-          <Button @click="toggle_show_order_setter" severity="info"
-            ><i v-if="show_order_setter" class="pi pi-arrow-right"></i>
-            <i v-else class="pi pi-arrow-left"></i
-          ></Button>
-        </div>
-        <div class="flex flex-col space-y-2">
-          <OrderSettter class="p-card p-2" />
-          <OrderBook class="p-card p-2" />
-        </div>
+      <div class="flex flex-col space-y-2">
+        <OrderSettter class="p-card p-2" />
+        <OrderBook class="p-card p-2" />
       </div>
     </div>
   </div>
