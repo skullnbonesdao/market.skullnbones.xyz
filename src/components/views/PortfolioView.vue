@@ -123,33 +123,36 @@ import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
 import ToggleablesTemplate from "../elements/templates/ToggleablesTemplate.vue";
 
 const text_user_wallet_input = ref(
-  "NPCxfjPxh6pvRJbGbWZjxfkqWfGBvKkqPbtiJar3mom"
+  useWallet().publicKey.value?.toString() ??
+    "NPCxfjPxh6pvRJbGbWZjxfkqWfGBvKkqPbtiJar3mom"
 );
 
 const wallet = useWallet();
 
 const has_valid_pubkey = computed(() => {
   try {
-    return PublicKey.isOnCurve(new PublicKey(useGlobalStore().wallet.address));
+    return PublicKey.isOnCurve(new PublicKey(text_user_wallet_input.value));
   } catch (err) {
     return false;
   }
 });
 
-if (wallet.publicKey) {
-  useGlobalStore().wallet.address =
-    wallet.publicKey.value?.toString() ??
-    "NPCxfjPxh6pvRJbGbWZjxfkqWfGBvKkqPbtiJar3mom";
-}
+// if (wallet.publicKey && useGlobalStore().status.is_initalized) {
+//   useGlobalStore().update_wallet(
+//     useWallet().publicKey.value?.toString() ??
+//       "NPCxfjPxh6pvRJbGbWZjxfkqWfGBvKkqPbtiJar3mom"
+//   );
+// }
 
-watch(
-  () => useWallet().publicKey.value,
-  () => {
-    useGlobalStore().wallet.address =
-      useWallet().publicKey.value?.toString() ?? "";
-    //action_startSearch();
-  }
-);
+// watch(
+//   () => useWallet().publicKey.value,
+//   () => {
+//     if (useWallet().connected && useGlobalStore().status.is_initalized)
+//       useGlobalStore().update_wallet(
+//         useWallet().publicKey.value?.toString() ?? ""
+//       );
+//   }
+// );
 
 // async function action_startSearch() {
 //   useGlobalStore().load_wallet_trades();
