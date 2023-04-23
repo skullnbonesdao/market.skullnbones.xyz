@@ -350,7 +350,7 @@ export function _update_status(
   step_total?: number
 ): Status {
   return {
-    is_initalized: false,
+    is_initalized: true,
     is_loading: is_loading,
     message: message,
     step: step,
