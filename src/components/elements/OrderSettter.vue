@@ -31,15 +31,25 @@
                 v-model="input.price"
               />
               <div class="flex p-inputgroup-addon">
-                <CurrencyIcon
-                  style="width: 20px"
-                  :currency="
-                    CURRENCIES.find(
-                      (c) =>
-                        c.mint === useGlobalStore().symbol.mint_pair.toString()
-                    )
+                <Avatar
+                  size="normal"
+                  shape="circle"
+                  :image="
+                    '/webp/' +
+                    useGlobalStore().symbol.mint_asset.toString() +
+                    '.webp'
                   "
-                />
+                >
+                  <CurrencyIcon
+                    :currency="
+                      CURRENCIES.find(
+                        (c) =>
+                          c.mint ===
+                          useGlobalStore().symbol.mint_pair.toString()
+                      )
+                    "
+                  />
+                </Avatar>
               </div>
             </div>
             <div class="p-inputgroup flex-1">
@@ -50,16 +60,15 @@
                 v-model="input.size"
               />
               <div class="p-inputgroup-addon">
-                <img
-                  style="width: 20px"
-                  class="object-fill rounded-full"
-                  :src="
+                <Avatar
+                  size="normal"
+                  shape="circle"
+                  :image="
                     '/webp/' +
                     useGlobalStore().symbol.mint_asset.toString() +
                     '.webp'
                   "
-                  alt="asset_image"
-                />
+                ></Avatar>
               </div>
             </div>
           </div>
@@ -90,6 +99,7 @@ import { GmClientService, OrderSide } from "@staratlas/factory";
 import { GM_PROGRAM_ID } from "../../static/constants/StarAtlasConstants";
 import { CURRENCIES } from "../../static/currencies";
 import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
+import Avatar from "primevue/avatar";
 
 const toast = useToast();
 

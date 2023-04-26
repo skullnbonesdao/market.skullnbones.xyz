@@ -3,10 +3,9 @@
 </template>
 
 <script setup>
-import { onMounted, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { UDFCompatibleDatafeed } from "@/public/feeds/udf-compatible-datafeed.js";
 import { widget } from "@/public/charting_library";
-import { ref } from "vue";
 import { useGlobalStore } from "@/src/stores/GlobalStore";
 
 const tvWidget = ref(null);
@@ -96,7 +95,7 @@ function createTVChart() {
       .activeChart()
       .onSymbolChanged()
       .subscribe(null, () => {
-        useGlobalStore().updateSymbol(tvWidget.activeChart().symbol());
+        useGlobalStore().update_symbol(tvWidget.activeChart().symbol());
       });
   });
 }

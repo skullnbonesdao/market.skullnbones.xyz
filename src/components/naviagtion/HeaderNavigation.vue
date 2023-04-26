@@ -7,11 +7,17 @@
 
       <template #end>
         <div class="flex flex-row space-x-2 items-center">
-          <Button
+          <div
+            class="pr-2 flex space-x-1"
             v-tooltip.bottom="'Current Transactions per second'"
-            :label="current_tps.toFixed(0) + ' TPS'"
           >
-          </Button>
+            <p>
+              {{ current_tps.toFixed(0) }}
+            </p>
+            <p class="text-xs">
+              {{ " TPS" }}
+            </p>
+          </div>
 
           <WalletMultiButton dark />
           <SwitchTheme />
