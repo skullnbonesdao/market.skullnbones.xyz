@@ -8,6 +8,7 @@
           <order-book-header></order-book-header>
           <div v-for="orderBlock in orders_grouped_buy" :key="orderBlock">
             <order-book-row
+              class=""
               :order="orderBlock"
               side="buy"
               :max_size="max_size_buy"
@@ -18,6 +19,7 @@
           <order-book-header :reverse_order="true"></order-book-header>
           <div v-for="(orderBlock, idx) in orders_grouped_sell" :key="idx">
             <order-book-row
+              class=""
               :order="orderBlock"
               side="sell"
               :max_size="max_size_sell"

@@ -27,9 +27,8 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, PropType } from "vue";
+import { defineProps, PropType, ref } from "vue";
 import { useWallet } from "solana-wallets-vue";
-import { ref, watchEffect, unref } from "vue";
 import { PublicKey } from "@solana/web3.js";
 import { OrderBookOrderMap } from "../../../stores/StaratlasGmStore";
 
