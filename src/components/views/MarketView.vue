@@ -4,7 +4,7 @@
       <AssetInfo
         v-if="!show_search"
         class="p-card w-full p-2"
-        @click="show_search = true"
+        @search_clicked="show_search = true"
       />
 
       <div class="p-card w-full" v-else>
@@ -33,13 +33,10 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Button from "primevue/button";
-import MultiSelect from "primevue/multiselect";
 import AssetInfo from "../elements/AssetInfo.vue";
 import SearchHelperExplorer from "../elements/SearchHelperExplorer.vue";
 import TradingViewChart from "../elements/TradingView/TradingViewChart.vue";
 import { useGlobalStore } from "../../stores/GlobalStore";
-import { PublicKey } from "@solana/web3.js";
 import { useToast } from "primevue/usetoast";
 import OrderSettter from "../elements/OrderSettter.vue";
 import OpenOrders from "../elements/OpenOrders.vue";

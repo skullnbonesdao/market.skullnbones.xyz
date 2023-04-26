@@ -1,25 +1,26 @@
 <template>
   <div
-    @click="
-      () => {
-        show_search_modal = false;
-      }
-    "
     class="flex sm:flex-row flex-col space-x-5 items-center sm:space-y-0 space-y-3"
   >
     <div class="flex flex-row w-full">
       <div class="flex flex-col w-full sm:pr-3 sm:flex-row">
-        <div class="flex w-full flex-row items-center space-x-3">
-          <PairImage
-            :asset_image_url="
-              '/webp/' + useGlobalStore().symbol.mint_asset.toString() + '.webp'
-            "
-            :currency="
-              CURRENCIES.find(
-                (c) => c.mint === useGlobalStore().symbol.mint_pair.toString()
-              )
-            "
-          />
+        <div
+          class="flex w-full flex-row items-center space-x-3 overflow-hidden"
+        >
+          <div class="flex">
+            <PairImage
+              :asset_image_url="
+                '/webp/' +
+                useGlobalStore().symbol.mint_asset.toString() +
+                '.webp'
+              "
+              :currency="
+                CURRENCIES.find(
+                  (c) => c.mint === useGlobalStore().symbol.mint_pair.toString()
+                )
+              "
+            />
+          </div>
           <div class="flex w-full flex-col sm:flex-row items-baseline">
             <h3 class="w-full">
               {{
@@ -106,7 +107,10 @@
           </div>
         </div>
       </div>
-      <div class="flex items-center px-3 border-l">
+      <div
+        class="flex items-center px-3 border-l"
+        @click="$emit('search_clicked')"
+      >
         <i class="pi pi-search" style="font-size: 1.5rem"></i>
       </div>
     </div>
@@ -127,9 +131,9 @@ import AssetRarityBadge from "./badges/AssetRarityBadge.vue";
 import AssetTextBadge from "./badges/AssetTextBadge.vue";
 import AssetItemTypeBadge from "./badges/AssetItemTypeBadge.vue";
 import PairImage from "./PairImage.vue";
+
 const api = new Api({ baseUrl: "https://api2.skullnbones.xyz" });
 
-const show_search_modal = ref(false);
 const price_24_h = ref(0.0);
 const price_last = ref(0.0);
 const price_24_change = ref(0.0);
@@ -178,6 +182,8 @@ async function fetch_price_24_h() {
     });
   price_24_change.value = price_24_h.value / price_last.value;
 }
+
+defineEmits(["search_clicked"]);
 </script>
 
 <style scoped></style>
