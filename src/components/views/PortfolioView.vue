@@ -58,6 +58,14 @@
         <OverviewChilds v-else />
       </div>
 
+      <div class="p-card">
+        <NoData
+          v-if="!useGlobalStore().wallet.profile"
+          class="flex justify-center"
+        />
+        <PlayerProfile v-else />
+      </div>
+
       <div v-if="useGlobalStore().toggleables.load_tokens" class="p-card">
         <Panel header="Tokens" toggleable collapsed>
           <div class="flex justify-around">
@@ -107,7 +115,6 @@
 
 <script setup lang="ts">
 import InputText from "primevue/inputtext";
-import ProgressBar from "primevue/progressbar";
 import Panel from "primevue/panel";
 import { CURRENCIES, E_CURRENCIES } from "../../static/currencies";
 import { useGlobalStore } from "../../stores/GlobalStore";
@@ -117,13 +124,13 @@ import NoData from "../elements/NoData.vue";
 import WalletHistoryTable from "../elements/tables/WalletHistoryTable.vue";
 import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
 import OverviewChilds from "../elements/portfolio_elements/OverviewChilds.vue";
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { PublicKey } from "@solana/web3.js";
 import WalletNftsTable from "../elements/tables/WalletNftsTable.vue";
 import ScoreElement from "../elements/score/ScoreElement.vue";
 import StatusStoreTemplate from "../elements/templates/StatusStoreTemplate.vue";
-import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
 import ToggleablesTemplate from "../elements/templates/ToggleablesTemplate.vue";
+import PlayerProfile from "../elements/portfolio_elements/PlayerProfile.vue";
 
 const text_user_wallet_input = ref(
   useWallet().publicKey.value?.toString() ??
