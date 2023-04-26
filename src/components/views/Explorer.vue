@@ -59,7 +59,7 @@
 
           <Column field="pair" header="Pair">
             <template #body="slotProps">
-              <div class="flex">
+              <div class="flex flex-col items-center">
                 <PairImage
                   :asset_image_url="slotProps.data.pair.asset_image_url"
                   :currency="
@@ -68,6 +68,7 @@
                     ) ?? CURRENCIES[0]
                   "
                 />
+                <p class="text-sm">{{ slotProps.data.pair.symbol }}</p>
               </div>
             </template>
             <template #filter="{ filterModel }">
@@ -227,7 +228,7 @@ import {
   Api,
   Trade,
 } from "../../static/swagger/skullnbones_api/skullnbones_api";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 import { CURRENCIES } from "../../static/currencies";
 import PairImage from "../elements/PairImage.vue";
 import { calc_passed_time } from "../../static/formatting/calc_passed_time";
