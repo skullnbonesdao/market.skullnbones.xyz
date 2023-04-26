@@ -1,6 +1,7 @@
 <template>
   <Toast />
   <div class="flex flex-col w-full">
+    <div></div>
     <DataTable
       resizableColumns
       columnResizeMode="expand"
@@ -58,19 +59,17 @@
       </Column>
       <Column header="Explorer">
         <template #body="slotProps">
-          <div class="flex flex-row items-center space-x-2">
-            <Button class="p-button-outlined p-button-info">
-              <ExplorerIcon
-                class="w-5"
-                :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)"
-              />
-            </Button>
-            <Button class="p-button-outlined p-button-info">
-              <ExplorerIcon
-                class="w-5"
-                :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)"
-              />
-            </Button>
+          <div class="flex flex-row justify-center items-center space-x-2">
+            <ExplorerIcon
+              class="w-5"
+              :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)"
+              :address="slotProps.data.metadata.mintAddress.toString()"
+            />
+            <ExplorerIcon
+              class="w-5"
+              :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)"
+              :address="slotProps.data.metadata.mintAddress.toString()"
+            />
           </div>
         </template>
       </Column>
@@ -83,26 +82,17 @@
 import Button from "primevue/button";
 import ProgressSpinner from "primevue/progressspinner";
 import { useGlobalStore } from "../../../stores/GlobalStore";
-import Skeleton from "primevue/skeleton";
-import Image from "primevue/image";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
 import { ref } from "vue";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import * as spl from "@solana/spl-token";
-import { useWallet } from "solana-wallets-vue";
-import { createBurnNftInstruction } from "@metaplex-foundation/mpl-token-metadata";
-import {
-  keypairIdentity,
-  Metaplex,
-  WalletAdapter,
-  walletAdapterIdentity,
-} from "@metaplex-foundation/js";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   Token,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
+import { useWallet } from "solana-wallets-vue";
 import { useToast } from "primevue/usetoast";
 import Toast from "primevue/toast";
 import { E_EXPLORER, EXPLORER } from "../../../static/explorer";

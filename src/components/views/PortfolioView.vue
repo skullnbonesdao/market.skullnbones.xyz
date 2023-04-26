@@ -1,9 +1,5 @@
 <template>
   <div class="m-2 space-y-2">
-    <div>
-      <StatusStoreTemplate />
-    </div>
-
     <div class="p-card p-2 flex flex-col md:flex-row w-full gap-2">
       <div class="p-fluid flex w-full gap-2">
         <InputText
@@ -128,7 +124,6 @@ import { computed, ref } from "vue";
 import { PublicKey } from "@solana/web3.js";
 import WalletNftsTable from "../elements/tables/WalletNftsTable.vue";
 import ScoreElement from "../elements/score/ScoreElement.vue";
-import StatusStoreTemplate from "../elements/templates/StatusStoreTemplate.vue";
 import ToggleablesTemplate from "../elements/templates/ToggleablesTemplate.vue";
 import PlayerProfile from "../elements/portfolio_elements/PlayerProfile.vue";
 

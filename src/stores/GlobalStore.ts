@@ -94,7 +94,6 @@ export const useGlobalStore = defineStore("globalStore", {
     is_dark: useLocalStorage("is_dark", false),
     rpc: useLocalStorage("rpc_local_store", endpoints_list[0]),
     currencyPrice: {} as BirdsEyePricesResponse,
-    connection: {} as Connection,
     symbol: {
       name: "FOODATLAS",
       mint_asset: new PublicKey("foodQJAztMzX1DKpLaiounNe2BDMds5RNuPC6jsNrDG"),
@@ -143,7 +142,6 @@ export const useGlobalStore = defineStore("globalStore", {
       this.is_dark = !this.is_dark;
     },
     async init() {
-      this.connection = new Connection(this.rpc.url, { httpHeaders: {} });
       await this.sa_api_update();
       await this._currency_update();
     },
@@ -174,7 +172,6 @@ export const useGlobalStore = defineStore("globalStore", {
     async update_connection(rpc_name: string) {
       this.rpc =
         endpoints_list.find((e) => e.name === rpc_name) ?? endpoints_list[0];
-      this.connection = new Connection(this.rpc.url, { httpHeaders: {} });
     },
 
     async _currency_update() {
@@ -241,14 +238,15 @@ export const useGlobalStore = defineStore("globalStore", {
 
     async _load_wallet_tokens() {
       this.wallet.tokenInfo = [];
+      let connection = new Connection(this.rpc.url);
       //Fetch_sol_token
       this.wallet.sol_balance =
-        (await this.connection.getBalance(new PublicKey(this.wallet.address))) *
+        (await connection.getBalance(new PublicKey(this.wallet.address))) *
         Math.pow(10, -9);
 
       //Fetch other_tokens
       let response_tokenAccounts =
-        await this.connection.getParsedTokenAccountsByOwner(
+        await connection.getParsedTokenAccountsByOwner(
           new PublicKey(this.wallet.address),
           {
             programId: new PublicKey(

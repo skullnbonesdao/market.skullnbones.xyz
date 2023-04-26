@@ -9,13 +9,6 @@ import {
   ScoreVarsShipInfo,
 } from "@staratlas/factory";
 import { Connection, Keypair, PublicKey, Transaction } from "@solana/web3.js";
-
-export interface OrderBookOrderMap {
-  size: number;
-  price: number;
-  owners: string[];
-}
-
 import { _update_status, Status, useGlobalStore } from "./GlobalStore";
 import {
   GM_PROGRAM_ID,
@@ -24,6 +17,12 @@ import {
 import { CURRENCIES, E_CURRENCIES, I_CURRENCY } from "../static/currencies";
 import { ShipStakingInfo } from "@staratlas/factory/dist/score";
 import { StarAtlasAPIItem } from "../static/StarAtlasAPIItem";
+
+export interface OrderBookOrderMap {
+  size: number;
+  price: number;
+  owners: string[];
+}
 
 type getInitializeOrderTransactionResponse = {
   transaction: Transaction;
@@ -118,8 +117,8 @@ export const useStaratlasGmStore = defineStore({
     },
 
     async getOpenOrdersForAsset(assetMint: string) {
-      await this.client
-        .getOpenOrdersForAsset(
+      await useStaratlasGmStore()
+        .client.getOpenOrdersForAsset(
           new Connection(useGlobalStore().rpc.url),
           new PublicKey(assetMint),
           new PublicKey(GM_PROGRAM_ID)

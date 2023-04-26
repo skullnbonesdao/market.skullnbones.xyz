@@ -1,7 +1,5 @@
 <template>
   <div class="space-y-2">
-    <StatusStoreTemplate />
-
     <div class="flex flex-row space-x-2">
       <SearchHelperExplorer
         class="flex w-full"
@@ -238,7 +236,6 @@ import { SEARCH_TYPE } from "../../static/search_types_api";
 import NoData from "../elements/NoData.vue";
 import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
 import { FilterMatchMode } from "primevue/api";
-import StatusStoreTemplate from "../elements/templates/StatusStoreTemplate.vue";
 
 let search_input_object = ref({
   type: SEARCH_TYPE.BASE,
