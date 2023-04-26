@@ -30,6 +30,17 @@
                 :minFractionDigits="2"
                 v-model="input.price"
               />
+              <div class="flex p-inputgroup-addon">
+                <CurrencyIcon
+                  style="width: 20px"
+                  :currency="
+                    CURRENCIES.find(
+                      (c) =>
+                        c.mint === useGlobalStore().symbol.mint_pair.toString()
+                    )
+                  "
+                />
+              </div>
             </div>
             <div class="p-inputgroup flex-1">
               <span class="w-15 p-inputgroup-addon uppercase">Size</span>
@@ -38,6 +49,18 @@
                 placeholder="0.0"
                 v-model="input.size"
               />
+              <div class="p-inputgroup-addon">
+                <img
+                  style="width: 20px"
+                  class="object-fill rounded-full"
+                  :src="
+                    '/webp/' +
+                    useGlobalStore().symbol.mint_asset.toString() +
+                    '.webp'
+                  "
+                  alt="asset_image"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -62,11 +85,11 @@ import InputNumber from "primevue/inputnumber";
 import BlockUI from "primevue/blockui";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
-import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { GmClientService, OrderSide } from "@staratlas/factory";
 import { GM_PROGRAM_ID } from "../../static/constants/StarAtlasConstants";
-import BigNumber from "bignumber.js";
+import { CURRENCIES } from "../../static/currencies";
+import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
 
 const toast = useToast();
 

@@ -7,6 +7,12 @@
 
       <template #end>
         <div class="flex flex-row space-x-2 items-center">
+          <Button
+            v-tooltip.bottom="'Current Transactions per second'"
+            :label="current_tps.toFixed(0) + ' TPS'"
+          >
+          </Button>
+
           <WalletMultiButton dark />
           <SwitchTheme />
         </div>
@@ -15,14 +21,27 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { onMounted, ref } from "vue";
 import Menubar from "primevue/menubar";
-import InputText from "primevue/inputtext";
 import { WalletMultiButton } from "solana-wallets-vue";
-import SwitchTheme from "@/src/components/elements/buttons/SwitchTheme.vue";
-import { useGlobalStore } from "@/src/stores/GlobalStore";
-import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
+import SwitchTheme from "../../components/elements/buttons/SwitchTheme.vue";
+import { Connection } from "@solana/web3.js";
+import { useGlobalStore } from "../../stores/GlobalStore";
+
+const current_tps = ref(0);
+
+const solana = new Connection(useGlobalStore().rpc.url);
+onMounted(async () => {
+  const tps_samples = await solana.getRecentPerformanceSamples(10);
+  let tps_sum = 0;
+  let tps_count = 0;
+  tps_samples.forEach((tps) => {
+    tps_sum += tps.numTransactions / tps.samplePeriodSecs;
+    tps_count++;
+  });
+  current_tps.value = tps_sum / tps_count;
+});
 
 const items = ref([
   {
