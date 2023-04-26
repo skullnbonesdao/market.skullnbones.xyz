@@ -21,7 +21,7 @@
     <div class="flex flex-row gap-2">
       <div class="p-card flex flex-col w-full p-2">
         <div class="flex w-full justify-center text-center">
-          © [2022 S&B + HEIM] All Rights Reserved.
+          © [2023 S&B + HEIM] All Rights Reserved.
         </div>
         <div class="flex w-full justify-center">{{ version }}</div>
       </div>
@@ -58,8 +58,8 @@ import {
   Api,
   Cursor,
 } from "../../static/swagger/skullnbones_api/skullnbones_api";
-import InputNumber from "primevue/inputnumber";
 import { open_url } from "../../static/url_tools";
+
 const version = __APP_VERSION__;
 
 const selected_option = ref();
