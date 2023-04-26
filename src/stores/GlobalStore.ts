@@ -15,6 +15,8 @@ import { Metaplex, Nft, SftWithToken } from "@metaplex-foundation/js";
 import { useWallet } from "solana-wallets-vue";
 import { BirdsEyePricesResponse } from "../static/swagger/birdseye_api/birdsyste_pirces_response";
 import { useStaratlasGmStore } from "./StaratlasGmStore";
+import { I_SAG_Player } from "../static/apis/SA_Galaxy/I_SAG_Player";
+import { get_player_profile } from "../static/apis/SA_Galaxy/SA_Galaxy";
 
 export interface Status {
   is_initalized: boolean;
@@ -100,6 +102,7 @@ export const useGlobalStore = defineStore("globalStore", {
     },
     wallet: {
       address: "",
+      profile: {} as I_SAG_Player,
       sol_balance: 0,
       is_web_wallet_connected: false,
       tokenRaw: [] as Array<{
@@ -189,6 +192,12 @@ export const useGlobalStore = defineStore("globalStore", {
     async update_wallet(wallet: string) {
       this.wallet.address = wallet;
       PublicKey.isOnCurve(new PublicKey(wallet));
+
+      get_player_profile(this.wallet.address).then((res) => {
+        if (res) {
+          this.wallet.profile = res;
+        }
+      });
 
       if (this.toggleables.load_tokens) {
         this.status = _update_status(true, "Loading wallet tokens...", 0, 3);
