@@ -12,7 +12,7 @@ const props = defineProps({
 <template>
   <img
     :class="
-      props.currency?.type === E_CURRENCIES.USDC ? '' : 'border-2 border-black'
+      props.currency?.type === E_CURRENCIES.ATLAS ? 'border-2 border-black' : ''
     "
     class="rounded-full"
     :src="props.currency?.image_path"
