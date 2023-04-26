@@ -6,7 +6,6 @@
     <p class="basis-1/2" :class="reverse_order ? 'text-right' : 'text-left'">
       TOTAL
     </p>
-    <!--        <p class="basis-1/3" :class="reverse_order ? 'text-right' : 'text-left'">SIZE</p>-->
     <p class="basis-1/2" :class="reverse_order ? 'text-left' : 'text-right'">
       PRICE
     </p>

@@ -2,10 +2,11 @@
   <div class="flex flex-col text-sm lg:text-base">
     <ProgressSpinner v-if="is_loading" class="flex justify-center" />
 
-    <div v-else class="flex flex-col">
-      <div class="flex sm:flex-row flex-col sm:space-x-1">
-        <div class="basis-1/2">
-          <order-book-header></order-book-header>
+    <div v-else class="flex overflow-hidden">
+      <div class="grid grid-cols-2">
+        <order-book-header></order-book-header>
+        <order-book-header :reverse_order="true"></order-book-header>
+        <div>
           <div v-for="orderBlock in orders_grouped_buy" :key="orderBlock">
             <order-book-row
               class=""
@@ -15,8 +16,7 @@
             />
           </div>
         </div>
-        <div class="basis-1/2">
-          <order-book-header :reverse_order="true"></order-book-header>
+        <div>
           <div v-for="(orderBlock, idx) in orders_grouped_sell" :key="idx">
             <order-book-row
               class=""
