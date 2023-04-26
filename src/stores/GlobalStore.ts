@@ -167,6 +167,10 @@ export const useGlobalStore = defineStore("globalStore", {
       this.symbol.mint_pair = new PublicKey(
         CURRENCIES.find((c) => symbol.includes(c.name))?.mint ?? ""
       );
+
+      useStaratlasGmStore().getOpenOrdersForAsset(
+        this.symbol.mint_asset.toString()
+      );
     },
 
     async update_connection(rpc_name: string) {
