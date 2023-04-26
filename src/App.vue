@@ -4,6 +4,7 @@ import FooterComponent from "./components/naviagtion/FooterComponent.vue";
 import { useGlobalStore } from "./stores/GlobalStore";
 import { useStaratlasGmStore } from "./stores/StaratlasGmStore";
 import { onMounted } from "vue";
+import StatusStoreTemplate from "./components/elements/templates/StatusStoreTemplate.vue";
 
 onMounted(async () => {
   await useGlobalStore().init();
@@ -21,7 +22,10 @@ onMounted(async () => {
     <header>
       <HeaderNavigation />
     </header>
-    <main class="flex-grow">
+    <main class="flex flex-col flex-grow">
+      <div class="mx-2">
+        <StatusStoreTemplate class="m-2" />
+      </div>
       <router-view class="m-2"></router-view>
     </main>
     <footer>

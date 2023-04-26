@@ -1,7 +1,5 @@
 <template>
   <div class="flex flex-col space-y-2">
-    <StatusStoreTemplate class="p-card p-2" />
-
     <div class="flex flex-col w-full justify-center">
       <div
         class="grid grid-cols-2 md:grid-cols-5 gap-2 w-full"
@@ -304,10 +302,9 @@ import ColumnGroup from "primevue/columngroup";
 import Row from "primevue/row";
 import Avatar from "primevue/avatar";
 import { onMounted, ref, watch } from "vue";
-import { ItemType, StarAtlasAPIItem } from "../../static/StarAtlasAPIItem";
+import { ItemType } from "../../static/StarAtlasAPIItem";
 import { useGlobalStore } from "../../stores/GlobalStore";
-import { CURRENCIES, E_CURRENCIES, I_CURRENCY } from "../../static/currencies";
-import { GmClientService, Order, OrderSide } from "@staratlas/factory";
+import { CURRENCIES, E_CURRENCIES } from "../../static/currencies";
 
 import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
 import { FilterMatchMode } from "primevue/api";
@@ -318,8 +315,6 @@ import PriceTemplate from "../elements/templates/PriceTemplate.vue";
 import VwapTemplate from "../elements/templates/VwapTemplate.vue";
 import ExplorerIcon from "../elements/icons_images/ExplorerIcon.vue";
 import { E_EXPLORER, EXPLORER } from "../../static/explorer";
-import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
-import StatusStoreTemplate from "../elements/templates/StatusStoreTemplate.vue";
 
 const is_loading = ref(true);
 
