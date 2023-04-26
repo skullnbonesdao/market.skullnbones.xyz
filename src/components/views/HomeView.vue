@@ -8,12 +8,12 @@
           <h1
             class="max-w-2xl mb-4 text-4xl font-extrabold leading-none md:text-5xl xl:text-6xl text-gray-100 dark:text-gray-300"
           >
-            StarAtlas
+            RogueMarket
           </h1>
           <div
-            class="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl text-gray-100 dark:text-gray-300 animate-fade-in-down animate-count-1 animate-duration-2s fw100"
+            class="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-gray-300 animate-fade-in-down animate-count-1 animate-duration-2s fw100"
           >
-            RogueMarket
+            Buy Bitcoin!
           </div>
 
           <p
