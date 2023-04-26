@@ -12,7 +12,7 @@
             v-tooltip.bottom="'Current Transactions per second'"
           >
             <p>
-              {{ current_tps.toFixed(0) }}
+              {{ useTPS().tps.toFixed(0) }}
             </p>
             <p class="text-xs">
               {{ " TPS" }}
@@ -32,21 +32,11 @@ import { onMounted, ref } from "vue";
 import Menubar from "primevue/menubar";
 import { WalletMultiButton } from "solana-wallets-vue";
 import SwitchTheme from "../../components/elements/buttons/SwitchTheme.vue";
-import { Connection } from "@solana/web3.js";
-import { useGlobalStore } from "../../stores/GlobalStore";
+import { useTPS } from "../../stores/TPS";
+import { endpoints_list, useGlobalStore } from "../../stores/GlobalStore";
 
-const current_tps = ref(0);
-
-const solana = new Connection(useGlobalStore().rpc.url);
 onMounted(async () => {
-  const tps_samples = await solana.getRecentPerformanceSamples(10);
-  let tps_sum = 0;
-  let tps_count = 0;
-  tps_samples.forEach((tps) => {
-    tps_sum += tps.numTransactions / tps.samplePeriodSecs;
-    tps_count++;
-  });
-  current_tps.value = tps_sum / tps_count;
+  useTPS().pollData(useGlobalStore().rpc.url ?? endpoints_list[2].url);
 });
 
 const items = ref([
