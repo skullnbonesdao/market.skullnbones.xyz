@@ -1,6 +1,7 @@
 <template>
   <Toast />
   <div class="flex flex-col w-full">
+    <div></div>
     <DataTable
       resizableColumns
       columnResizeMode="expand"
