@@ -193,6 +193,7 @@ export const useGlobalStore = defineStore("globalStore", {
       this.wallet.address = wallet;
       PublicKey.isOnCurve(new PublicKey(wallet));
 
+      this.wallet.profile = {} as never;
       get_player_profile(this.wallet.address).then((res) => {
         if (res) {
           this.wallet.profile = res;
