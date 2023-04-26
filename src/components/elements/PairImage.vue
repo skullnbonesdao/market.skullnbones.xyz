@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex">
     <div class="relative flex">
       <div class="absolute top-0 -left-6">
         <CurrencyIcon class="h-12" :currency="props.currency" />

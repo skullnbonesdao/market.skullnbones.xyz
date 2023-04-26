@@ -4,7 +4,6 @@ import {
   Connection,
   ParsedAccountData,
   PublicKey,
-  RpcResponseAndContext,
 } from "@solana/web3.js";
 import { ItemType, StarAtlasAPIItem } from "../static/StarAtlasAPIItem";
 import { useLocalStorage } from "@vueuse/core";
@@ -12,17 +11,9 @@ import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
 import { Api, Trade } from "../static/swagger/skullnbones_api/skullnbones_api";
 import { get_multi_price } from "../static/swagger/birdseye_api/birdseye_api";
 
-import {
-  FindNftsByOwnerOutput,
-  Metaplex,
-  Nft,
-  Sft,
-  SftWithToken,
-} from "@metaplex-foundation/js";
+import { Metaplex, Nft, SftWithToken } from "@metaplex-foundation/js";
 import { useWallet } from "solana-wallets-vue";
 import { BirdsEyePricesResponse } from "../static/swagger/birdseye_api/birdsyste_pirces_response";
-import * as metadata from "@metaplex-foundation/mpl-token-metadata";
-import { Token } from "@solana/spl-token";
 import { useStaratlasGmStore } from "./StaratlasGmStore";
 
 export interface Status {
@@ -168,8 +159,13 @@ export const useGlobalStore = defineStore("globalStore", {
 
     update_symbol(symbol: string, mint_asset: string, mint_currency: string) {
       this.symbol.name = symbol;
-      this.symbol.mint_asset = new PublicKey(mint_asset);
-      this.symbol.mint_pair = new PublicKey(mint_currency);
+      this.symbol.mint_asset = new PublicKey(
+        this.sa_api_data.find((asset) => symbol.includes(asset.symbol))?.mint ??
+          ""
+      );
+      this.symbol.mint_pair = new PublicKey(
+        CURRENCIES.find((c) => symbol.includes(c.name))?.mint ?? ""
+      );
     },
 
     async update_connection(rpc_name: string) {

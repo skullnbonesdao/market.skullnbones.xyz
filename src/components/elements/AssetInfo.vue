@@ -9,6 +9,7 @@
         >
           <div class="flex">
             <PairImage
+              class=""
               :asset_image_url="
                 '/webp/' +
                 useGlobalStore().symbol.mint_asset.toString() +
