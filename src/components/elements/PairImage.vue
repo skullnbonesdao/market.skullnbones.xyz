@@ -1,14 +1,15 @@
 <template>
-  <div class="flex">
-    <div class="relative flex">
-      <div class="absolute top-0 -left-6">
-        <CurrencyIcon class="h-12" :currency="props.currency" />
+  <div class="">
+    <div class="relative h-13 w-20">
+      <div class="absolute left-7">
+        <Avatar
+          size="large"
+          shape="circle"
+          :image="props.asset_image_url"
+        ></Avatar>
       </div>
-      <Avatar
-        size="large"
-        shape="circle"
-        :image="props.asset_image_url"
-      ></Avatar>
+
+      <CurrencyIcon class="relative w-12" :currency="props.currency" />
     </div>
   </div>
 </template>
