@@ -1,6 +1,6 @@
 <template>
   <div class="p-card">
-    <Panel :header="'SA-Profile'" toggleable>
+    <Panel :header="'SA-Profile'" toggleable collapsed>
       <NoData
         v-if="!useGlobalStore().wallet.profile._id"
         class="flex justify-center w-full"
@@ -16,7 +16,7 @@
         <Fieldset legend="Faction Rank" class="flex items-center">
           <p>{{ useGlobalStore().wallet.profile.factionRank }}</p>
         </Fieldset>
-        <Fieldset legend="Balance" class="flex items-center">
+        <Fieldset legend="Value" class="flex items-center">
           <div class="flex flex-row space-x-2 items-center">
             <p>{{ useGlobalStore().wallet.profile.balance }}</p>
             <CurrencyIcon
