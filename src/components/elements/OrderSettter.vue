@@ -32,7 +32,7 @@
               />
               <div class="flex p-inputgroup-addon">
                 <Avatar
-                  size="small"
+                  size="normal"
                   shape="circle"
                   :image="
                     '/webp/' +
@@ -61,7 +61,7 @@
               />
               <div class="p-inputgroup-addon">
                 <Avatar
-                  size="small"
+                  size="normal"
                   shape="circle"
                   :image="
                     '/webp/' +
