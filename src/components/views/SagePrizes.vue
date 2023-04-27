@@ -137,8 +137,7 @@ import { useWallet } from "solana-wallets-vue";
 import NoData from "../elements/NoData.vue";
 
 const text_user_wallet_input = ref(
-  useWallet().publicKey.value?.toString() ??
-    "862HwAZzNWwjdNCNYcTv9PbTpesxRuJehoQKB3aPVQK7"
+  useWallet().publicKey.value?.toString() ?? ""
 );
 
 const table_filters = ref({
