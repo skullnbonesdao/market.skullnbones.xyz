@@ -100,9 +100,10 @@ import Avatar from "primevue/avatar";
 import { FilterMatchMode } from "primevue/api";
 import { useGlobalStore } from "../../stores/GlobalStore";
 import { calc_passed_time } from "../../static/formatting/calc_passed_time";
+import { useWallet } from "solana-wallets-vue";
 
 const text_user_wallet_input = ref(
-  "862HwAZzNWwjdNCNYcTv9PbTpesxRuJehoQKB3aPVQK7"
+  useWallet().publicKey.value?.toString() ?? ""
 );
 
 const table_filters = ref({
