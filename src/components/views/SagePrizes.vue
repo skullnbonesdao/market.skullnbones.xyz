@@ -43,7 +43,7 @@
           <Avatar
             :image="'/webp/' + slotProps.data.mint + '.webp'"
             class="mr-2"
-            size="normal"
+            size="large"
             shape="circle"
           />
         </template>
