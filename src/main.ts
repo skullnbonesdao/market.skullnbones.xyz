@@ -38,8 +38,7 @@ import "./styles_wallet_connect.css";
 import Explorer from "./components/views/Explorer.vue";
 import MarketTable from "./components/views/MarketTable.vue";
 import AboutView from "./components/views/AboutView.vue";
-import { useStaratlasGmStore } from "./stores/StaratlasGmStore";
-import { useGlobalStore } from "./stores/GlobalStore";
+import SagePrizes from "./components/views/SagePrizes.vue";
 
 const walletOptions = {
   wallets: [
@@ -56,6 +55,7 @@ const routes = [
   { path: "/market_table", component: MarketTable },
   { path: "/explorer", component: Explorer },
   { path: "/portfolio", component: PortfolioView },
+  { path: "/sageprizes", component: SagePrizes },
   { path: "/about", component: AboutView },
 ];
 

@@ -70,6 +70,16 @@ const items = ref([
     to: "/portfolio",
   },
   {
+    label: "Sage",
+    icon: "pi pi-fw pi-sitemap",
+    items: [
+      {
+        label: "Prizes",
+        to: "sageprizes",
+      },
+    ],
+  },
+  {
     label: "About",
     icon: "pi pi-fw pi-info",
     to: "/about",

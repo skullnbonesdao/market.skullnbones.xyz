@@ -16,7 +16,11 @@ import { useWallet } from "solana-wallets-vue";
 import { BirdsEyePricesResponse } from "../static/swagger/birdseye_api/birdsyste_pirces_response";
 import { useStaratlasGmStore } from "./StaratlasGmStore";
 import { I_SAG_Player } from "../static/apis/SA_Galaxy/I_SAG_Player";
-import { get_player_profile } from "../static/apis/SA_Galaxy/SA_Galaxy";
+import {
+  get_player_prizes,
+  get_player_profile,
+} from "../static/apis/SA_Galaxy/SA_Galaxy";
+import { I_SagePrize } from "../static/apis/SA_Galaxy/I_Sage_Prizes";
 
 export interface Status {
   is_initalized: boolean;
@@ -112,6 +116,7 @@ export const useGlobalStore = defineStore("globalStore", {
       historySorted: [] as Array<TableGroupedHistory>,
       historyRaw: [] as Array<Trade>,
       nfts: {} as NftsData,
+      prizes: {} as Array<I_SagePrize>,
     },
     sa_api_data: [] as StarAtlasAPIItem[],
   }),
@@ -156,6 +161,12 @@ export const useGlobalStore = defineStore("globalStore", {
       this.toggleables.load_nfts = load_nfts;
       this.toggleables.load_score = load_score;
       this.toggleables.load_history = load_history;
+    },
+
+    update_prizes(wallet: string) {
+      get_player_prizes(wallet).then((resp) => {
+        if (resp) this.wallet.prizes = resp;
+      });
     },
 
     update_symbol(symbol: string, mint_asset: string, mint_currency: string) {
