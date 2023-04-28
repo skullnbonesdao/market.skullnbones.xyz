@@ -1,7 +1,7 @@
 <template>
   <ApolloQuery
     :query="
-      (gql) => gql`
+      (gql: any) => gql`
         query MyHelloQuery($search_string: String!, $limit: Int!) {
           trades(
             limit: $limit
@@ -222,5 +222,5 @@ const props = defineProps({
   },
 });
 </script>
-
+NPCxfjPxh6pvRJbGbWZjxfkqWfGBvKkqPbtiJar3mom
 <style scoped></style>

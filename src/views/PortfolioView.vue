@@ -46,13 +46,7 @@
         </div>
       </div>
 
-      <div class="p-card">
-        <NoData
-          v-if="!useGlobalStore().wallet.tokenInfo.length"
-          class="flex justify-center"
-        />
-        <OverviewChilds v-else />
-      </div>
+      <OverviewChilds />
 
       <div class="p-card">
         <NoData
@@ -112,20 +106,20 @@
 <script setup lang="ts">
 import InputText from "primevue/inputtext";
 import Panel from "primevue/panel";
-import { CURRENCIES, E_CURRENCIES } from "../../static/currencies";
-import { useGlobalStore } from "../../stores/GlobalStore";
+import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
+import { useGlobalStore } from "../stores/GlobalStore";
 import { useWallet } from "solana-wallets-vue";
-import WalletTokensTable from "../elements/tables/WalletTokensTable.vue";
-import NoData from "../elements/NoData.vue";
-import WalletHistoryTable from "../elements/tables/WalletHistoryTable.vue";
-import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
-import OverviewChilds from "../elements/portfolio_elements/OverviewChilds.vue";
+import WalletTokensTable from "../components/elements/tables/WalletTokensTable.vue";
+import NoData from "../components/elements/NoData.vue";
+import WalletHistoryTable from "../components/elements/tables/WalletHistoryTable.vue";
+import CurrencyIcon from "../components/icon-helper/CurrencyIcon.vue";
+import OverviewChilds from "../components/elements/portfolio_elements/OverviewChilds.vue";
 import { computed, ref } from "vue";
 import { PublicKey } from "@solana/web3.js";
-import WalletNftsTable from "../elements/tables/WalletNftsTable.vue";
-import ScoreElement from "../elements/score/ScoreElement.vue";
-import ToggleablesTemplate from "../elements/templates/ToggleablesTemplate.vue";
-import PlayerProfile from "../elements/portfolio_elements/PlayerProfile.vue";
+import WalletNftsTable from "../components/elements/tables/WalletNftsTable.vue";
+import ScoreElement from "../components/elements/score/ScoreElement.vue";
+import ToggleablesTemplate from "../components/elements/templates/ToggleablesTemplate.vue";
+import PlayerProfile from "../components/elements/portfolio_elements/PlayerProfile.vue";
 
 const text_user_wallet_input = ref(
   useWallet().publicKey.value?.toString() ??
@@ -141,29 +135,6 @@ const has_valid_pubkey = computed(() => {
     return false;
   }
 });
-
-// if (wallet.publicKey && useGlobalStore().status.is_initalized) {
-//   useGlobalStore().update_wallet(
-//     useWallet().publicKey.value?.toString() ??
-//       "NPCxfjPxh6pvRJbGbWZjxfkqWfGBvKkqPbtiJar3mom"
-//   );
-// }
-
-// watch(
-//   () => useWallet().publicKey.value,
-//   () => {
-//     if (useWallet().connected && useGlobalStore().status.is_initalized)
-//       useGlobalStore().update_wallet(
-//         useWallet().publicKey.value?.toString() ?? ""
-//       );
-//   }
-// );
-
-// async function action_startSearch() {
-//   useGlobalStore().load_wallet_trades();
-//   useGlobalStore().load_wallet_tokens();
-//   useGlobalStore().load_wallet_nfts();
-// }
 </script>
 
 <style scoped></style>

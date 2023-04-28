@@ -30,5 +30,6 @@ export const apolloClient = new ApolloClient({
 });
 
 export const apolloProvider = createApolloProvider({
+  // @ts-ignore
   defaultClient: apolloClient,
 });

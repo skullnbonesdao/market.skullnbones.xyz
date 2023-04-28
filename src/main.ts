@@ -14,8 +14,8 @@ import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
 import "./themes/themes/soho/soho-light/theme.scss";
 
-import HomeView from "./components/views/HomeView.vue";
-import MarketView from "./components/views/MarketView.vue";
+import HomeView from "./views/HomeView.vue";
+import MarketView from "./views/MarketView.vue";
 import { createRouter, createWebHashHistory } from "vue-router";
 
 import "chartjs-adapter-date-fns";
@@ -34,14 +34,14 @@ import {
   SlopeWalletAdapter,
   SolflareWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
-import PortfolioView from "./components/views/PortfolioView.vue";
+import PortfolioView from "./views/PortfolioView.vue";
 
 import "./styles_wallet_connect.css";
-import Explorer from "./components/views/Explorer.vue";
-import MarketTable from "./components/views/MarketTable.vue";
-import AboutView from "./components/views/AboutView.vue";
-import SagePrizes from "./components/views/SagePrizes.vue";
-import TestView from "./components/views/TestView.vue";
+import Explorer from "./views/Explorer.vue";
+import MarketTable from "./views/MarketTable.vue";
+import AboutView from "./views/AboutView.vue";
+import SagePrizes from "./views/SagePrizes.vue";
+import TestView from "./views/TestView.vue";
 import { apolloClient, apolloProvider } from "./static/graphql/testql";
 import { DefaultApolloClient } from "@vue/apollo-composable";
 

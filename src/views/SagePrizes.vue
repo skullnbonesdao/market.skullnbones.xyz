@@ -29,7 +29,7 @@
             :image="
               '/webp/' +
               useGlobalStore().wallet.prizes?.find((p) => p.name === object)
-                .mint +
+                ?.mint +
               '.webp'
             "
             size="large"
@@ -131,10 +131,10 @@ import { ref, watch } from "vue";
 import InputText from "primevue/inputtext";
 import Avatar from "primevue/avatar";
 import { FilterMatchMode } from "primevue/api";
-import { useGlobalStore } from "../../stores/GlobalStore";
-import { calc_passed_time } from "../../static/formatting/calc_passed_time";
+import { useGlobalStore } from "../stores/GlobalStore";
+import { calc_passed_time } from "../static/formatting/calc_passed_time";
 import { useWallet } from "solana-wallets-vue";
-import NoData from "../elements/NoData.vue";
+import NoData from "../components/elements/NoData.vue";
 
 const text_user_wallet_input = ref(
   useWallet().publicKey.value?.toString() ?? ""

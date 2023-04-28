@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ExplorerTable from "../elements/tables/ExplorerTable.vue";
+import ExplorerTable from "../components/elements/tables/ExplorerTable.vue";
 import InputText from "primevue/inputtext";
 import { ref } from "vue";
 import Dropdown from "primevue/dropdown";

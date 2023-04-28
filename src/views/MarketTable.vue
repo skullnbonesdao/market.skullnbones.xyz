@@ -302,19 +302,19 @@ import ColumnGroup from "primevue/columngroup";
 import Row from "primevue/row";
 import Avatar from "primevue/avatar";
 import { onMounted, ref, watch } from "vue";
-import { ItemType } from "../../static/StarAtlasAPIItem";
-import { useGlobalStore } from "../../stores/GlobalStore";
-import { CURRENCIES, E_CURRENCIES } from "../../static/currencies";
+import { ItemType } from "../static/StarAtlasAPIItem";
+import { useGlobalStore } from "../stores/GlobalStore";
+import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
 
-import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
+import { useStaratlasGmStore } from "../stores/StaratlasGmStore";
 import { FilterMatchMode } from "primevue/api";
 import InputText from "primevue/inputtext";
-import TokenPriceElement from "../elements/TokenPriceElement.vue";
-import PercentageVwapTemplate from "../elements/templates/PercentageTemplate.vue";
-import PriceTemplate from "../elements/templates/PriceTemplate.vue";
-import VwapTemplate from "../elements/templates/VwapTemplate.vue";
-import ExplorerIcon from "../elements/icons_images/ExplorerIcon.vue";
-import { E_EXPLORER, EXPLORER } from "../../static/explorer";
+import TokenPriceElement from "../components/elements/TokenPriceElement.vue";
+import PercentageVwapTemplate from "../components/elements/templates/PercentageTemplate.vue";
+import PriceTemplate from "../components/elements/templates/PriceTemplate.vue";
+import VwapTemplate from "../components/elements/templates/VwapTemplate.vue";
+import ExplorerIcon from "../components/elements/icons_images/ExplorerIcon.vue";
+import { E_EXPLORER, EXPLORER } from "../static/explorer";
 
 const is_loading = ref(true);
 

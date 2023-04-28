@@ -36,7 +36,7 @@
 
 <style lang="scss" scoped>
 .background {
-  background-image: url("../../assets/rouge_market_background_1.webp");
+  background-image: url("../assets/rouge_market_background_1.webp");
   background-repeat: no-repeat, repeat;
   background-size: cover;
 }
