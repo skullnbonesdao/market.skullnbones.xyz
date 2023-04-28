@@ -1,4 +1,4 @@
-import { createApp } from "vue";
+import { createApp, h, provide } from "vue";
 import App from "./App.vue";
 import { createPinia } from "pinia";
 
@@ -19,6 +19,8 @@ import MarketView from "./components/views/MarketView.vue";
 import { createRouter, createWebHashHistory } from "vue-router";
 
 import "chartjs-adapter-date-fns";
+// @ts-ignore
+import VueApolloComponents from "@vue/apollo-components";
 
 // @ts-ignore
 import SolanaWallets from "solana-wallets-vue";
@@ -39,6 +41,9 @@ import Explorer from "./components/views/Explorer.vue";
 import MarketTable from "./components/views/MarketTable.vue";
 import AboutView from "./components/views/AboutView.vue";
 import SagePrizes from "./components/views/SagePrizes.vue";
+import TestView from "./components/views/TestView.vue";
+import { apolloClient, apolloProvider } from "./static/graphql/testql";
+import { DefaultApolloClient } from "@vue/apollo-composable";
 
 const walletOptions = {
   wallets: [
@@ -57,6 +62,7 @@ const routes = [
   { path: "/portfolio", component: PortfolioView },
   { path: "/sageprizes", component: SagePrizes },
   { path: "/about", component: AboutView },
+  { path: "/test", component: TestView },
 ];
 
 const router = createRouter({
@@ -65,7 +71,13 @@ const router = createRouter({
   routes, // short for `routes: routes`
 });
 
-const app = createApp(App);
+const app = createApp({
+  setup() {
+    provide(DefaultApolloClient, apolloClient);
+  },
+
+  render: () => h(App),
+});
 app
   .component("Button", Button)
   .component("Toast", Toast)
@@ -73,6 +85,8 @@ app
 const pinia = createPinia();
 
 app
+  .use(apolloProvider)
+  .use(VueApolloComponents)
   .use(pinia)
   .use(PrimeVue)
   .use(ToastService)

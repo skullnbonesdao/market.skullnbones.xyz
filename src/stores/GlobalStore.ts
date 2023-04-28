@@ -21,6 +21,8 @@ import {
   get_player_profile,
 } from "../static/apis/SA_Galaxy/SA_Galaxy";
 import { I_SagePrize } from "../static/apis/SA_Galaxy/I_Sage_Prizes";
+import VueApollo from "vue-apollo";
+import { apolloClient } from "../static/graphql/testql";
 
 export interface Status {
   is_initalized: boolean;
@@ -97,6 +99,7 @@ export const useGlobalStore = defineStore("globalStore", {
     }) as unknown as Toggables,
     is_dark: useLocalStorage("is_dark", false),
     rpc: useLocalStorage("rpc_local_store", endpoints_list[0]),
+    api: new VueApollo({ defaultClient: apolloClient }),
     currencyPrice: {} as BirdsEyePricesResponse,
     symbol: {
       name: "FOODATLAS",

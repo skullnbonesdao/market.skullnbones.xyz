@@ -1,0 +1,7 @@
+query tradesTest {
+    trades(limit: 10) {
+        asset_mint
+        asset_receiving_wallet
+        block
+    }
+}
