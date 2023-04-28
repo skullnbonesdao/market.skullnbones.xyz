@@ -20,6 +20,12 @@
         <ToggleablesTemplate />
       </div>
     </div>
+    <div>
+      <PortfolioHistoryTable
+        :user_wallet="useGlobalStore().wallet.address"
+      ></PortfolioHistoryTable>
+    </div>
+
     <div v-if="!has_valid_pubkey" class="p-card">
       <NoData text="Invalid PublicKey!" class="flex justify-center" />
     </div>
@@ -120,6 +126,7 @@ import WalletNftsTable from "../components/elements/tables/WalletNftsTable.vue";
 import ScoreElement from "../components/elements/score/ScoreElement.vue";
 import ToggleablesTemplate from "../components/elements/templates/ToggleablesTemplate.vue";
 import PlayerProfile from "../components/elements/portfolio_elements/PlayerProfile.vue";
+import PortfolioHistoryTable from "../components/elements/portfolio_elements/PortfolioHistoryTable.vue";
 
 const text_user_wallet_input = ref(
   useWallet().publicKey.value?.toString() ??
