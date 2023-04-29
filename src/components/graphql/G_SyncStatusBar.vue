@@ -26,7 +26,11 @@
         <!-- Result -->
         <div v-else-if="data" class="result apollo p-card">
           <ProgressBar
-            :value="parseFloat(calc_range_percentage(data?.cursors).toFixed(1))"
+            :value="
+              parseFloat(
+                calc_range_percentage(data?.cursors)?.toFixed(1) ?? '0'
+              )
+            "
           ></ProgressBar>
         </div>
       </template>

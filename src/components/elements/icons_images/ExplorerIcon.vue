@@ -10,7 +10,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="hover:animate-spin" v-tooltip.bottom="'Open: ' + explorer.name">
+  <div class="hover:animate-spin" v-tooltip.bottom="'Open: ' + explorer?.name">
     <div
       v-if="explorer?.type === E_EXPLORER.STARATLAS"
       class="border-1 border-black rounded-full"

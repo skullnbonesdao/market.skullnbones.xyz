@@ -2,7 +2,7 @@
   <div>
     <ApolloQuery
       :query="
-        (gql) => gql`
+        (gql:any) => gql`
           query MyQuery($currency_mint: String!, $wallet_address: String!) {
             trades_aggregate(
               where: {

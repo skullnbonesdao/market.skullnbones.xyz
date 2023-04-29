@@ -50,7 +50,7 @@
 
             <G_VolumeElement
               :currency_mint="
-                CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC).mint
+                CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint
               "
               :wallet_address="useGlobalStore().wallet.address"
             ></G_VolumeElement>
@@ -62,7 +62,7 @@
             />
             <G_VolumeElement
               :currency_mint="
-                CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS).mint
+                CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint
               "
               :wallet_address="useGlobalStore().wallet.address"
             ></G_VolumeElement>
@@ -106,28 +106,6 @@ const volume = computed(() => {
       }
     }
   `;
-});
-
-const volume_usdc = computed(() => {
-  useGlobalStore()
-    .wallet.historyRaw.filter(
-      (h) =>
-        h.currency_mint ===
-        CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint
-    )
-    .flatMap((h) => h.price * h.asset_change)
-    .reduce((sum, current) => sum + current, 0);
-});
-
-const volume_atlas = computed(() => {
-  useGlobalStore()
-    .wallet.historyRaw.filter(
-      (h) =>
-        h.currency_mint ===
-        CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint
-    )
-    .flatMap((h) => h.price * h.asset_change)
-    .reduce((sum, current) => sum + current, 0);
 });
 </script>
 

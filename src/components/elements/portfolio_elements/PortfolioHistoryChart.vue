@@ -1,32 +1,50 @@
 <template>
   <ApolloQuery
     :query="
-      (gql: any) => gql`
-        query wallet_history($user_wallet: String!, $atlas_mint: String!, $usdc_mint: String!, $limit: Int!) {
+      (gql) => gql`
+        query wallet_history(
+          $user_wallet: String!
+          $atlas_mint: String!
+          $usdc_mint: String!
+          $limit: Int!
+        ) {
           atlas: trades(
             limit: $limit
             order_by: { block: desc }
             where: {
-            _and: [{ currency_mint : {_eq : $atlas_mint }},{
-                    _or: [{ order_initializer: { _eq: $user_wallet }
-                    },{ order_taker: { _eq: $user_wallet }
-            }]}]}
+              _and: [
+                { currency_mint: { _eq: $atlas_mint } }
+                {
+                  _or: [
+                    { order_initializer: { _eq: $user_wallet } }
+                    { order_taker: { _eq: $user_wallet } }
+                  ]
+                }
+              ]
+            }
           ) {
-                label: timestamp_ts
-                data: total_cost
-         }
-         usdc: trades(
+            label: timestamp_ts
+            data: total_cost
+          }
+          usdc: trades(
             limit: $limit
             order_by: { block: desc }
             where: {
-            _and: [{ currency_mint : {_eq : $usdc_mint }},{
-                    _or: [{ order_initializer: { _eq: $user_wallet }
-                    },{ order_taker: { _eq: $user_wallet }
-            }]}]}
+              _and: [
+                { currency_mint: { _eq: $usdc_mint } }
+                {
+                  _or: [
+                    { order_initializer: { _eq: $user_wallet } }
+                    { order_taker: { _eq: $user_wallet } }
+                  ]
+                }
+              ]
+            }
           ) {
-                label: timestamp_ts
-                data: total_cost
-         }}
+            label: timestamp_ts
+            data: total_cost
+          }
+        }
       `
     "
     :variables="{ limit, user_wallet, atlas_mint, usdc_mint }"
@@ -58,11 +76,14 @@
   </ApolloQuery>
 </template>
 
-<script setup lang="ts">
-import NoData from "../NoData.vue";
-import graphql2chartjs from "graphql2chartjs";
-import Chart from "primevue/chart";
-import { useGlobalStore } from "../../../stores/GlobalStore";
+<script lang="js">
+export default {
+    name: "PortfolioHistoryChart",
+};
+
+import * as g2c from "graphql2chartjs";
+import {useGlobalStore} from "../../../stores/GlobalStore";
+import {defineProps} from 'vue'
 
 const props = defineProps({
   user_wallet: {
@@ -120,8 +141,8 @@ const chart_options = {
   },
 };
 
-function map_history_chart(data: any) {
-  return new graphql2chartjs(data, (dataSetName: any, dataPoint: any) => {
+function map_history_chart(data) {
+  return new g2c.graphql2chartjs(data, (dataSetName, dataPoint) => {
     console.log(dataSetName);
     if (dataSetName === "usdc") {
       return {

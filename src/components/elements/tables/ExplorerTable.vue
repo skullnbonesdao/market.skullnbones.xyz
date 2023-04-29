@@ -46,7 +46,7 @@
           :value="data.trades"
           tableStyle="min-width: 50rem"
           sort-field="timestamp"
-          sort-order="-1"
+          :sort-order="-1"
         >
           <Column header="Pair">
             <template #body="slotProps">
