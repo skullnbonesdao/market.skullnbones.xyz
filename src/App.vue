@@ -15,13 +15,13 @@ onMounted(async () => {
 
 <template>
   <body
-    class="flex flex-col min-h-screen"
+    class="flex flex-col"
     :class="useGlobalStore().is_dark ? '' : 'bg-gray-200'"
   >
-    <header>
+    <header class="sticky top-0 z-50">
       <HeaderNavigation />
     </header>
-    <main class="flex flex-col flex-grow">
+    <main class="relative flex flex-col flex-grow">
       <div class="mx-2">
         <StatusStoreTemplate class="m-2" />
       </div>

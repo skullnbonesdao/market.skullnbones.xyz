@@ -1,8 +1,8 @@
 <template>
-  <div class="card relative z-2">
+  <nav>
     <Menubar :model="items">
       <template #start class="">
-        <img alt="logo" src="/public/logo.png" class="mr-2 h-12" />
+        <Avatar image="/public/logo.png" size="large" shape="circle"></Avatar>
       </template>
 
       <template #end>
@@ -24,10 +24,11 @@
         </div>
       </template>
     </Menubar>
-  </div>
+  </nav>
 </template>
 
 <script setup lang="ts">
+import Avatar from "primevue/avatar";
 import { onMounted, ref } from "vue";
 import Menubar from "primevue/menubar";
 import { WalletMultiButton } from "solana-wallets-vue";
@@ -86,3 +87,14 @@ const items = ref([
   },
 ]);
 </script>
+
+<style scoped>
+nav {
+  z-index: 10;
+}
+
+nav.scrolled {
+  @apply shadow-2xl;
+  border-bottom: 0px;
+}
+</style>
