@@ -26,6 +26,7 @@
       v-if="!is_valid_publicKey(text_user_wallet_input)"
       text="Invalid PublicKey!"
     ></NoData>
+    {{ mapped_prize_parents }}
 
     <NoData
       class="p-card justify-center"

@@ -3,7 +3,7 @@ export interface I_SagePrize {
   _id: string;
   sector?: Sector;
   name: string;
-  mint: string;
+  mint?: string;
   quantity: number;
   charges: number;
   spawnTimestamp: number;
