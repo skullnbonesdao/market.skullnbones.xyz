@@ -92,11 +92,7 @@
       <div v-if="useGlobalStore().toggleables.load_history" class="p-card">
         <Panel header="Market-History" toggleable>
           <div class="flex justify-around">
-            <NoData
-              class="flex justify-center"
-              v-if="!useGlobalStore().wallet.historySorted.length"
-            />
-            <WalletHistoryTable v-else />
+            <WalletHistoryElement />
           </div>
         </Panel>
       </div>
@@ -112,7 +108,7 @@ import { useGlobalStore } from "../stores/GlobalStore";
 import { useWallet } from "solana-wallets-vue";
 import WalletTokensTable from "../components/elements/tables/WalletTokensTable.vue";
 import NoData from "../components/elements/NoData.vue";
-import WalletHistoryTable from "../components/elements/tables/WalletHistoryTable.vue";
+import WalletHistoryElement from "../components/elements/tables/WalletHistoryTable.vue";
 import CurrencyIcon from "../components/icon-helper/CurrencyIcon.vue";
 import OverviewChilds from "../components/elements/portfolio_elements/OverviewChilds.vue";
 import { computed, ref } from "vue";

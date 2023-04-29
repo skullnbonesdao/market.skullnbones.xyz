@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PropType } from "vue";
-import { EXPLORER, I_EXPLORER } from "../../../static/explorer";
+import { E_EXPLORER, EXPLORER, I_EXPLORER } from "../../../static/explorer";
 
 const props = defineProps({
   explorer: Object as PropType<I_EXPLORER>,
@@ -10,40 +10,63 @@ const props = defineProps({
 </script>
 
 <template>
-  <div v-if="signature">
-    <a
-      target="_blank"
-      rel="noopener noreferrer"
-      :href="
-        EXPLORER.find((e) => e.type === explorer?.type)?.url +
-        '/tx/' +
-        props.signature
-      "
+  <div class="hover:animate-spin">
+    <div
+      v-if="explorer?.type === E_EXPLORER.STARATLAS"
+      class="border-1 border-black rounded-full"
     >
-      <img
-        style="width: 24px"
-        class="rounded-md"
-        :src="props.explorer?.image_path"
-        alt="explorer_image"
-      />
-    </a>
-  </div>
-  <div v-if="address">
-    <a
-      target="_blank"
-      rel="noopener noreferrer"
-      :href="
-        EXPLORER.find((e) => e.type === explorer?.type)?.url +
-        '/address/' +
-        props.address
-      "
-    >
-      <img
-        style="width: 24px"
-        class="rounded-md"
-        :src="props.explorer?.image_path"
-        alt="explorer_image"
-      />
-    </a>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        :href="
+          EXPLORER.find((e) => e.type === explorer?.type)?.url +
+          '/market/' +
+          props.address
+        "
+      >
+        <img
+          style="width: 24px"
+          class="rounded-md"
+          :src="props.explorer?.image_path"
+          alt="explorer_image"
+        />
+      </a>
+    </div>
+    <div v-else-if="signature">
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        :href="
+          EXPLORER.find((e) => e.type === explorer?.type)?.url +
+          '/tx/' +
+          props.signature
+        "
+      >
+        <img
+          style="width: 24px"
+          class="rounded-md"
+          :src="props.explorer?.image_path"
+          alt="explorer_image"
+        />
+      </a>
+    </div>
+    <div v-else>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        :href="
+          EXPLORER.find((e) => e.type === explorer?.type)?.url +
+          '/address/' +
+          props.address
+        "
+      >
+        <img
+          style="width: 24px"
+          class="rounded-md"
+          :src="props.explorer?.image_path"
+          alt="explorer_image"
+        />
+      </a>
+    </div>
   </div>
 </template>

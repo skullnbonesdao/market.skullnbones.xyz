@@ -1,8 +1,9 @@
 <template>
   <ApolloQuery
+    class="p-card"
     :query="
       (gql: any) => gql`
-        query MyHelloQuery($search_string: String!, $limit: Int!) {
+        query find_symbol_history($search_string: String!, $limit: Int!) {
           trades(
             limit: $limit
             order_by: { block: desc }
@@ -28,19 +29,25 @@
   >
     <template v-slot="{ result: { loading, error, data } }">
       <!-- Loading -->
-      <div v-if="loading" class="loading apollo p-card flex">
+      <div v-if="loading" class="loading apollo flex">
         <ProgressSpinner />
       </div>
 
       <!-- Error -->
-      <div v-else-if="error" class="error apollo p-card flex">
+      <div v-else-if="error" class="error apollo flex">
         <NoData class="justify-center"></NoData>
       </div>
 
       <!-- Result -->
-      <div v-else-if="data" class="result apollo p-card">
+      <div v-else-if="data" class="result apollo">
         <NoData v-if="!data.trades.length" class="justify-center"></NoData>
-        <DataTable v-else :value="data.trades" tableStyle="min-width: 50rem">
+        <DataTable
+          v-else
+          :value="data.trades"
+          tableStyle="min-width: 50rem"
+          sort-field="timestamp"
+          sort-order="-1"
+        >
           <Column header="Pair">
             <template #body="slotProps">
               <div class="flex flex-col items-center">
@@ -59,7 +66,7 @@
             </template>
           </Column>
 
-          <Column header="Info">
+          <Column header="Info" sortable sort-field="timestamp">
             <template #body="slotProps">
               <div class="flex text-xs">
                 {{ new Date(slotProps.data.timestamp * 1000).toISOString() }}
@@ -192,6 +199,13 @@
                   "
                   :signature="slotProps.data.signature"
                 />
+                <ExplorerIcon
+                  class="w-5"
+                  :explorer="
+                    EXPLORER.find((e) => e.type === E_EXPLORER.STARATLAS)
+                  "
+                  :address="slotProps.data.asset_mint"
+                />
               </div>
             </template>
           </Column>
@@ -199,7 +213,7 @@
       </div>
 
       <!-- No result -->
-      <div v-else class="error apollo p-card flex">
+      <div v-else class="error apollo flex">
         <NoData class="justify-center" text="No Result :/"></NoData>
       </div>
     </template>
