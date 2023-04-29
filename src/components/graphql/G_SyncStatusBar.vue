@@ -35,13 +35,13 @@
 </template>
 
 <script setup lang="ts">
-import { CURRENCIES } from "../static/currencies";
-import { useGlobalStore } from "../stores/GlobalStore";
 import { Connection } from "@solana/web3.js";
 import gql from "graphql-tag";
 import { onMounted, ref } from "vue";
-import NoData from "../components/elements/NoData.vue";
 import ProgressBar from "primevue/progressbar";
+import { CURRENCIES } from "../../static/currencies";
+import { useGlobalStore } from "../../stores/GlobalStore";
+import NoData from "../elements/NoData.vue";
 
 const props = defineProps({
   currency_mint: {

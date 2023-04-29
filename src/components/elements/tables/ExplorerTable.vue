@@ -128,7 +128,14 @@
           </Column>
           <Column field="market_fee" header="Fee" sortable>
             <template #body="slotProps">
-              <span>{{ slotProps.data.market_fee.toFixed(1) }}%</span>
+              <span
+                >{{
+                  calc_percentage_for_fee(
+                    slotProps.data.market_fee,
+                    slotProps.data.total_cost
+                  ).toFixed(1)
+                }}%</span
+              >
             </template>
           </Column>
           <Column field="size" header="Size" sortable>
@@ -164,7 +171,7 @@
                     )
                   "
                 />
-                <span>{{ slotProps.data.total_cost.toFixed(2) }}</span>
+                <span> {{ slotProps.data.total_cost.toFixed(2) }}</span>
               </div>
             </template>
           </Column>
@@ -210,6 +217,7 @@ import NoData from "../NoData.vue";
 import CurrencyIcon from "../../icon-helper/CurrencyIcon.vue";
 import { E_EXPLORER, EXPLORER } from "../../../static/explorer";
 import ExplorerIcon from "../icons_images/ExplorerIcon.vue";
+import { calc_percentage_for_fee } from "../../../static/formatting/calc_percentage";
 
 const props = defineProps({
   search_string: {
