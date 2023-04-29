@@ -24,6 +24,7 @@
         <OpenOrders class="p-card" />
       </div>
       <div class="flex flex-col space-y-2">
+        <MarketplaceQuickLinks class="p-card p-2" />
         <OrderSettter class="p-card p-2" />
         <OrderBook class="p-card p-2" />
       </div>
@@ -41,6 +42,7 @@ import { useToast } from "primevue/usetoast";
 import OrderSettter from "../components/elements/OrderSettter.vue";
 import OpenOrders from "../components/elements/OpenOrders.vue";
 import OrderBook from "../components/elements/marketplace_elements/OrderBook.vue";
+import MarketplaceQuickLinks from "../components/elements/marketplace_elements/MarketplaceQuickLinks.vue";
 
 const show_search = ref<boolean>();
 show_search.value = false;
