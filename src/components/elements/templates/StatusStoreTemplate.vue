@@ -21,7 +21,7 @@
     </div>
     <div v-if="useStaratlasGmStore().status.is_loading" class="p-inputgroup">
       <span
-        class="p-inputgroup-addon text-sm border-1 text-center text-lg uppercase basis-1/5"
+        class="p-inputgroup-addon text-sm text-center text-lg uppercase basis-1/5"
         >{{ useStaratlasGmStore().status.message }}</span
       >
       <div class="p-inputgroup-addon w-full">
