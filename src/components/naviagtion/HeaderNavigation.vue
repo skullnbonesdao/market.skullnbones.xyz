@@ -2,7 +2,12 @@
   <nav>
     <Menubar :model="items">
       <template #start class="">
-        <Avatar image="/public/logo.png" size="large" shape="circle"></Avatar>
+        <Avatar
+          class="flex"
+          image="/public/logo.png"
+          size="large"
+          shape="circle"
+        ></Avatar>
       </template>
 
       <template #end>
