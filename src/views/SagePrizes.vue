@@ -15,6 +15,18 @@
         />
       </div>
     </div>
+    <div
+      v-if="useGlobalStore().status.is_loading"
+      class="p-card flex w-full justify-center"
+    >
+      <ProgressSpinner class="flex"></ProgressSpinner>
+    </div>
+    <NoData
+      class="p-card justify-center"
+      v-if="!is_valid_publicKey(text_user_wallet_input)"
+      text="Invalid PublicKey!"
+    ></NoData>
+
     <NoData
       class="p-card justify-center"
       v-if="!useGlobalStore().wallet.prizes.length"
@@ -123,6 +135,7 @@
 </template>
 
 <script setup lang="ts">
+import ProgressSpinner from "primevue/progressspinner";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Row from "primevue/row";
@@ -135,6 +148,7 @@ import { useGlobalStore } from "../stores/GlobalStore";
 import { calc_passed_time } from "../static/formatting/calc_passed_time";
 import { useWallet } from "solana-wallets-vue";
 import NoData from "../components/elements/NoData.vue";
+import { is_valid_publicKey } from "../static/formatting/is_valid_public_key";
 
 const text_user_wallet_input = ref(
   useWallet().publicKey.value?.toString() ?? ""

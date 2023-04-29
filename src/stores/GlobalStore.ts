@@ -139,10 +139,12 @@ export const useGlobalStore = defineStore("globalStore", {
       this.toggleables.load_history = load_history;
     },
 
-    update_prizes(wallet: string) {
-      get_player_prizes(wallet).then((resp) => {
+    async update_prizes(wallet: string) {
+      this.status.is_loading = true;
+      await get_player_prizes(wallet).then((resp) => {
         if (resp) this.wallet.prizes = resp;
       });
+      this.status.is_loading = false;
     },
 
     update_symbol(symbol: string, mint_asset?: string, mint_pair?: string) {
