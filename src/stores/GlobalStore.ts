@@ -145,16 +145,22 @@ export const useGlobalStore = defineStore("globalStore", {
       });
     },
 
-    update_symbol(symbol: string, mint_asset: string, mint_currency: string) {
+    update_symbol(symbol: string, mint_asset?: string, mint_pair?: string) {
       this.symbol.name = symbol;
-      this.symbol.mint_asset = new PublicKey(
-        this.sa_api_data.find((asset) => symbol.includes(asset.symbol))?.mint ??
-          ""
-      );
-      this.symbol.mint_pair = new PublicKey(
-        CURRENCIES.find((c) => symbol.includes(c.name))?.mint ?? ""
-      );
 
+      this.symbol.mint_asset = mint_asset
+        ? new PublicKey(mint_asset)
+        : new PublicKey(
+            this.sa_api_data.find((api) => symbol.includes(symbol))?.mint ?? ""
+          );
+
+      this.symbol.mint_pair = mint_pair
+        ? new PublicKey(mint_pair)
+        : new PublicKey(
+            CURRENCIES.find((c) => symbol.includes(symbol))?.mint ?? ""
+          );
+
+      ////Deprecated
       useStaratlasGmStore().getOpenOrdersForAsset(
         this.symbol.mint_asset.toString()
       );
