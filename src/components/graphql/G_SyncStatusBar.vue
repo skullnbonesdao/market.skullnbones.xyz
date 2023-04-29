@@ -1,6 +1,6 @@
 <template>
   <div class="p-inputgroup flex-1">
-    <span class="p-inputgroup-addon text-sm">Sync</span>
+    <span class="p-inputgroup-addon text-sm basis-1/5">Sync-Status</span>
     <div class="flex w-full p-inputgroup-addon">
       <ApolloQuery
         class="w-full"
