@@ -26,7 +26,7 @@ export const EXPLORER: Array<I_EXPLORER> = [
   },
   {
     type: E_EXPLORER.STARATLAS,
-    name: "Play.StarAtlas",
+    name: "StarAtlasGM",
     url: "https://play.staratlas.com",
     image_path: "tokens/ATLAS.webp",
   },
