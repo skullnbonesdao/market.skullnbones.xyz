@@ -3,7 +3,7 @@
     <Menubar :model="items">
       <template #start class="">
         <Avatar
-          class="flex"
+          class="flex mr-2"
           image="/public/logo.png"
           size="large"
           shape="circle"

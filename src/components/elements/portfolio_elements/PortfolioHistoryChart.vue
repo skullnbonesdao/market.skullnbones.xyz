@@ -1,7 +1,7 @@
 <template>
   <ApolloQuery
     :query="
-      (gql) => gql`
+      (gql:any) => gql`
         query wallet_history(
           $user_wallet: String!
           $atlas_mint: String!
@@ -76,14 +76,11 @@
   </ApolloQuery>
 </template>
 
-<script lang="js">
-export default {
-    name: "PortfolioHistoryChart",
-};
-
-import * as g2c from "graphql2chartjs";
-import {useGlobalStore} from "../../../stores/GlobalStore";
-import {defineProps} from 'vue'
+<script setup lang="ts">
+import NoData from "../NoData.vue";
+import graphql2chartjs from "graphql2chartjs";
+import Chart from "primevue/chart";
+import { useGlobalStore } from "../../../stores/GlobalStore";
 
 const props = defineProps({
   user_wallet: {
@@ -141,8 +138,8 @@ const chart_options = {
   },
 };
 
-function map_history_chart(data) {
-  return new g2c.graphql2chartjs(data, (dataSetName, dataPoint) => {
+function map_history_chart(data: any) {
+  return new graphql2chartjs(data, (dataSetName: any, dataPoint: any) => {
     console.log(dataSetName);
     if (dataSetName === "usdc") {
       return {
