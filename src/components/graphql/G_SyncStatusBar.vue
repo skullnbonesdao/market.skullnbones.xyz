@@ -1,7 +1,10 @@
 <template>
-  <div>
-    <ApolloQuery
-      :query="
+  <div class="p-inputgroup flex-1">
+    <span class="p-inputgroup-addon text-sm">Sync</span>
+    <div class="flex w-full p-inputgroup-addon">
+      <ApolloQuery
+        class="w-full"
+        :query="
       (gql: any) => gql`
         query get_ranges {
     cursors(order_by: { start_block: desc }) {
@@ -12,29 +15,31 @@
   }
       `
     "
-    >
-      <template v-slot="{ result: { loading, error, data } }">
-        <!-- Loading -->
-        <div v-if="loading" class="loading apollo p-card flex">
-          <ProgressSpinner />
-        </div>
-        <!-- Error -->
-        <div v-else-if="error" class="error apollo p-card flex">
-          <NoData class="justify-center"></NoData>
-        </div>
+      >
+        <template v-slot="{ result: { loading, error, data } }">
+          <!-- Loading -->
+          <div v-if="loading" class="loading apollo">
+            <ProgressSpinner />
+          </div>
+          <!-- Error -->
+          <div v-else-if="error" class="error apollo">
+            <NoData class="justify-center"></NoData>
+          </div>
 
-        <!-- Result -->
-        <div v-else-if="data" class="result apollo p-card">
-          <ProgressBar
-            :value="
-              parseFloat(
-                calc_range_percentage(data?.cursors)?.toFixed(1) ?? '0'
-              )
-            "
-          ></ProgressBar>
-        </div>
-      </template>
-    </ApolloQuery>
+          <!-- Result -->
+          <div v-else-if="data" class="result apollo flex">
+            <ProgressBar
+              class="w-full"
+              :value="
+                parseFloat(
+                  calc_range_percentage(data?.cursors)?.toFixed(1) ?? '0'
+                )
+              "
+            ></ProgressBar>
+          </div>
+        </template>
+      </ApolloQuery>
+    </div>
   </div>
 </template>
 
@@ -42,10 +47,10 @@
 import { Connection } from "@solana/web3.js";
 import gql from "graphql-tag";
 import { onMounted, ref } from "vue";
-import ProgressBar from "primevue/progressbar";
 import { CURRENCIES } from "../../static/currencies";
 import { useGlobalStore } from "../../stores/GlobalStore";
 import NoData from "../elements/NoData.vue";
+import ProgressBar from "primevue/progressbar";
 
 const props = defineProps({
   currency_mint: {

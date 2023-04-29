@@ -41,7 +41,7 @@
       </Button>
     </div>
     <div class="p-card p-2">
-      <G_SyncStatusBar></G_SyncStatusBar>
+      <G_SyncStatusBar class="w-full"></G_SyncStatusBar>
     </div>
   </div>
 </template>

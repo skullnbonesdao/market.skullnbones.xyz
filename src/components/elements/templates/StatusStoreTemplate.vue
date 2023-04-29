@@ -1,42 +1,43 @@
 <template>
-  <div class="" v-if="useGlobalStore().status.is_loading">
-    <div class="p-card p-2 flex flex-row items-center">
-      <span
-        class="p-card border-1 text-center text-lg rounded-xl p-2 uppercase basis-1/3"
-        >{{ useGlobalStore().status.message }}</span
-      >
-      <ProgressBar
-        class="flex w-full mx-2"
-        :value="
-          parseInt(
-            (
-              ((useGlobalStore().status.step ?? 0) /
-                (useGlobalStore().status.step_total ?? 0)) *
-              100
-            ).toFixed(0)
-          )
-        "
-      />
+  <div class="p-card">
+    <div v-if="useGlobalStore().status.is_loading" class="p-inputgroup">
+      <span class="p-inputgroup-addon text-sm uppercase basis-1/5">{{
+        useGlobalStore().status.message
+      }}</span>
+      <div class="p-inputgroup-addon w-full">
+        <ProgressBar
+          class="w-full"
+          :value="
+            parseInt(
+              (
+                ((useGlobalStore().status.step ?? 0) /
+                  (useGlobalStore().status.step_total ?? 0)) *
+                100
+              ).toFixed(0)
+            )
+          "
+        />
+      </div>
     </div>
-  </div>
-  <div v-if="useStaratlasGmStore().status.is_loading">
-    <div class="p-card p-2 flex flex-row items-center">
+    <div v-if="useStaratlasGmStore().status.is_loading" class="p-inputgroup">
       <span
-        class="p-card border-1 text-center text-lg rounded-xl p-2 uppercase basis-1/3"
+        class="p-inputgroup-addon text-sm border-1 text-center text-lg uppercase basis-1/5"
         >{{ useStaratlasGmStore().status.message }}</span
       >
-      <ProgressBar
-        class="flex w-full mx-2"
-        :value="
-          parseInt(
-            (
-              ((useStaratlasGmStore().status.step ?? 0) /
-                (useStaratlasGmStore().status.step_total ?? 0)) *
-              100
-            ).toFixed(0)
-          )
-        "
-      />
+      <div class="p-inputgroup-addon w-full">
+        <ProgressBar
+          class="w-full"
+          :value="
+            parseInt(
+              (
+                ((useStaratlasGmStore().status.step ?? 0) /
+                  (useStaratlasGmStore().status.step_total ?? 0)) *
+                100
+              ).toFixed(0)
+            )
+          "
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -44,7 +45,6 @@
 <script setup lang="ts">
 import ProgressBar from "primevue/progressbar";
 import { useGlobalStore } from "../../../stores/GlobalStore";
-import Dropdown from "primevue/dropdown";
 import { useStaratlasGmStore } from "../../../stores/StaratlasGmStore";
 </script>
 
