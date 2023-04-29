@@ -44,8 +44,18 @@
 
       <!-- Result -->
       <div v-else-if="data" class="result apollo p-card">
+        <p class="w-full text-end text-orange-400">
+          Limited to: last {{ limit }} trades
+        </p>
+
         <NoData v-if="!data.trades.length" class="justify-center"></NoData>
-        <DataTable v-else :value="data.trades" tableStyle="min-width: 50rem">
+        <DataTable
+          v-else
+          :value="data.trades"
+          scrollable
+          scrollHeight="800px"
+          tableStyle="min-width: 50rem"
+        >
           <Column header="Pair">
             <template #body="slotProps">
               <div class="flex flex-col items-center">

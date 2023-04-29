@@ -41,9 +41,10 @@ import MarketTable from "./views/MarketTable.vue";
 import AboutView from "./views/AboutView.vue";
 import SagePrizes from "./views/SagePrizes.vue";
 import TestView from "./views/TestView.vue";
-import { apolloClient, apolloProvider } from "./static/graphql/testql";
 import { DefaultApolloClient } from "@vue/apollo-composable";
 import ExplorerView from "./views/ExplorerView.vue";
+import apolloClient from "apollo-client";
+import { apolloProvider } from "./static/graphql/SNBGraphQL";
 
 const walletOptions = {
   wallets: [

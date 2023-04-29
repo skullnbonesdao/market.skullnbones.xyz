@@ -9,13 +9,13 @@ import { createHttpLink } from "@apollo/client";
 // HTTP connection to the API
 const httpLink = createHttpLink({
   // You should use an absolute URL here
-  uri: "http://37.120.177.67:8080/v1/graphql",
+  uri: import.meta.env.VITE_SNB_GRAPHQL_URL,
 });
 
 const authLink = setContext((_, { headers }) => {
   return {
     headers: {
-      "x-hasura-admin-secret": import.meta.env.VITE_SNB_API_TOKEN,
+      "x-hasura-admin-secret": import.meta.env.VITE_SNB_GRAPHQL_TOKEN,
     },
   };
 });
