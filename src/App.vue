@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import HeaderNavigation from "./components/naviagtion/HeaderNavigation.vue";
+import HeaderNavigation from "./naviagtion/HeaderNavigation.vue";
 import { useGlobalStore } from "./stores/GlobalStore";
 import { onMounted } from "vue";
 import { useStaratlasGmStore } from "./stores/StaratlasGmStore";
 import StatusStoreTemplate from "./components/elements/templates/StatusStoreTemplate.vue";
-import FooterComponent from "./components/naviagtion/FooterComponent.vue";
+import FooterComponent from "./naviagtion/FooterComponent.vue";
 
 onMounted(async () => {
   await useGlobalStore().init();

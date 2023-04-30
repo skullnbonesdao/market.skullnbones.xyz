@@ -39,6 +39,15 @@
         />
       </div>
     </div>
+    <div v-if="graphql_loading" class="p-inputgroup">
+      <span
+        class="p-inputgroup-addon text-sm text-center text-lg uppercase basis-1/5"
+        >GraphQL loading...</span
+      >
+      <div class="p-inputgroup-addon w-full">
+        <ProgressBar class="w-full" :value="10" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -46,6 +55,10 @@
 import ProgressBar from "primevue/progressbar";
 import { useGlobalStore } from "../../../stores/GlobalStore";
 import { useStaratlasGmStore } from "../../../stores/StaratlasGmStore";
+import { useQueryLoading } from "@vue/apollo-composable";
+import { ref } from "vue";
+
+const graphql_loading = ref(useQueryLoading());
 </script>
 
 <style scoped></style>

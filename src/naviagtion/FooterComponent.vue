@@ -47,11 +47,11 @@
 </template>
 
 <script setup lang="ts">
-import { endpoints_list, useGlobalStore } from "../../stores/GlobalStore";
+import { endpoints_list, useGlobalStore } from "../stores/GlobalStore";
 import Dropdown from "primevue/dropdown";
 import { ref, watch } from "vue";
-import { open_url } from "../../static/url_tools";
-import G_SyncStatusBar from "../graphql/G_SyncStatusBar.vue";
+import { open_url } from "../static/url_tools";
+import G_SyncStatusBar from "../components/graphql/G_SyncStatusBar.vue";
 
 const version = __APP_VERSION__;
 

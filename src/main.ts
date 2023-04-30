@@ -41,10 +41,10 @@ import MarketTable from "./views/MarketTable.vue";
 import AboutView from "./views/AboutView.vue";
 import SagePrizes from "./views/SagePrizes.vue";
 import TestView from "./views/TestView.vue";
-import { DefaultApolloClient } from "@vue/apollo-composable";
 import ExplorerView from "./views/ExplorerView.vue";
-import apolloClient from "apollo-client";
-import { apolloProvider } from "./static/graphql/SNBGraphQL";
+import { apolloClient, apolloProvider } from "./static/graphql/SNBGraphQL";
+import Test2 from "./views/Test2.vue";
+import { DefaultApolloClient } from "@vue/apollo-composable";
 
 const walletOptions = {
   wallets: [
@@ -64,6 +64,7 @@ const routes = [
   { path: "/sageprizes", component: SagePrizes },
   { path: "/about", component: AboutView },
   { path: "/test", component: TestView },
+  { path: "/test2", component: Test2 },
 ];
 
 const router = createRouter({
@@ -76,7 +77,6 @@ const app = createApp({
   setup() {
     provide(DefaultApolloClient, apolloClient);
   },
-
   render: () => h(App),
 });
 app
