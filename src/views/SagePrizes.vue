@@ -228,7 +228,7 @@
                 <template #footer>
                   <div class="flex flex-row space-x-2">
                     <CurrencyIcon
-                      style="width: 24px"
+                      style="height: 24px"
                       :currency="
                         CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
                       "
@@ -241,7 +241,7 @@
                 <template #footer>
                   <div class="flex flex-row space-x-2">
                     <CurrencyIcon
-                      style="width: 24px"
+                      style="height: 24px"
                       :currency="
                         CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
                       "
@@ -258,7 +258,7 @@
                 <template #footer>
                   <div class="flex flex-row space-x-2">
                     <CurrencyIcon
-                      style="width: 24px"
+                      style="height: 24px"
                       :currency="
                         CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
                       "
@@ -288,7 +288,7 @@
                 <template #footer>
                   <div class="flex flex-row space-x-2">
                     <CurrencyIcon
-                      style="width: 24px"
+                      style="height: 24px"
                       :currency="
                         CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
                       "

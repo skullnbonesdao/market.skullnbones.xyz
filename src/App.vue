@@ -29,9 +29,9 @@ onMounted(async () => {
     </main>
 
     <footer class="sticky bottom-0 z-50">
-      <FooterComponent class="flex-1 m-2" />
       <StatusStoreTemplate />
     </footer>
+    <FooterComponent class="flex-1 m-2" />
   </body>
 </template>
 
