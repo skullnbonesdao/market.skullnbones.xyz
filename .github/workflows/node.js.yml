@@ -26,6 +26,10 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run build-cross --if-present
+        env:
+          VITE_SNB_UDF_URL: ${{ secrets.VITE_SNB_UDF_URL }}
+          VITE_SNB_GRAPHQL_URL: ${{ secrets.VITE_SNB_GRAPHQL_URL }}
+          VITE_SNB_GRAPHQL_TOKEN: ${{ secrets.VITE_SNB_GRAPHQL_TOKEN }}
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
