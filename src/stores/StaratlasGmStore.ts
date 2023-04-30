@@ -324,8 +324,6 @@ export const useStaratlasGmStore = defineStore({
             .values()
         );
 
-        console.log(orders);
-
         this.status = _update_status(true, "Map USDC", 1, 3);
 
         let orders_usdc: MarketValues = {
