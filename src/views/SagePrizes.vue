@@ -202,11 +202,114 @@
 
               <Column :footer="sum_drops.toString()" />
               <Column :footer="sum_quantity.toString()" />
-              <Column />
+              <Column> </Column>
               <Column :footer="sum_value?.toFixed(2)" />
+            </Row>
+            <Row>
+              <Column
+                footerStyle="text-align:right"
+                :footer="'Net cost estimation*:'"
+                :colspan="3"
+              ></Column>
+              <Column>
+                <template #footer>
+                  <div class="flex flex-row space-x-2">
+                    <CurrencyIcon
+                      style="width: 24px"
+                      :currency="
+                        CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
+                      "
+                    ></CurrencyIcon>
+                    <p>{{ player_sol.inflow.toFixed(3) }} (in)</p>
+                  </div></template
+                >
+              </Column>
+              <Column>
+                <template #footer>
+                  <div class="flex flex-row space-x-2">
+                    <CurrencyIcon
+                      style="width: 24px"
+                      :currency="
+                        CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
+                      "
+                    ></CurrencyIcon>
+                    <p>
+                      {{ (player_sol.inflow - player_sol.current).toFixed(3) }}
+                      (used)
+                    </p>
+                  </div></template
+                >
+              </Column>
+
+              <Column>
+                <template #footer>
+                  <div class="flex flex-row space-x-2">
+                    <CurrencyIcon
+                      style="width: 24px"
+                      :currency="
+                        CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
+                      "
+                    ></CurrencyIcon>
+                    <p>
+                      {{
+                        (
+                          (useGlobalStore().currencyPrice.data[
+                            CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
+                              ?.mint ?? ""
+                          ]?.value *
+                            (player_sol.inflow - player_sol.current)) /
+                          useGlobalStore().currencyPrice.data[
+                            CURRENCIES.find(
+                              (c) => c.type === E_CURRENCIES.ATLAS
+                            )?.mint ?? ""
+                          ]?.value
+                        ).toFixed(3)
+                      }}
+                      (used/value)
+                    </p>
+                  </div></template
+                >
+              </Column>
+
+              <Column>
+                <template #footer>
+                  <div class="flex flex-row space-x-2">
+                    <CurrencyIcon
+                      style="width: 24px"
+                      :currency="
+                        CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
+                      "
+                    ></CurrencyIcon>
+                    <p>
+                      {{
+                        (
+                          sum_value -
+                          (useGlobalStore().currencyPrice.data[
+                            CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
+                              ?.mint ?? ""
+                          ]?.value *
+                            (player_sol.inflow - player_sol.current)) /
+                            useGlobalStore().currencyPrice.data[
+                              CURRENCIES.find(
+                                (c) => c.type === E_CURRENCIES.ATLAS
+                              )?.mint ?? ""
+                            ]?.value
+                        ).toFixed(3)
+                      }}
+                      (NET)
+                    </p>
+                  </div></template
+                >
+              </Column>
             </Row>
           </ColumnGroup>
         </DataTable>
+        <div class="w-full">
+          <p class="w-full text-right text-xs p-3 text-orange-400">
+            * Net calculation - can be incorrect! [based on last(50) wallet
+            incoming-sol minus and current-sol-balance]
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -232,8 +335,12 @@ import { useQuery } from "@vue/apollo-composable";
 import { GET_LAST_PRICE_FOR_MINTS } from "../static/graphql/get_last_price_for_mints";
 import { is_valid_publicKey } from "../static/formatting/is_valid_public_key";
 import { useWallet } from "solana-wallets-vue";
+import { Connection, PublicKey } from "@solana/web3.js";
+import { useGlobalStore } from "../stores/GlobalStore";
 
-const text_user_wallet_input = ref(useWallet().publicKey ?? "");
+const text_user_wallet_input = ref(
+  useWallet().publicKey.value?.toString() ?? ""
+);
 const expandedRows = ref();
 const expandAll = () => {
   expandedRows.value = prizes.value.filter((p) => p.name);
@@ -250,18 +357,11 @@ interface SortedElement {
   atlas_price: any;
 }
 
-interface SortedPrize {
-  mint: string;
-  value: number;
-}
-
-interface PrizeCalcData {
-  r4: SortedElement[];
-  prizes: SortedPrize[];
-}
-
-defineProps();
 const player_prizes = ref<I_SagePrize[]>();
+const player_sol = ref({
+  inflow: 0,
+  current: 0,
+});
 
 const prizes = computed(() => {
   let unique_prize_names = [
@@ -316,9 +416,35 @@ const sum_value = computed(() => {
   return value;
 });
 
+function get_account_solana_stats(wallet: string) {
+  //Get Amount Inflow
+  fetch(
+    "https://api.solscan.io/account/soltransfer/txs?address=" +
+      wallet +
+      "&offset=0&limit=50"
+  )
+    .then((resp) => resp.json())
+    .then((json) => {
+      console.log(json);
+      let total_spend = 0;
+      json.data.tx.transactions.forEach((element: any) => {
+        total_spend += element.dst === wallet ? +element.lamport : 0;
+      });
+      player_sol.value.inflow = total_spend * Math.pow(10, -9);
+    });
+
+  //Get Current Amount
+  const connection = new Connection(useGlobalStore().rpc.url);
+  connection.getAccountInfo(new PublicKey(wallet)).then((resp) => {
+    player_sol.value.current = (resp?.lamports ?? 0) * Math.pow(10, -9);
+  });
+}
+
 async function update_wallet_prizes(wallet: string) {
   is_loading.value = true;
+  get_account_solana_stats(wallet);
   player_prizes.value = (await get_player_prizes(wallet)) as never;
+
   is_loading.value = false;
 }
 </script>
