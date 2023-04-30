@@ -24,12 +24,12 @@ onMounted(async () => {
       <HeaderNavigation />
     </header>
 
-    <main class="relative items-stretch">
+    <main class="relative items-stretch flex-grow">
       <router-view class="flex-1 m-2"></router-view>
-      <FooterComponent class="flex-1 m-2" />
     </main>
 
     <footer class="sticky bottom-0 z-50">
+      <FooterComponent class="flex-1 m-2" />
       <StatusStoreTemplate />
     </footer>
   </body>
