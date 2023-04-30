@@ -200,10 +200,23 @@
                 footerStyle="text-align:right"
               />
 
-              <Column :footer="sum_drops.toString()" />
+              <Column :footer="'x' + sum_drops.toString()" />
               <Column :footer="sum_quantity.toString()" />
               <Column> </Column>
-              <Column :footer="sum_value?.toFixed(2)" />
+              <Column>
+                <template #footer>
+                  <div class="flex flex-row space-x-2">
+                    <CurrencyIcon
+                      style="width: 24px"
+                      :currency="
+                        CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
+                      "
+                    ></CurrencyIcon>
+
+                    <p class="text-green-500">{{ sum_value?.toFixed(2) }}</p>
+                  </div></template
+                >
+              </Column>
             </Row>
             <Row>
               <Column
