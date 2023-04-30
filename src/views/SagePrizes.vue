@@ -93,7 +93,7 @@
               {{
                 slotProps.data.elements
                   ?.flatMap((e: I_SagePrize) => e.quantity)
-                  .reduce((a, b) => a + b)
+                  .reduce((a: number, b: number) => a + b)
               }}
               <!--          <Avatar-->
               <!--            :image="'/webp/' + slotProps.data?.elements[0]?.mint + '.webp'"-->
@@ -127,8 +127,8 @@
                     (
                       slotProps.data.elements
                         ?.flatMap((e: I_SagePrize) => e.quantity)
-                        .reduce((a, b) => a + b) * slotProps.data.atlas_price ??
-                      0
+                        .reduce((a: number, b: number) => a + b) *
+                        slotProps.data.atlas_price ?? 0
                     ).toFixed(2)
                   }}</span
                 >
