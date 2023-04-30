@@ -40,6 +40,7 @@
       >
       </Button>
     </div>
+
     <div class="p-card p-2">
       <G_SyncStatusBar class="w-full"></G_SyncStatusBar>
     </div>
