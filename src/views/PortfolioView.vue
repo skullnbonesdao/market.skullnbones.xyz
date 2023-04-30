@@ -119,8 +119,7 @@ import ToggleablesTemplate from "../components/elements/templates/ToggleablesTem
 import PlayerProfile from "../components/elements/portfolio_elements/PlayerProfile.vue";
 
 const text_user_wallet_input = ref(
-  useWallet().publicKey.value?.toString() ??
-    "NPCxfjPxh6pvRJbGbWZjxfkqWfGBvKkqPbtiJar3mom"
+  useWallet().publicKey.value?.toString() ?? ""
 );
 
 const wallet = useWallet();
