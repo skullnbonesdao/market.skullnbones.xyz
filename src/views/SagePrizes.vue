@@ -231,8 +231,9 @@ import { calc_passed_time } from "../static/formatting/calc_passed_time";
 import { useQuery } from "@vue/apollo-composable";
 import { GET_LAST_PRICE_FOR_MINTS } from "../static/graphql/get_last_price_for_mints";
 import { is_valid_publicKey } from "../static/formatting/is_valid_public_key";
+import { useWallet } from "solana-wallets-vue";
 
-const text_user_wallet_input = ref();
+const text_user_wallet_input = ref(useWallet().publicKey ?? "");
 const expandedRows = ref();
 const expandAll = () => {
   expandedRows.value = prizes.value.filter((p) => p.name);
