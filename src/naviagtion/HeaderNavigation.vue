@@ -4,7 +4,7 @@
       <template #start class="">
         <Avatar
           class="flex mr-2"
-          image="/public/logo.png"
+          image="/logo.png"
           size="large"
           shape="circle"
         ></Avatar>

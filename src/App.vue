@@ -8,6 +8,7 @@ import FooterComponent from "./naviagtion/FooterComponent.vue";
 
 onMounted(async () => {
   await useGlobalStore().init();
+  //works better ignoring the start of the GN
   useStaratlasGmStore().init();
 });
 
