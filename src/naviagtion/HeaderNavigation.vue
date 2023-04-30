@@ -1,8 +1,13 @@
 <template>
-  <div class="card relative z-2">
+  <nav>
     <Menubar :model="items">
       <template #start class="">
-        <img alt="logo" src="/public/logo.png" class="mr-2 h-12" />
+        <Avatar
+          class="flex mr-2"
+          image="/public/logo.png"
+          size="large"
+          shape="circle"
+        ></Avatar>
       </template>
 
       <template #end>
@@ -24,16 +29,17 @@
         </div>
       </template>
     </Menubar>
-  </div>
+  </nav>
 </template>
 
 <script setup lang="ts">
+import Avatar from "primevue/avatar";
 import { onMounted, ref } from "vue";
 import Menubar from "primevue/menubar";
 import { WalletMultiButton } from "solana-wallets-vue";
-import SwitchTheme from "../../components/elements/buttons/SwitchTheme.vue";
-import { useTPS } from "../../stores/TPS";
-import { endpoints_list, useGlobalStore } from "../../stores/GlobalStore";
+import SwitchTheme from "../components/elements/buttons/SwitchTheme.vue";
+import { useTPS } from "../stores/TPS";
+import { endpoints_list, useGlobalStore } from "../stores/GlobalStore";
 
 onMounted(async () => {
   useTPS().pollData(useGlobalStore().rpc.url ?? endpoints_list[2].url);
@@ -86,3 +92,14 @@ const items = ref([
   },
 ]);
 </script>
+
+<style scoped>
+nav {
+  z-index: 10;
+}
+
+nav.scrolled {
+  @apply shadow-2xl;
+  border-bottom: 0px;
+}
+</style>

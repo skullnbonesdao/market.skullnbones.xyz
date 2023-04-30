@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import HeaderNavigation from "./components/naviagtion/HeaderNavigation.vue";
-import FooterComponent from "./components/naviagtion/FooterComponent.vue";
+import HeaderNavigation from "./naviagtion/HeaderNavigation.vue";
 import { useGlobalStore } from "./stores/GlobalStore";
-import { useStaratlasGmStore } from "./stores/StaratlasGmStore";
 import { onMounted } from "vue";
+import { useStaratlasGmStore } from "./stores/StaratlasGmStore";
 import StatusStoreTemplate from "./components/elements/templates/StatusStoreTemplate.vue";
+import FooterComponent from "./naviagtion/FooterComponent.vue";
 
 onMounted(async () => {
   await useGlobalStore().init();
-  await useStaratlasGmStore().init();
+  useStaratlasGmStore().init();
 });
 
 //useStaratlasGmStore().init();
@@ -19,17 +19,17 @@ onMounted(async () => {
     class="flex flex-col min-h-screen"
     :class="useGlobalStore().is_dark ? '' : 'bg-gray-200'"
   >
-    <header>
+    <header class="sticky top-0 z-50">
       <HeaderNavigation />
     </header>
-    <main class="flex flex-col flex-grow">
-      <div class="mx-2">
-        <StatusStoreTemplate class="m-2" />
-      </div>
-      <router-view class="m-2"></router-view>
+
+    <main class="relative items-stretch">
+      <router-view class="flex-1 m-2"></router-view>
+      <FooterComponent class="flex-1 m-2" />
     </main>
-    <footer>
-      <FooterComponent class="m-2" />
+
+    <footer class="sticky bottom-0 z-50">
+      <StatusStoreTemplate />
     </footer>
   </body>
 </template>

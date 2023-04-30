@@ -41,24 +41,17 @@
       </Button>
     </div>
     <div class="p-card p-2">
-      <ProgressBar
-        :value="fetched_percentage > 99.9 ? 100 : fetched_percentage"
-      ></ProgressBar>
+      <G_SyncStatusBar class="w-full"></G_SyncStatusBar>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import ProgressBar from "primevue/progressbar";
-
-import { endpoints_list, useGlobalStore } from "../../stores/GlobalStore";
+import { endpoints_list, useGlobalStore } from "../stores/GlobalStore";
 import Dropdown from "primevue/dropdown";
-import { onMounted, ref, watch } from "vue";
-import {
-  Api,
-  Cursor,
-} from "../../static/swagger/skullnbones_api/skullnbones_api";
-import { open_url } from "../../static/url_tools";
+import { ref, watch } from "vue";
+import { open_url } from "../static/url_tools";
+import G_SyncStatusBar from "../components/graphql/G_SyncStatusBar.vue";
 
 const version = __APP_VERSION__;
 
@@ -79,29 +72,6 @@ watch(
     useGlobalStore().update_connection(selected_option.value.name);
   }
 );
-
-const fetched_percentage = ref(0.1);
-
-onMounted(async () => {
-  const api = new Api({ baseUrl: "https://api2.skullnbones.xyz" });
-  await api.stats.getRanges().then((resp) => {
-    let cursors: Cursor[] = resp.data;
-
-    let total_range =
-      (cursors[0].start_block ?? 0) - (cursors.at(-1)?.start_block ?? 0);
-    let fetched_range = 0;
-    cursors.forEach((cursor) => {
-      if (cursor.end_block !== 0) {
-        if (cursor.block) {
-          fetched_range += (cursor?.block ?? 0) - (cursor?.start_block ?? 0);
-        }
-      }
-    });
-    fetched_percentage.value = (fetched_range / total_range) * 100;
-    console.log("t:" + total_range.toString());
-    console.log("f:" + fetched_range.toString());
-  });
-});
 </script>
 
 <style scoped></style>

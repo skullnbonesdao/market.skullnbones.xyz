@@ -1,4 +1,4 @@
-import { createApp } from "vue";
+import { createApp, h, provide } from "vue";
 import App from "./App.vue";
 import { createPinia } from "pinia";
 
@@ -14,11 +14,13 @@ import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
 import "./themes/themes/soho/soho-light/theme.scss";
 
-import HomeView from "./components/views/HomeView.vue";
-import MarketView from "./components/views/MarketView.vue";
+import HomeView from "./views/HomeView.vue";
+import MarketView from "./views/MarketView.vue";
 import { createRouter, createWebHashHistory } from "vue-router";
 
 import "chartjs-adapter-date-fns";
+// @ts-ignore
+import VueApolloComponents from "@vue/apollo-components";
 
 // @ts-ignore
 import SolanaWallets from "solana-wallets-vue";
@@ -32,13 +34,17 @@ import {
   SlopeWalletAdapter,
   SolflareWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
-import PortfolioView from "./components/views/PortfolioView.vue";
+import PortfolioView from "./views/PortfolioView.vue";
 
 import "./styles_wallet_connect.css";
-import Explorer from "./components/views/Explorer.vue";
-import MarketTable from "./components/views/MarketTable.vue";
-import AboutView from "./components/views/AboutView.vue";
-import SagePrizes from "./components/views/SagePrizes.vue";
+import MarketTable from "./views/MarketTable.vue";
+import AboutView from "./views/AboutView.vue";
+import SagePrizes from "./views/SagePrizes.vue";
+import TestView from "./views/TestView.vue";
+import ExplorerView from "./views/ExplorerView.vue";
+import { apolloClient, apolloProvider } from "./static/graphql/SNBGraphQL";
+import Test2 from "./views/Test2.vue";
+import { DefaultApolloClient } from "@vue/apollo-composable";
 
 const walletOptions = {
   wallets: [
@@ -53,10 +59,12 @@ const routes = [
   { path: "/", component: HomeView },
   { path: "/market", component: MarketView },
   { path: "/market_table", component: MarketTable },
-  { path: "/explorer", component: Explorer },
+  { path: "/explorer", component: ExplorerView },
   { path: "/portfolio", component: PortfolioView },
   { path: "/sageprizes", component: SagePrizes },
   { path: "/about", component: AboutView },
+  { path: "/test", component: TestView },
+  { path: "/test2", component: Test2 },
 ];
 
 const router = createRouter({
@@ -65,7 +73,12 @@ const router = createRouter({
   routes, // short for `routes: routes`
 });
 
-const app = createApp(App);
+const app = createApp({
+  setup() {
+    provide(DefaultApolloClient, apolloClient);
+  },
+  render: () => h(App),
+});
 app
   .component("Button", Button)
   .component("Toast", Toast)
@@ -73,6 +86,8 @@ app
 const pinia = createPinia();
 
 app
+  .use(apolloProvider)
+  .use(VueApolloComponents)
   .use(pinia)
   .use(PrimeVue)
   .use(ToastService)

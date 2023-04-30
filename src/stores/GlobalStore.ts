@@ -5,10 +5,9 @@ import {
   ParsedAccountData,
   PublicKey,
 } from "@solana/web3.js";
-import { ItemType, StarAtlasAPIItem } from "../static/StarAtlasAPIItem";
+import { StarAtlasAPIItem } from "../static/StarAtlasAPIItem";
 import { useLocalStorage } from "@vueuse/core";
-import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
-import { Api, Trade } from "../static/swagger/skullnbones_api/skullnbones_api";
+import { CURRENCIES } from "../static/currencies";
 import { get_multi_price } from "../static/swagger/birdseye_api/birdseye_api";
 
 import { Metaplex, Nft, SftWithToken } from "@metaplex-foundation/js";
@@ -113,35 +112,12 @@ export const useGlobalStore = defineStore("globalStore", {
         account: AccountInfo<ParsedAccountData>;
       }>,
       tokenInfo: [] as Array<TokenInfo>,
-      historySorted: [] as Array<TableGroupedHistory>,
-      historyRaw: [] as Array<Trade>,
       nfts: {} as NftsData,
       prizes: {} as Array<I_SagePrize>,
     },
     sa_api_data: [] as StarAtlasAPIItem[],
   }),
-  getters: {
-    get_wallet_volume_usdc(): number {
-      return this.wallet.historyRaw
-        .filter(
-          (h) =>
-            h.currency_mint ===
-            CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint
-        )
-        .flatMap((h) => h.price * h.asset_change)
-        .reduce((sum, current) => sum + current, 0);
-    },
-    get_wallet_volume_atlas(): number {
-      return this.wallet.historyRaw
-        .filter(
-          (h) =>
-            h.currency_mint ===
-            CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint
-        )
-        .flatMap((h) => h.price * h.asset_change)
-        .reduce((sum, current) => sum + current, 0);
-    },
-  },
+  getters: {},
   actions: {
     async toggleDark() {
       this.is_dark = !this.is_dark;
@@ -163,22 +139,30 @@ export const useGlobalStore = defineStore("globalStore", {
       this.toggleables.load_history = load_history;
     },
 
-    update_prizes(wallet: string) {
-      get_player_prizes(wallet).then((resp) => {
+    async update_prizes(wallet: string) {
+      this.status.is_loading = true;
+      await get_player_prizes(wallet).then((resp) => {
         if (resp) this.wallet.prizes = resp;
       });
+      this.status.is_loading = false;
     },
 
-    update_symbol(symbol: string, mint_asset: string, mint_currency: string) {
+    update_symbol(symbol: string, mint_asset?: string, mint_pair?: string) {
       this.symbol.name = symbol;
-      this.symbol.mint_asset = new PublicKey(
-        this.sa_api_data.find((asset) => symbol.includes(asset.symbol))?.mint ??
-          ""
-      );
-      this.symbol.mint_pair = new PublicKey(
-        CURRENCIES.find((c) => symbol.includes(c.name))?.mint ?? ""
-      );
 
+      this.symbol.mint_asset = mint_asset
+        ? new PublicKey(mint_asset)
+        : new PublicKey(
+            this.sa_api_data.find((api) => symbol.includes(symbol))?.mint ?? ""
+          );
+
+      this.symbol.mint_pair = mint_pair
+        ? new PublicKey(mint_pair)
+        : new PublicKey(
+            CURRENCIES.find((c) => symbol.includes(symbol))?.mint ?? ""
+          );
+
+      ////Deprecated
       useStaratlasGmStore().getOpenOrdersForAsset(
         this.symbol.mint_asset.toString()
       );
@@ -216,11 +200,6 @@ export const useGlobalStore = defineStore("globalStore", {
       if (this.toggleables.load_tokens) {
         this.status = _update_status(true, "Loading wallet tokens...", 0, 3);
         await this._load_wallet_tokens();
-      }
-
-      if (this.toggleables.load_history) {
-        this.status = _update_status(true, "Loading wallet trades...", 1, 3);
-        await this._load_wallet_history();
       }
 
       if (this.toggleables.load_nfts) {
@@ -331,75 +310,6 @@ export const useGlobalStore = defineStore("globalStore", {
             this.wallet.tokenInfo[idx].amount;
         });
       }
-    },
-
-    async _load_wallet_history() {
-      const api = new Api({ baseUrl: "https://api2.skullnbones.xyz" });
-
-      this.wallet.historySorted = [];
-      api.trades
-        .getAddress({ address: this.wallet.address, limit: 1000 })
-        .then((resp) => resp.data)
-        .then((api_data) => {
-          this.wallet.historyRaw = api_data;
-          let key_idx = 0;
-          for (let type in ItemType) {
-            let filtered_sa_api = this.sa_api_data.filter(
-              (sa) =>
-                sa.attributes.itemType.toUpperCase() === type.toUpperCase()
-            );
-
-            let filtered_trades = api_data.filter((api) =>
-              filtered_sa_api.some((f) => f.mint === api.asset_mint)
-            );
-
-            if (filtered_trades.length) {
-              this.wallet.historySorted.push({
-                key: key_idx.toString(),
-                data: {
-                  name: type,
-                  symbol: "",
-                  type: "",
-                  size: "",
-                  price: "",
-                  currency_mint: "",
-                  currency_string: "",
-                  time_string: "",
-                  total_cost: "",
-                },
-                children: filtered_trades.flatMap((filtered, idx) => {
-                  {
-                    return {
-                      key: key_idx.toString() + "-" + idx.toString(),
-                      data: {
-                        name:
-                          this.sa_api_data.find(
-                            (api) => api.mint === filtered.asset_mint
-                          )?.name ?? "none",
-                        symbol: filtered.symbol,
-                        type: type,
-                        currency_mint: filtered.currency_mint,
-                        size: filtered.asset_change.toString(),
-                        price: filtered.price.toString(),
-                        total_cost: (
-                          filtered.asset_change * filtered.price
-                        ).toString(),
-                        currency_string:
-                          CURRENCIES.find(
-                            (c) => c.mint === filtered.currency_mint
-                          )?.name ?? "",
-                        time_string: new Date(
-                          filtered.timestamp * 1000
-                        ).toISOString(),
-                      },
-                    };
-                  }
-                }),
-              });
-            }
-            key_idx++;
-          }
-        });
     },
 
     async _load_wallet_nfts() {
