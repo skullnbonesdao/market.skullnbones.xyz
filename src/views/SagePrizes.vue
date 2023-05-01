@@ -341,19 +341,20 @@
               </Column>
             </Row>
           </ColumnGroup>
+          <div class="w-full">
+            <p class="w-full text-right text-xs p-3 text-orange-400">
+              * Net calculation - can be incorrect! [based on
+              last(50)-sol-transfers Formula: sage=in-out-balance]
+            </p>
+          </div>
         </DataTable>
-        <div class="w-full">
-          <p class="w-full text-right text-xs p-3 text-orange-400">
-            * Net calculation - can be incorrect! [based on last(50) wallet
-            incoming-sol minus and current-sol-balance]
-          </p>
-        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import Button from "primevue/button";
 import NoData from "../components/elements/NoData.vue";
 import InputText from "primevue/inputtext";
 import ProgressSpinner from "primevue/progressspinner";
