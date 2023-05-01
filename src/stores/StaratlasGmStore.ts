@@ -87,7 +87,7 @@ export const useStaratlasGmStore = defineStore({
   actions: {
     async init() {
       this.status = {
-        is_initalized: false,
+        is_initialized: false,
         is_loading: true,
         message: "GM init",
         step: 0,
@@ -96,14 +96,14 @@ export const useStaratlasGmStore = defineStore({
       await this.order_book_service.initialize();
 
       this.status = {
-        is_initalized: false,
+        is_initialized: false,
         is_loading: true,
         message: "GM OrderUser",
         step: 1,
         step_total: 2,
       };
       await this.update_filtered_market_table_data("Ship");
-      this.status = _update_status(false, "GM init done", 1, 1);
+      this.status = _update_status(this.status, false, "GM init done", 1, 1);
     },
 
     getSumOrders(side: string, pair: PublicKey) {
@@ -305,12 +305,30 @@ export const useStaratlasGmStore = defineStore({
     },
 
     async update_score_data() {
-      this.status = _update_status(true, "Loading score data", 0, 3);
+      this.status = _update_status(
+        this.status,
+        true,
+        "Loading score data",
+        0,
+        3
+      );
       await this._fetch_and_map_score_data();
-      this.status = _update_status(false, "Updated score data", 3, 3);
+      this.status = _update_status(
+        this.status,
+        false,
+        "Updated score data",
+        3,
+        3
+      );
     },
     async update_filtered_market_table_data(item_type: string) {
-      this.status = _update_status(true, "Updating filters on table", 0, 3);
+      this.status = _update_status(
+        this.status,
+        true,
+        "Updating filters on table",
+        0,
+        3
+      );
 
       if (!item_type) return;
       this.market_table_data = [];
@@ -324,7 +342,7 @@ export const useStaratlasGmStore = defineStore({
             .values()
         );
 
-        this.status = _update_status(true, "Map USDC", 1, 3);
+        this.status = _update_status(this.status, true, "Map USDC", 1, 3);
 
         let orders_usdc: MarketValues = {
           itemType: E_CURRENCIES.USDC,
@@ -362,7 +380,7 @@ export const useStaratlasGmStore = defineStore({
           ),
         };
 
-        this.status = _update_status(true, "Map ATLAS", 2, 3);
+        this.status = _update_status(this.status, true, "Map ATLAS", 2, 3);
 
         let orders_atlas: MarketValues = {
           itemType: E_CURRENCIES.ATLAS,
@@ -400,7 +418,7 @@ export const useStaratlasGmStore = defineStore({
           ),
         };
 
-        this.status = _update_status(true, "Push data", 3, 3);
+        this.status = _update_status(this.status, true, "Push data", 3, 3);
         this.market_table_data.push({
           api_data: filtered,
           orders_usdc: orders_usdc,
@@ -408,18 +426,22 @@ export const useStaratlasGmStore = defineStore({
         });
       }
 
-      this.status = _update_status(false, "Updated market table data");
+      this.status = _update_status(
+        this.status,
+        false,
+        "Updated market table data"
+      );
     },
 
     async _fetch_and_map_score_data() {
-      this.status = _update_status(true, "Get User Fleet", 1, 3);
+      this.status = _update_status(this.status, true, "Get User Fleet", 1, 3);
       const ship_staking_infos = await getAllFleetsForUserPublicKey(
         new Connection(useGlobalStore().rpc.url),
         new PublicKey(useGlobalStore().wallet.address ?? ""),
         new PublicKey(SCORE_FLEET_PROGRAM_ID)
       );
 
-      this.status = _update_status(true, "Map User Fleet", 2, 3);
+      this.status = _update_status(this.status, true, "Map User Fleet", 2, 3);
 
       this.score_table_data = [];
       for (const ship of ship_staking_infos) {

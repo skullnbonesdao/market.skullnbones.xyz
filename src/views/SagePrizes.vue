@@ -8,7 +8,7 @@
           placeholder="Enter a wallet address"
           v-model="text_user_wallet_input"
         /><Button
-          :disabled="!useGlobalStore().status.is_initalized"
+          :disabled="!useGlobalStore().status.is_initialized"
           icon="pi pi-search"
           @click="update_wallet_prizes(text_user_wallet_input)"
         />
