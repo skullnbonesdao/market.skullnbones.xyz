@@ -8,6 +8,7 @@
 import { onMounted, PropType } from "vue";
 import * as d3 from "d3";
 import { range } from "../../../static/range";
+import { useGlobalStore } from "../../../stores/GlobalStore";
 
 export interface HeatMapData {
   x_label: string;
@@ -71,6 +72,7 @@ onMounted(() => {
   // Labels of row and columns
   svg
     .append("text")
+    .attr("fill", "gray")
     .attr("x", -(height / 2))
     .attr("y", -margin.left / 2)
     .attr("transform", "rotate(-90)")
@@ -79,6 +81,7 @@ onMounted(() => {
 
   svg
     .append("text")
+    .attr("fill", "gary")
     .attr("x", width / 2)
     .attr("y", height + margin.bottom)
     .attr("text-anchor", "middle")
@@ -103,7 +106,7 @@ onMounted(() => {
     .scaleBand()
     .range([height, 0])
     .domain(y_axis_labels)
-    .padding(0.01);
+    .padding(0.05);
   svg.append("g").call(d3.axisLeft(y));
 
   // Build color scale
@@ -119,7 +122,7 @@ onMounted(() => {
     .append("div")
     .style("opacity", 0)
     .attr("class", "tooltip")
-    .style("background-color", "white")
+    .style("background-color", useGlobalStore()?.is_dark ? "gray" : "white")
     .style("border", "solid")
     .style("border-width", "2px")
     .style("border-radius", "5px")
