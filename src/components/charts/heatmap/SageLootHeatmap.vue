@@ -56,8 +56,8 @@ const margin = { top: 30, right: 30, bottom: 30, left: 50 },
   width = props.width - margin.left - margin.right,
   height = props.height - margin.top - margin.bottom;
 
-const x_axis_labels = range(-50, 50, "");
-const y_axis_labels = range(-50, 50, "");
+const x_axis_labels = range(-50, 50, "", 1, true);
+const y_axis_labels = range(-50, 50, "", 1, true);
 
 onMounted(() => {
   // append the svg object to the body of the page
