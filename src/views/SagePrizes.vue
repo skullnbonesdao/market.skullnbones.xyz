@@ -385,8 +385,7 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { useGlobalStore } from "../stores/GlobalStore";
 
 const text_user_wallet_input = ref(
-  useWallet().publicKey.value?.toString() ??
-    "862HwAZzNWwjdNCNYcTv9PbTpesxRuJehoQKB3aPVQK7"
+  useWallet().publicKey.value?.toString() ?? ""
 );
 const expandedRows = ref();
 const expandAll = () => {
