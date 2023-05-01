@@ -345,7 +345,7 @@ watch(
   }
 );
 watch(
-  () => useStaratlasGmStore().status.is_initalized,
+  () => useStaratlasGmStore().status.is_initialized,
   async () => {
     // if (useStaratlasGmStore().status.is_initalized) {
     //   console.log("initalized");
@@ -354,7 +354,7 @@ watch(
   }
 );
 onMounted(async () => {
-  if (useStaratlasGmStore().status.is_initalized) {
+  if (useStaratlasGmStore().status.is_initialized) {
     await useStaratlasGmStore().update_filtered_market_table_data("Ship");
   }
 });

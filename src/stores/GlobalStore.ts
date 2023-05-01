@@ -15,14 +15,11 @@ import { useWallet } from "solana-wallets-vue";
 import { BirdsEyePricesResponse } from "../static/swagger/birdseye_api/birdsyste_pirces_response";
 import { useStaratlasGmStore } from "./StaratlasGmStore";
 import { I_SAG_Player } from "../static/apis/SA_Galaxy/I_SAG_Player";
-import {
-  get_player_prizes,
-  get_player_profile,
-} from "../static/apis/SA_Galaxy/SA_Galaxy";
+import { get_player_profile } from "../static/apis/SA_Galaxy/SA_Galaxy";
 import { I_SagePrize } from "../static/apis/SA_Galaxy/I_Sage_Prizes";
 
 export interface Status {
-  is_initalized: boolean;
+  is_initialized: boolean;
   is_loading: boolean;
   message: string;
   step?: number;
@@ -125,6 +122,7 @@ export const useGlobalStore = defineStore("globalStore", {
     async init() {
       await this.sa_api_update();
       await this._currency_update();
+      this.status.is_initialized = true;
     },
 
     update_toggables(
@@ -139,13 +137,13 @@ export const useGlobalStore = defineStore("globalStore", {
       this.toggleables.load_history = load_history;
     },
 
-    async update_prizes(wallet: string) {
-      this.status.is_loading = true;
-      await get_player_prizes(wallet).then((resp) => {
-        if (resp) this.wallet.prizes = resp;
-      });
-      this.status.is_loading = false;
-    },
+    // async update_prizes(wallet: string) {
+    //   this.status.is_loading = true;
+    //   await get_player_prizes(wallet).then((resp) => {
+    //     if (resp) this.wallet.prizes = resp;
+    //   });
+    //   this.status.is_loading = false;
+    // },
 
     update_symbol(symbol: string, mint_asset?: string, mint_pair?: string) {
       this.symbol.name = symbol;
@@ -174,15 +172,39 @@ export const useGlobalStore = defineStore("globalStore", {
     },
 
     async _currency_update() {
-      this.status = _update_status(true, "Loading Currency Prices", 0, 1);
+      this.status = _update_status(
+        this.status,
+        true,
+        "Loading Currency Prices",
+        0,
+        1
+      );
       await this._load_currency_prices();
-      this.status = _update_status(false, "Updated Currency Prices", 1, 1);
+      this.status = _update_status(
+        this.status,
+        false,
+        "Updated Currency Prices",
+        1,
+        1
+      );
     },
 
     async sa_api_update() {
-      this.status = _update_status(true, "Loading SA API Data", 0, 1);
+      this.status = _update_status(
+        this.status,
+        true,
+        "Loading SA API Data",
+        0,
+        1
+      );
       await this._load_sa_api();
-      this.status = _update_status(false, "Updated SA API Data", 0, 1);
+      this.status = _update_status(
+        this.status,
+        false,
+        "Updated SA API Data",
+        0,
+        1
+      );
     },
 
     async update_wallet(wallet: string) {
@@ -198,12 +220,24 @@ export const useGlobalStore = defineStore("globalStore", {
       });
 
       if (this.toggleables.load_tokens) {
-        this.status = _update_status(true, "Loading wallet tokens...", 0, 3);
+        this.status = _update_status(
+          this.status,
+          true,
+          "Loading wallet tokens...",
+          0,
+          3
+        );
         await this._load_wallet_tokens();
       }
 
       if (this.toggleables.load_nfts) {
-        this.status = _update_status(true, "Loading wallet NFTs...", 2, 3);
+        this.status = _update_status(
+          this.status,
+          true,
+          "Loading wallet NFTs...",
+          2,
+          3
+        );
         await this._load_wallet_nfts().catch((err) =>
           console.log("error fetching nfts")
         );
@@ -213,7 +247,7 @@ export const useGlobalStore = defineStore("globalStore", {
         await useStaratlasGmStore().update_score_data();
       }
 
-      this.status = _update_status(false, "Updated Wallet", 3, 3);
+      this.status = _update_status(this.status, false, "Updated Wallet", 3, 3);
     },
 
     async _load_currency_prices() {
@@ -258,6 +292,7 @@ export const useGlobalStore = defineStore("globalStore", {
 
       for (let [idx, token_account] of this.wallet.tokenRaw.entries()) {
         this.status = _update_status(
+          this.status,
           true,
           "Loading metadata...",
           idx,
@@ -351,13 +386,15 @@ export const useGlobalStore = defineStore("globalStore", {
 });
 
 export function _update_status(
+  status: Status,
   is_loading: boolean,
   message: string,
+
   step?: number,
   step_total?: number
 ): Status {
   return {
-    is_initalized: true,
+    is_initialized: status.is_initialized,
     is_loading: is_loading,
     message: message,
     step: step,
