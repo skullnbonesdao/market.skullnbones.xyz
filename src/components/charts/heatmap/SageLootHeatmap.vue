@@ -10,8 +10,8 @@ import * as d3 from "d3";
 import { range } from "../../../static/range";
 
 export interface HeatMapData {
-  x_label: String;
-  y_label: String;
+  x_label: string;
+  y_label: string;
   value: number;
 }
 
@@ -110,7 +110,7 @@ onMounted(() => {
   const max_value = Math.max(...props.data?.flatMap((d) => d.value));
   const myColor = d3
     .scaleLinear()
-    .range(["white", "#69b3a2"])
+    .range(["#FFF", "#1747a9"] as any)
     .domain([0, max_value]);
 
   //Mouse Actions

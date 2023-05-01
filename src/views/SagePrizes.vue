@@ -148,7 +148,7 @@
                   <DataTable
                     :value="slotProps.data.elements"
                     sort-field="createdAt"
-                    sort-order="-1"
+                    :sort-order="-1"
                   >
                     <Column field="name" header="Name">
                       <template #body="slotProps">
@@ -386,7 +386,9 @@
           </Panel>
           <Panel header="Loot-Heatmap" toggleable>
             <div class="flex w-full justify-center">
-              <SageLootHeatmap :data="sage_heatmap_data"></SageLootHeatmap>
+              <SageLootHeatmap
+                :data="sage_heatmap_data as unknown as HeatMapData[]"
+              ></SageLootHeatmap>
             </div>
           </Panel>
         </div>
@@ -559,15 +561,15 @@ const sage_heatmap_data = computed(() => {
 
   player_prizes.value?.forEach((prize) => {
     array.push({
-      x_label: prize.sector?.x.toString(),
-      y_label: prize.sector?.y.toString(),
+      x_label: prize.sector?.x.toString() ?? "",
+      y_label: prize.sector?.y.toString() ?? "",
       value: 1,
     });
   });
 
   //Remove duplicates
   return Object.values(
-    array.reduce((acc, { x_label, y_label, value }) => {
+    array.reduce((acc: any, { x_label, y_label, value }) => {
       value = +value; // convert to number
       const key = x_label + "_" + y_label; // unique combination of id and subject
       acc[key] = acc[key] || { x_label, y_label, value: 0 };
