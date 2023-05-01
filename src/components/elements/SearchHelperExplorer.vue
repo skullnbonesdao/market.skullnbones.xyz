@@ -5,6 +5,7 @@
       v-model="search_user_selected"
       :suggestions="filtered_search"
       @complete="search"
+      @itemSelect="$emit('toSearch', search_user_selected)"
       optionLabel="label"
       optionGroupLabel="label"
       optionGroupChildren="items"
@@ -86,7 +87,7 @@ function init() {
                 value: asset.symbol + "ATLAS",
                 mint_asset: asset.mint,
                 mint_currency: CURRENCIES.find(
-                  (c) => c.type === E_CURRENCIES.USDC
+                  (c) => c.type === E_CURRENCIES.ATLAS
                 )?.mint,
               },
             },
