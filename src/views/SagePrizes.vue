@@ -141,7 +141,11 @@
               <h5 class="font-bold text-xl">
                 Details for {{ slotProps.data.name }}
               </h5>
-              <DataTable :value="slotProps.data.elements">
+              <DataTable
+                :value="slotProps.data.elements"
+                sort-field="createdAt"
+                sort-order="-1"
+              >
                 <Column field="name" header="Name">
                   <template #body="slotProps">
                     <div class="flex flex-row items-center space-x-2">

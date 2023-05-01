@@ -43,6 +43,8 @@ import SagePrizes from "./views/SagePrizes.vue";
 import ExplorerView from "./views/ExplorerView.vue";
 import { apolloClient, apolloProvider } from "./static/graphql/SNBGraphQL";
 import { DefaultApolloClient } from "@vue/apollo-composable";
+import TestView from "./views/TestView.vue";
+import VueApexCharts from "vue3-apexcharts";
 
 const walletOptions = {
   wallets: [
@@ -61,6 +63,8 @@ const routes = [
   { path: "/portfolio", component: PortfolioView },
   { path: "/sageprizes", component: SagePrizes },
   { path: "/about", component: AboutView },
+
+  { path: "/test", component: TestView },
 ];
 
 const router = createRouter({
@@ -79,6 +83,7 @@ app
   .component("Button", Button)
   .component("Toast", Toast)
   .directive("tooltip", Tooltip);
+
 const pinia = createPinia();
 
 app
@@ -87,6 +92,7 @@ app
   .use(pinia)
   .use(PrimeVue)
   .use(ToastService)
+  .use(VueApexCharts)
   .use(router)
   .use(SolanaWallets, walletOptions)
   .mount("#app");
