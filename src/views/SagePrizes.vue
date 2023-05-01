@@ -1,4 +1,5 @@
 <template>
+  {{ player_sol_sage_usage }}
   <div class="m-2 space-y-2">
     <div class="p-card p-2 flex flex-col md:flex-row w-full gap-2">
       <div class="p-fluid flex w-full gap-2">
@@ -226,16 +227,55 @@
               ></Column>
               <Column>
                 <template #footer>
-                  <div class="flex flex-row space-x-2">
-                    <CurrencyIcon
-                      style="height: 24px"
-                      :currency="
-                        CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
-                      "
-                    ></CurrencyIcon>
-                    <p>{{ player_sol.inflow.toFixed(3) }} (in)</p>
-                  </div></template
-                >
+                  <div class="flex flex-col space-y-1">
+                    <div class="p-inputgroup flex-1">
+                      <span class="p-inputgroup-addon">
+                        <CurrencyIcon
+                          style="height: 24px"
+                          :currency="
+                            CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
+                          "
+                        ></CurrencyIcon>
+                      </span>
+                      <InputText
+                        type="number"
+                        v-model="player_sol.inflow"
+                      ></InputText>
+                      <span class="p-inputgroup-addon w-36">+Incoming</span>
+                    </div>
+                    <div class="p-inputgroup flex-1">
+                      <span class="p-inputgroup-addon">
+                        <CurrencyIcon
+                          style="height: 24px"
+                          :currency="
+                            CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
+                          "
+                        ></CurrencyIcon>
+                      </span>
+                      <InputText
+                        type="number"
+                        v-model="player_sol.outflow"
+                      ></InputText>
+                      <span class="p-inputgroup-addon w-24 w-36"
+                        >-Outgoing</span
+                      >
+                    </div>
+                    <div class="p-inputgroup flex-1">
+                      <span class="p-inputgroup-addon">
+                        <CurrencyIcon
+                          style="height: 24px"
+                          :currency="
+                            CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
+                          "
+                        ></CurrencyIcon>
+                      </span>
+                      <InputText v-model="player_sol.current"></InputText>
+                      <span type="number" class="p-inputgroup-addon w-36"
+                        >-Balance</span
+                      >
+                    </div>
+                  </div>
+                </template>
               </Column>
               <Column>
                 <template #footer>
@@ -247,11 +287,11 @@
                       "
                     ></CurrencyIcon>
                     <p>
-                      {{ (player_sol.inflow - player_sol.current).toFixed(3) }}
-                      (used)
+                      {{ player_sol_sage_usage.toFixed(5) }}
+                      (Sage-Usage)
                     </p>
-                  </div></template
-                >
+                  </div>
+                </template>
               </Column>
 
               <Column>
@@ -270,7 +310,7 @@
                             CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
                               ?.mint ?? ""
                           ]?.value *
-                            (player_sol.inflow - player_sol.current)) /
+                            player_sol_sage_usage) /
                           useGlobalStore().currencyPrice.data[
                             CURRENCIES.find(
                               (c) => c.type === E_CURRENCIES.ATLAS
@@ -294,22 +334,8 @@
                       "
                     ></CurrencyIcon>
                     <p>
-                      {{
-                        (
-                          sum_value -
-                          (useGlobalStore().currencyPrice.data[
-                            CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
-                              ?.mint ?? ""
-                          ]?.value *
-                            (player_sol.inflow - player_sol.current)) /
-                            useGlobalStore().currencyPrice.data[
-                              CURRENCIES.find(
-                                (c) => c.type === E_CURRENCIES.ATLAS
-                              )?.mint ?? ""
-                            ]?.value
-                        ).toFixed(3)
-                      }}
-                      (NET)
+                      {{ roi_net_value }}
+                      (NET*)
                     </p>
                   </div></template
                 >
@@ -352,7 +378,8 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { useGlobalStore } from "../stores/GlobalStore";
 
 const text_user_wallet_input = ref(
-  useWallet().publicKey.value?.toString() ?? ""
+  useWallet().publicKey.value?.toString() ??
+    "862HwAZzNWwjdNCNYcTv9PbTpesxRuJehoQKB3aPVQK7"
 );
 const expandedRows = ref();
 const expandAll = () => {
@@ -371,9 +398,10 @@ interface SortedElement {
 }
 
 const player_prizes = ref<I_SagePrize[]>();
-const player_sol = ref({
+const player_sol: any = ref({
   inflow: 0,
   current: 0,
+  outflow: 0,
 });
 
 const prizes = computed(() => {
@@ -429,6 +457,21 @@ const sum_value = computed(() => {
   return value;
 });
 
+const roi_used_value = computed(() => {});
+
+const roi_net_value = computed(() => {
+  return (
+    sum_value.value -
+    (useGlobalStore().currencyPrice.data[
+      CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)?.mint ?? ""
+    ]?.value *
+      player_sol_sage_usage.value) /
+      useGlobalStore().currencyPrice.data[
+        CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ?? ""
+      ]?.value
+  ).toFixed(3);
+});
+
 function get_account_solana_stats(wallet: string) {
   //Get Amount Inflow
   fetch(
@@ -438,20 +481,32 @@ function get_account_solana_stats(wallet: string) {
   )
     .then((resp) => resp.json())
     .then((json) => {
-      console.log(json);
-      let total_spend = 0;
+      player_sol.value.inflow = 0;
+      player_sol.value.outflow = 0;
+
       json.data.tx.transactions.forEach((element: any) => {
-        total_spend += element.dst === wallet ? +element.lamport : 0;
+        player_sol.value.inflow +=
+          element.dst === wallet ? element.lamport * Math.pow(10, -9) : 0;
+        player_sol.value.outflow +=
+          element.dst === wallet ? 0 : element.lamport * Math.pow(10, -9);
       });
-      player_sol.value.inflow = total_spend * Math.pow(10, -9);
     });
 
   //Get Current Amount
+  player_sol.value.current = 0;
   const connection = new Connection(useGlobalStore().rpc.url);
   connection.getAccountInfo(new PublicKey(wallet)).then((resp) => {
     player_sol.value.current = (resp?.lamports ?? 0) * Math.pow(10, -9);
   });
 }
+
+const player_sol_sage_usage = computed(() => {
+  return (
+    player_sol.value.inflow -
+    player_sol.value.outflow -
+    player_sol.value.current
+  );
+});
 
 async function update_wallet_prizes(wallet: string) {
   is_loading.value = true;
