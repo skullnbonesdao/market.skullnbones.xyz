@@ -56,7 +56,7 @@ const margin = { top: 30, right: 30, bottom: 30, left: 50 },
   width = props.width - margin.left - margin.right,
   height = props.height - margin.top - margin.bottom;
 
-const x_axis_labels = range(-50, 50, "", 1, true);
+const x_axis_labels = range(-50, 50, "", 1, false);
 const y_axis_labels = range(-50, 50, "", 1, true);
 
 onMounted(() => {
@@ -99,7 +99,11 @@ onMounted(() => {
   svg
     .append("g")
     .attr("transform", `translate(0, ${height})`)
-    .call(d3.axisBottom(x));
+    .style("font-size", 5)
+
+    .call(d3.axisBottom(x).tickSize(5))
+    .select(".domain")
+    .remove();
 
   // Build X scales and axis:
   const y = d3
@@ -107,7 +111,12 @@ onMounted(() => {
     .range([height, 0])
     .domain(y_axis_labels)
     .padding(0.05);
-  svg.append("g").call(d3.axisLeft(y));
+  svg
+    .append("g")
+    .style("font-size", 5)
+    .call(d3.axisLeft(y).tickSize(5))
+    .select(".domain")
+    .remove();
 
   // Build color scale
   const max_value = Math.max(...props.data?.flatMap((d) => d.value));
