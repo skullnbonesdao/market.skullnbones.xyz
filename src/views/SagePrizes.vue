@@ -227,7 +227,10 @@
               <Column>
                 <template #footer>
                   <div class="flex flex-col space-y-1">
-                    <div class="p-inputgroup flex-1">
+                    <div
+                      v-tooltip.bottom="'Incoming SOL transfers'"
+                      class="p-inputgroup flex-1"
+                    >
                       <span class="p-inputgroup-addon">
                         <CurrencyIcon
                           style="height: 24px"
@@ -240,9 +243,12 @@
                         type="number"
                         v-model="player_sol.inflow"
                       ></InputText>
-                      <span class="p-inputgroup-addon w-36">+Incoming</span>
+                      <span class="p-inputgroup-addon flex-1">+IN</span>
                     </div>
-                    <div class="p-inputgroup flex-1">
+                    <div
+                      v-tooltip.bottom="'Outgoing SOL transfers'"
+                      class="p-inputgroup flex-1"
+                    >
                       <span class="p-inputgroup-addon">
                         <CurrencyIcon
                           style="height: 24px"
@@ -255,11 +261,12 @@
                         type="number"
                         v-model="player_sol.outflow"
                       ></InputText>
-                      <span class="p-inputgroup-addon w-24 w-36"
-                        >-Outgoing</span
-                      >
+                      <span class="p-inputgroup-addon flex-1">-OUT</span>
                     </div>
-                    <div class="p-inputgroup flex-1">
+                    <div
+                      v-tooltip.bottom="'Current wallet balance'"
+                      class="p-inputgroup flex-1"
+                    >
                       <span class="p-inputgroup-addon">
                         <CurrencyIcon
                           style="height: 24px"
@@ -269,8 +276,8 @@
                         ></CurrencyIcon>
                       </span>
                       <InputText v-model="player_sol.current"></InputText>
-                      <span type="number" class="p-inputgroup-addon w-36"
-                        >-Balance</span
+                      <span type="number" class="p-inputgroup-addon flex-1"
+                        >-IS</span
                       >
                     </div>
                   </div>
