@@ -1,6 +1,6 @@
 <template>
-  <ScoreLootHeatmap></ScoreLootHeatmap>
+  <SageLootHeatmap></SageLootHeatmap>
 </template>
 <script setup lang="ts">
-import ScoreLootHeatmap from "../components/charts/heatmap/ScoreLootHeatmap.vue";
+import SageLootHeatmap from "../components/charts/heatmap/SageLootHeatmap.vue";
 </script>

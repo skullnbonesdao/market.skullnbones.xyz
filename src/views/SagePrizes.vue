@@ -28,343 +28,374 @@
           <ProgressSpinner></ProgressSpinner>
         </div>
 
-        <DataTable
-          v-else
-          v-model:expandedRows="expandedRows"
-          :value="prizes"
-          dataKey="name"
-          tableStyle="min-width: 60rem"
-        >
-          <template #header>
-            <div class="flex w-full justify-end gap-2">
-              <Button
-                text
-                icon="pi pi-plus"
-                label="Expand All"
-                @click="expandAll"
-              />
-              <Button
-                text
-                icon="pi pi-minus"
-                label="Collapse All"
-                @click="collapseAll"
-              />
-            </div>
-          </template>
-          <Column expander style="width: 5rem" />
-          <Column header="Loot">
-            <template #body="slotProps">
-              <div class="flex flex-row items-center space-x-2">
-                <CurrencyIcon
-                  style="width: 32px"
-                  v-if="
-                    CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
-                      ?.mint === slotProps.data?.elements?.at(0).mint
-                  "
-                  :currency="
-                    CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
-                  "
-                ></CurrencyIcon>
-                <Avatar
-                  v-else
-                  shape="circle"
-                  :image="
-                    '/webp/' + slotProps.data?.elements?.at(0).mint + '.webp'
-                  "
-                ></Avatar>
-                <p>{{ slotProps.data?.name }}</p>
-              </div>
-            </template>
-          </Column>
-          <Column header="Rarity">
-            <template #body="slotProps">
-              <AssetRarityBadge
-                :asset_class="slotProps.data.elements?.at(0).rarity"
-              ></AssetRarityBadge>
-            </template>
-          </Column>
-          <Column field="elements.length" header="Drops" sortable>
-            <template #body="slotProps">
-              x{{ slotProps.data.elements?.length }}
-            </template>
-          </Column>
-          <Column header="Quantity">
-            <template #body="slotProps">
-              {{
-                slotProps.data.elements
-                  ?.flatMap((e: I_SagePrize) => e.quantity)
-                  .reduce((a: number, b: number) => a + b)
-              }}
-              <!--          <Avatar-->
-              <!--            :image="'/webp/' + slotProps.data?.elements[0]?.mint + '.webp'"-->
-              <!--          ></Avatar>-->
-            </template>
-          </Column>
-          <Column field="atlas_price" header="Market-Price" sortable>
-            <template #body="slotProps">
-              <div class="flex gap-2">
-                <CurrencyIcon
-                  style="height: 24px"
-                  :currency="
-                    CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
-                  "
-                />
-                <span> {{ slotProps.data?.atlas_price }}</span>
-              </div>
-            </template>
-          </Column>
-          <Column header="Value" sortable>
-            <template #body="slotProps">
-              <div class="flex gap-2">
-                <CurrencyIcon
-                  style="height: 24px"
-                  :currency="
-                    CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
-                  "
-                />
-                <span>
+        <div v-else>
+          <Panel header="Loot-Table" toggleable>
+            <DataTable
+              v-model:expandedRows="expandedRows"
+              :value="prizes"
+              dataKey="name"
+              tableStyle="min-width: 60rem"
+            >
+              <template #header>
+                <div class="flex w-full justify-end gap-2">
+                  <Button
+                    text
+                    icon="pi pi-plus"
+                    label="Expand All"
+                    @click="expandAll"
+                  />
+                  <Button
+                    text
+                    icon="pi pi-minus"
+                    label="Collapse All"
+                    @click="collapseAll"
+                  />
+                </div>
+              </template>
+              <Column expander style="width: 5rem" />
+              <Column header="Loot">
+                <template #body="slotProps">
+                  <div class="flex flex-row items-center space-x-2">
+                    <CurrencyIcon
+                      style="width: 32px"
+                      v-if="
+                        CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
+                          ?.mint === slotProps.data?.elements?.at(0).mint
+                      "
+                      :currency="
+                        CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
+                      "
+                    ></CurrencyIcon>
+                    <Avatar
+                      v-else
+                      shape="circle"
+                      :image="
+                        '/webp/' +
+                        slotProps.data?.elements?.at(0).mint +
+                        '.webp'
+                      "
+                    ></Avatar>
+                    <p>{{ slotProps.data?.name }}</p>
+                  </div>
+                </template>
+              </Column>
+              <Column header="Rarity">
+                <template #body="slotProps">
+                  <AssetRarityBadge
+                    :asset_class="slotProps.data.elements?.at(0).rarity"
+                  ></AssetRarityBadge>
+                </template>
+              </Column>
+              <Column field="elements.length" header="Drops" sortable>
+                <template #body="slotProps">
+                  x{{ slotProps.data.elements?.length }}
+                </template>
+              </Column>
+              <Column header="Quantity">
+                <template #body="slotProps">
                   {{
-                    (
-                      slotProps.data.elements
-                        ?.flatMap((e: I_SagePrize) => e.quantity)
-                        .reduce((a: number, b: number) => a + b) *
-                        slotProps.data.atlas_price ?? 0
-                    ).toFixed(2)
-                  }}</span
-                >
-              </div>
-            </template>
-          </Column>
-
-          <template #expansion="slotProps">
-            <div class="p-3">
-              <h5 class="font-bold text-xl">
-                Details for {{ slotProps.data.name }}
-              </h5>
-              <DataTable
-                :value="slotProps.data.elements"
-                sort-field="createdAt"
-                sort-order="-1"
-              >
-                <Column field="name" header="Name">
-                  <template #body="slotProps">
-                    <div class="flex flex-row items-center space-x-2">
-                      <Avatar
-                        shape="circle"
-                        :image="'/webp/' + slotProps.data?.mint + '.webp'"
-                      ></Avatar>
-                      <p>{{ slotProps.data.name }}</p>
-                    </div>
-                  </template>
-                </Column>
-                <Column field="rarity" header="Rarity">
-                  <template #body="slotProps">
-                    <AssetRarityBadge
-                      :asset_class="slotProps.data.rarity"
-                    ></AssetRarityBadge>
-                  </template>
-                </Column>
-                <Column field="quantity" header="Quantity" sortable></Column>
-
-                <Column field="sector" header="Sector">
-                  <template #body="slotProps">
-                    <div class="grid grid-cols-2 gap-2">
-                      <p>X</p>
-                      <p>{{ slotProps.data.sector?.x }}</p>
-                      <p>Y</p>
-                      <p>{{ slotProps.data.sector?.y }}</p>
-                    </div>
-                  </template>
-                </Column>
-
-                <Column field="createdAt" header="Create" sortable>
-                  <template #body="slotProps">
-                    <div class="flex flex-col">
-                      <p>{{ slotProps.data.createdAt }}</p>
-
-                      <p class="text-purple-500 text-xs">
-                        Before:
-                        {{
-                          calc_passed_time(
-                            new Date(slotProps.data.createdAt).getTime() / 1000
-                          )
-                        }}
-                      </p>
-                    </div>
-                  </template>
-                </Column>
-              </DataTable>
-            </div>
-          </template>
-          <ColumnGroup type="footer">
-            <Row>
-              <Column
-                footer="Sum:"
-                :colspan="3"
-                footerStyle="text-align:right"
-              />
-
-              <Column :footer="'x' + sum_drops.toString()" />
-              <Column :footer="sum_quantity.toString()" />
-              <Column> </Column>
-              <Column>
-                <template #footer>
-                  <div class="flex flex-row space-x-2">
-                    <CurrencyIcon
-                      style="width: 24px"
-                      :currency="
-                        CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
-                      "
-                    ></CurrencyIcon>
-
-                    <p class="text-green-500">{{ sum_value?.toFixed(2) }}</p>
-                  </div></template
-                >
-              </Column>
-            </Row>
-            <Row>
-              <Column
-                footerStyle="text-align:right"
-                :footer="'Net cost estimation*:'"
-                :colspan="3"
-              ></Column>
-              <Column>
-                <template #footer>
-                  <div class="flex flex-col space-y-1">
-                    <div
-                      v-tooltip.bottom="'Incoming SOL transfers'"
-                      class="p-inputgroup flex-1"
-                    >
-                      <span class="p-inputgroup-addon">
-                        <CurrencyIcon
-                          style="height: 24px"
-                          :currency="
-                            CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
-                          "
-                        ></CurrencyIcon>
-                      </span>
-                      <InputText
-                        type="number"
-                        v-model="player_sol.inflow"
-                      ></InputText>
-                      <span class="p-inputgroup-addon flex-1">+IN</span>
-                    </div>
-                    <div
-                      v-tooltip.bottom="'Outgoing SOL transfers'"
-                      class="p-inputgroup flex-1"
-                    >
-                      <span class="p-inputgroup-addon">
-                        <CurrencyIcon
-                          style="height: 24px"
-                          :currency="
-                            CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
-                          "
-                        ></CurrencyIcon>
-                      </span>
-                      <InputText
-                        type="number"
-                        v-model="player_sol.outflow"
-                      ></InputText>
-                      <span class="p-inputgroup-addon flex-1">-OUT</span>
-                    </div>
-                    <div
-                      v-tooltip.bottom="'Current wallet balance'"
-                      class="p-inputgroup flex-1"
-                    >
-                      <span class="p-inputgroup-addon">
-                        <CurrencyIcon
-                          style="height: 24px"
-                          :currency="
-                            CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
-                          "
-                        ></CurrencyIcon>
-                      </span>
-                      <InputText v-model="player_sol.current"></InputText>
-                      <span type="number" class="p-inputgroup-addon flex-1"
-                        >-IS</span
-                      >
-                    </div>
-                  </div>
+                    slotProps.data.elements
+                      ?.flatMap((e: I_SagePrize) => e.quantity)
+                      .reduce((a: number, b: number) => a + b)
+                  }}
+                  <!--          <Avatar-->
+                  <!--            :image="'/webp/' + slotProps.data?.elements[0]?.mint + '.webp'"-->
+                  <!--          ></Avatar>-->
                 </template>
               </Column>
-              <Column>
-                <template #footer>
-                  <div class="flex flex-row space-x-2">
-                    <CurrencyIcon
-                      style="height: 24px"
-                      :currency="
-                        CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
-                      "
-                    ></CurrencyIcon>
-                    <p>
-                      {{ player_sol_sage_usage.toFixed(5) }}
-                      (Sage-Usage)
-                    </p>
-                  </div>
-                </template>
-              </Column>
-
-              <Column>
-                <template #footer>
-                  <div class="flex flex-row space-x-2">
+              <Column field="atlas_price" header="Market-Price" sortable>
+                <template #body="slotProps">
+                  <div class="flex gap-2">
                     <CurrencyIcon
                       style="height: 24px"
                       :currency="
                         CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
                       "
-                    ></CurrencyIcon>
-                    <p>
+                    />
+                    <span> {{ slotProps.data?.atlas_price }}</span>
+                  </div>
+                </template>
+              </Column>
+              <Column header="Value" sortable>
+                <template #body="slotProps">
+                  <div class="flex gap-2">
+                    <CurrencyIcon
+                      style="height: 24px"
+                      :currency="
+                        CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
+                      "
+                    />
+                    <span>
                       {{
                         (
-                          (useGlobalStore().currencyPrice.data[
-                            CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
-                              ?.mint ?? ""
-                          ]?.value *
-                            player_sol_sage_usage) /
-                          useGlobalStore().currencyPrice.data[
-                            CURRENCIES.find(
-                              (c) => c.type === E_CURRENCIES.ATLAS
-                            )?.mint ?? ""
-                          ]?.value
-                        ).toFixed(3)
-                      }}
-                      (used/value)
-                    </p>
-                  </div></template
-                >
+                          slotProps.data.elements
+                            ?.flatMap((e: I_SagePrize) => e.quantity)
+                            .reduce((a: number, b: number) => a + b) *
+                            slotProps.data.atlas_price ?? 0
+                        ).toFixed(2)
+                      }}</span
+                    >
+                  </div>
+                </template>
               </Column>
 
-              <Column>
-                <template #footer>
-                  <div class="flex flex-row space-x-2">
-                    <CurrencyIcon
-                      style="height: 24px"
-                      :currency="
-                        CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
-                      "
-                    ></CurrencyIcon>
-                    <p>
-                      {{ roi_net_value }}
-                      (NET*)
-                    </p>
-                  </div></template
-                >
-              </Column>
-            </Row>
-          </ColumnGroup>
-          <div class="w-full">
-            <p class="w-full text-right text-xs p-3 text-orange-400">
-              * Net calculation - can be incorrect! [based on
-              last(50)-sol-transfers Formula: sage=in-out-balance]
-            </p>
-          </div>
-        </DataTable>
+              <template #expansion="slotProps">
+                <div class="p-3">
+                  <h5 class="font-bold text-xl">
+                    Details for {{ slotProps.data.name }}
+                  </h5>
+                  <DataTable
+                    :value="slotProps.data.elements"
+                    sort-field="createdAt"
+                    sort-order="-1"
+                  >
+                    <Column field="name" header="Name">
+                      <template #body="slotProps">
+                        <div class="flex flex-row items-center space-x-2">
+                          <Avatar
+                            shape="circle"
+                            :image="'/webp/' + slotProps.data?.mint + '.webp'"
+                          ></Avatar>
+                          <p>{{ slotProps.data.name }}</p>
+                        </div>
+                      </template>
+                    </Column>
+                    <Column field="rarity" header="Rarity">
+                      <template #body="slotProps">
+                        <AssetRarityBadge
+                          :asset_class="slotProps.data.rarity"
+                        ></AssetRarityBadge>
+                      </template>
+                    </Column>
+                    <Column
+                      field="quantity"
+                      header="Quantity"
+                      sortable
+                    ></Column>
+
+                    <Column field="sector" header="Sector">
+                      <template #body="slotProps">
+                        <div class="grid grid-cols-2 gap-2">
+                          <p>X</p>
+                          <p>{{ slotProps.data.sector?.x }}</p>
+                          <p>Y</p>
+                          <p>{{ slotProps.data.sector?.y }}</p>
+                        </div>
+                      </template>
+                    </Column>
+
+                    <Column field="createdAt" header="Create" sortable>
+                      <template #body="slotProps">
+                        <div class="flex flex-col">
+                          <p>{{ slotProps.data.createdAt }}</p>
+
+                          <p class="text-purple-500 text-xs">
+                            Before:
+                            {{
+                              calc_passed_time(
+                                new Date(slotProps.data.createdAt).getTime() /
+                                  1000
+                              )
+                            }}
+                          </p>
+                        </div>
+                      </template>
+                    </Column>
+                  </DataTable>
+                </div>
+              </template>
+              <ColumnGroup type="footer">
+                <Row>
+                  <Column
+                    footer="Sum:"
+                    :colspan="3"
+                    footerStyle="text-align:right"
+                  />
+
+                  <Column :footer="'x' + sum_drops.toString()" />
+                  <Column :footer="sum_quantity.toString()" />
+                  <Column> </Column>
+                  <Column>
+                    <template #footer>
+                      <div class="flex flex-row space-x-2">
+                        <CurrencyIcon
+                          style="width: 24px"
+                          :currency="
+                            CURRENCIES.find(
+                              (c) => c.type === E_CURRENCIES.ATLAS
+                            )
+                          "
+                        ></CurrencyIcon>
+
+                        <p class="text-green-500">
+                          {{ sum_value?.toFixed(2) }}
+                        </p>
+                      </div></template
+                    >
+                  </Column>
+                </Row>
+                <Row>
+                  <Column
+                    footerStyle="text-align:right"
+                    :footer="'Net cost estimation*:'"
+                    :colspan="3"
+                  ></Column>
+                  <Column>
+                    <template #footer>
+                      <div class="flex flex-col space-y-1">
+                        <div
+                          v-tooltip.bottom="'Incoming SOL transfers'"
+                          class="p-inputgroup flex-1"
+                        >
+                          <span class="p-inputgroup-addon">
+                            <CurrencyIcon
+                              style="height: 24px"
+                              :currency="
+                                CURRENCIES.find(
+                                  (c) => c.type === E_CURRENCIES.SOL
+                                )
+                              "
+                            ></CurrencyIcon>
+                          </span>
+                          <InputText
+                            type="number"
+                            v-model="player_sol.inflow"
+                          ></InputText>
+                          <span class="p-inputgroup-addon flex-1">+IN</span>
+                        </div>
+                        <div
+                          v-tooltip.bottom="'Outgoing SOL transfers'"
+                          class="p-inputgroup flex-1"
+                        >
+                          <span class="p-inputgroup-addon">
+                            <CurrencyIcon
+                              style="height: 24px"
+                              :currency="
+                                CURRENCIES.find(
+                                  (c) => c.type === E_CURRENCIES.SOL
+                                )
+                              "
+                            ></CurrencyIcon>
+                          </span>
+                          <InputText
+                            type="number"
+                            v-model="player_sol.outflow"
+                          ></InputText>
+                          <span class="p-inputgroup-addon flex-1">-OUT</span>
+                        </div>
+                        <div
+                          v-tooltip.bottom="'Current wallet balance'"
+                          class="p-inputgroup flex-1"
+                        >
+                          <span class="p-inputgroup-addon">
+                            <CurrencyIcon
+                              style="height: 24px"
+                              :currency="
+                                CURRENCIES.find(
+                                  (c) => c.type === E_CURRENCIES.SOL
+                                )
+                              "
+                            ></CurrencyIcon>
+                          </span>
+                          <InputText v-model="player_sol.current"></InputText>
+                          <span type="number" class="p-inputgroup-addon flex-1"
+                            >-IS</span
+                          >
+                        </div>
+                      </div>
+                    </template>
+                  </Column>
+                  <Column>
+                    <template #footer>
+                      <div class="flex flex-row space-x-2">
+                        <CurrencyIcon
+                          style="height: 24px"
+                          :currency="
+                            CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
+                          "
+                        ></CurrencyIcon>
+                        <p>
+                          {{ player_sol_sage_usage.toFixed(5) }}
+                          (Sage-Usage)
+                        </p>
+                      </div>
+                    </template>
+                  </Column>
+
+                  <Column>
+                    <template #footer>
+                      <div class="flex flex-row space-x-2">
+                        <CurrencyIcon
+                          style="height: 24px"
+                          :currency="
+                            CURRENCIES.find(
+                              (c) => c.type === E_CURRENCIES.ATLAS
+                            )
+                          "
+                        ></CurrencyIcon>
+                        <p>
+                          {{
+                            (
+                              ((useGlobalStore().currencyPrice?.data[
+                                CURRENCIES.find(
+                                  (c) => c.type === E_CURRENCIES.SOL
+                                )?.mint ?? ""
+                              ]?.value ?? 0) *
+                                player_sol_sage_usage) /
+                              useGlobalStore().currencyPrice.data[
+                                CURRENCIES.find(
+                                  (c) => c.type === E_CURRENCIES.ATLAS
+                                )?.mint ?? ""
+                              ]?.value
+                            )?.toFixed(3)
+                          }}
+                          (used/value)
+                        </p>
+                      </div></template
+                    >
+                  </Column>
+
+                  <Column>
+                    <template #footer>
+                      <div class="flex flex-row space-x-2">
+                        <CurrencyIcon
+                          style="height: 24px"
+                          :currency="
+                            CURRENCIES.find(
+                              (c) => c.type === E_CURRENCIES.ATLAS
+                            )
+                          "
+                        ></CurrencyIcon>
+                        <p>
+                          {{ roi_net_value }}
+                          (NET*)
+                        </p>
+                      </div></template
+                    >
+                  </Column>
+                </Row>
+              </ColumnGroup>
+              <div class="w-full">
+                <p class="w-full text-right text-xs p-3 text-orange-400">
+                  * Net calculation - can be incorrect! [based on
+                  last(50)-sol-transfers Formula: sage=in-out-balance]
+                </p>
+              </div>
+            </DataTable>
+          </Panel>
+          <Panel header="Loot-Heatmap" toggleable>
+            <div class="flex w-full justify-center">
+              <SageLootHeatmap :data="sage_heatmap_data"></SageLootHeatmap>
+            </div>
+          </Panel>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import Panel from "primevue/panel";
 import Button from "primevue/button";
 import NoData from "../components/elements/NoData.vue";
 import InputText from "primevue/inputtext";
@@ -387,9 +418,13 @@ import { is_valid_publicKey } from "../static/formatting/is_valid_public_key";
 import { useWallet } from "solana-wallets-vue";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { useGlobalStore } from "../stores/GlobalStore";
+import SageLootHeatmap, {
+  HeatMapData,
+} from "../components/charts/heatmap/SageLootHeatmap.vue";
 
-const text_user_wallet_input = ref(
-  useWallet().publicKey.value?.toString() ?? ""
+const text_user_wallet_input = ref<string>(
+  useWallet().publicKey.value?.toString() ??
+    import.meta.env.VITE_DEV_SCORE_TEST_WALLET.toString()
 );
 const expandedRows = ref();
 const expandAll = () => {
@@ -515,6 +550,29 @@ const player_sol_sage_usage = computed(() => {
     player_sol.value.inflow -
     player_sol.value.outflow -
     player_sol.value.current
+  );
+});
+
+const sage_heatmap_data = computed(() => {
+  let array: HeatMapData[] = [];
+
+  player_prizes.value?.forEach((prize) => {
+    array.push({
+      x_label: prize.sector?.x.toString(),
+      y_label: prize.sector?.y.toString(),
+      value: 1,
+    });
+  });
+
+  //Remove duplicates
+  return Object.values(
+    array.reduce((acc, { x_label, y_label, value }) => {
+      value = +value; // convert to number
+      const key = x_label + "_" + y_label; // unique combination of id and subject
+      acc[key] = acc[key] || { x_label, y_label, value: 0 };
+      acc[key].value += value;
+      return acc;
+    }, {})
   );
 });
 
