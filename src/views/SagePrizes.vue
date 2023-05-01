@@ -1,5 +1,4 @@
 <template>
-  {{ player_sol_sage_usage }}
   <div class="m-2 space-y-2">
     <div class="p-card p-2 flex flex-col md:flex-row w-full gap-2">
       <div class="p-fluid flex w-full gap-2">
