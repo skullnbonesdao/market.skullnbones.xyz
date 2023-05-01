@@ -427,7 +427,8 @@ import SageLootHeatmap, {
 
 const text_user_wallet_input = ref<string>(
   useWallet().publicKey.value?.toString() ??
-    import.meta.env.VITE_DEV_SCORE_TEST_WALLET.toString()
+    import.meta.env.VITE_DEV_SCORE_TEST_WALLET?.toString() ??
+    ""
 );
 const expandedRows = ref();
 const expandAll = () => {
