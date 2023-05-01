@@ -20,16 +20,16 @@
       text="Invalid PublicKey!"
     ></NoData>
     <div v-else>
-      <div class="p-card">
+      <div class="">
         <NoData
           v-if="!is_loading && !prizes.length"
-          class="w-full justify-center"
+          class="p-card w-full justify-center"
         ></NoData>
-        <div v-else-if="is_loading" class="flex w-full justify-center">
+        <div v-else-if="is_loading" class="p-card flex w-full justify-center">
           <ProgressSpinner></ProgressSpinner>
         </div>
 
-        <div v-else>
+        <div v-else class="space-y-2">
           <Panel header="Loot-Table" toggleable>
             <DataTable
               v-model:expandedRows="expandedRows"

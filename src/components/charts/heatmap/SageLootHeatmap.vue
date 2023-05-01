@@ -81,7 +81,7 @@ onMounted(() => {
 
   svg
     .append("text")
-    .attr("fill", "gary")
+    .attr("fill", "gray")
     .attr("x", width / 2)
     .attr("y", height + margin.bottom)
     .attr("text-anchor", "middle")
