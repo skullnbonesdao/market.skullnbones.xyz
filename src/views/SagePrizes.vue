@@ -343,8 +343,8 @@
           </ColumnGroup>
           <div class="w-full">
             <p class="w-full text-right text-xs p-3 text-orange-400">
-              * Net calculation - can be incorrect! [based on last(50) wallet
-              incoming-sol minus and current-sol-balance]
+              * Net calculation - can be incorrect! [based on
+              last(50)-sol-transfers Formula: sage=in-out-balance]
             </p>
           </div>
         </DataTable>
