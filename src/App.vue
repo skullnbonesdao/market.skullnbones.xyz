@@ -28,10 +28,12 @@ onMounted(async () => {
       <router-view class="flex-1 m-2"></router-view>
     </main>
 
+    <div>
+      <FooterComponent class="sticky bottom-0 flex-1 m-2" />
+    </div>
     <footer class="sticky bottom-0 z-50">
       <StatusStoreTemplate />
     </footer>
-    <FooterComponent class="flex-1 m-2" />
   </body>
 </template>
 
