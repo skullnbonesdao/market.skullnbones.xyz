@@ -36,6 +36,11 @@ const selected_limit = ref(limits.value[1]);
     </div>
 
     <ExplorerTable
+      @search_string="
+        (value) => {
+          search_input = value;
+        }
+      "
       :search_string="search_input"
       :limit="selected_limit.value"
     ></ExplorerTable>

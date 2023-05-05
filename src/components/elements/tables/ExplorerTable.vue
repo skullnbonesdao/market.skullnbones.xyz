@@ -1,13 +1,41 @@
 <template>
   <ApolloQuery
     class="p-card"
-    :query="
+    :query="search_string ?
       (gql: any) => gql`
         query find_symbol_history($search_string: String!, $limit: Int!) {
           trades(
             limit: $limit
             order_by: { block: desc }
-            where: { symbol: { _regex: $search_string } }
+            where: {
+            _or: [
+                    { symbol: { _eq: $search_string }},
+                    { asset_mint: { _eq: $search_string }},
+                    { currency_mint: { _eq: $search_string }},
+                    { order_initializer: { _eq: $search_string }},
+                    { order_taker: { _eq: $search_string }}
+
+                 ]}
+          ) {
+            timestamp
+            signature
+            symbol
+            asset_mint
+            currency_mint
+            order_initializer
+            order_taker
+            asset_receiving_wallet
+            market_fee
+            asset_change
+            price
+            total_cost
+          }
+        }
+      ` : (gql: any) => gql`
+        query find_symbol_history($limit: Int!) {
+          trades(
+            limit: $limit
+            order_by: { block: desc }
           ) {
             timestamp
             signature
@@ -61,7 +89,12 @@
                     ) ?? CURRENCIES[0]
                   "
                 />
-                <p class="text-sm">{{ slotProps.data.symbol }}</p>
+                <p
+                  @click="$emit('search_string', slotProps.data.symbol)"
+                  class="text-sm hover:animate-pulse hover:underline"
+                >
+                  {{ slotProps.data.symbol }}
+                </p>
               </div>
             </template>
           </Column>
@@ -94,9 +127,21 @@
                   <div>Asset:</div>
                 </div>
                 <div class="flex flex-col">
-                  <div>{{ slotProps.data.currency_mint }}</div>
+                  <div
+                    @click="
+                      $emit('search_string', slotProps.data.currency_mint)
+                    "
+                    class="hover:animate-pulse hover:underline"
+                  >
+                    {{ slotProps.data.currency_mint }}
+                  </div>
 
-                  <div>{{ slotProps.data.asset_mint }}</div>
+                  <div
+                    @click="$emit('search_string', slotProps.data.asset_mint)"
+                    class="hover:animate-pulse hover:underline"
+                  >
+                    {{ slotProps.data.asset_mint }}
+                  </div>
                 </div>
               </div>
             </template>
@@ -110,6 +155,10 @@
                 </div>
                 <div class="flex flex-col">
                   <div
+                    @click="
+                      $emit('search_string', slotProps.data.order_initializer)
+                    "
+                    class="hover:animate-pulse hover:underline"
                     :class="
                       slotProps.data.asset_receiving_wallet ===
                       slotProps.data.order_initializer
@@ -120,6 +169,8 @@
                     {{ slotProps.data.order_initializer }}
                   </div>
                   <div
+                    @click="$emit('search_string', slotProps.data.order_taker)"
+                    class="hover:animate-pulse hover:underline"
                     :class="
                       slotProps.data.asset_receiving_wallet ===
                       slotProps.data.order_taker
@@ -243,6 +294,7 @@ const props = defineProps({
     default: 0,
   },
 });
+
+defineEmits(["search_string"]);
 </script>
-NPCxfjPxh6pvRJbGbWZjxfkqWfGBvKkqPbtiJar3mom
 <style scoped></style>
