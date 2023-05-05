@@ -113,7 +113,7 @@ onMounted(() => {
     .padding(0.05);
   svg
     .append("g")
-    .style("font-size", 5)
+    .style("font-size", 3)
     .call(d3.axisLeft(y).tickSize(5))
     .select(".domain")
     .remove();
@@ -176,12 +176,3 @@ onMounted(() => {
     .on("mouseleave", mouseleave);
 });
 </script>
-
-<style lang="sass">
-.line-chart
-  margin: 25px
-  &__line
-    fill: none
-    stroke: #76BF8A
-    stroke-width: 3px
-</style>
