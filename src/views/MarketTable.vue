@@ -127,10 +127,10 @@
               sortable
               field="api_data.tradeSettings.vwap"
             />
-            <Column header="BUY" :colspan="4" class="bg-green-400" />
-            <Column header="SELL" :colspan="4" class="bg-red-400" />
+            <Column header="BUY" :colspan="4" />
+            <Column header="SELL" :colspan="4" />
 
-            <Column header="" :colspan="1" :rowspan="3" class="bg-green-400" />
+            <Column header="" :colspan="1" :rowspan="3" />
           </Row>
           <Row>
             <Column
@@ -186,7 +186,9 @@
         </Column>
 
         <!-- BUY -->
-        <Column class="bg-green-400">
+        <Column
+          :class="useGlobalStore().is_dark ? 'bg-green-800' : 'bg-green-400'"
+        >
           <template #body="slotProps">
             <PriceTemplate
               :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
@@ -194,7 +196,9 @@
             />
           </template>
         </Column>
-        <Column class="bg-green-400">
+        <Column
+          :class="useGlobalStore().is_dark ? 'bg-green-800' : 'bg-green-400'"
+        >
           <template #body="slotProps">
             <div class="flex flex-row space-x-1">
               <PercentageVwapTemplate
@@ -205,7 +209,9 @@
           </template>
         </Column>
 
-        <Column class="bg-green-400">
+        <Column
+          :class="useGlobalStore().is_dark ? 'bg-green-800' : 'bg-green-400'"
+        >
           <template #body="slotProps">
             <PriceTemplate
               :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
@@ -213,7 +219,9 @@
             />
           </template>
         </Column>
-        <Column class="bg-green-400">
+        <Column
+          :class="useGlobalStore().is_dark ? 'bg-green-800' : 'bg-green-400'"
+        >
           <template #body="slotProps">
             <div class="flex flex-row space-x-1">
               <PercentageVwapTemplate
@@ -231,7 +239,7 @@
         </Column>
 
         <!-- SELL -->
-        <Column class="bg-red-400">
+        <Column :class="useGlobalStore().is_dark ? 'bg-red-800' : 'bg-red-400'">
           <template #body="slotProps">
             <PriceTemplate
               :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
@@ -239,7 +247,7 @@
             />
           </template>
         </Column>
-        <Column class="bg-red-400">
+        <Column :class="useGlobalStore().is_dark ? 'bg-red-800' : 'bg-red-400'">
           <template #body="slotProps">
             <div class="flex flex-row space-x-1">
               <PercentageVwapTemplate
@@ -250,7 +258,7 @@
           </template>
         </Column>
 
-        <Column class="bg-red-400">
+        <Column :class="useGlobalStore().is_dark ? 'bg-red-800' : 'bg-red-400'">
           <template #body="slotProps">
             <PriceTemplate
               :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
@@ -258,7 +266,7 @@
             />
           </template>
         </Column>
-        <Column class="bg-red-400">
+        <Column :class="useGlobalStore().is_dark ? 'bg-red-800' : 'bg-red-400'">
           <template #body="slotProps">
             <div class="flex flex-row space-x-1">
               <PercentageVwapTemplate
