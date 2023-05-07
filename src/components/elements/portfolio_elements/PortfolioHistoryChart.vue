@@ -121,18 +121,19 @@ const chart_options = {
     x: {
       type: "time",
     },
-    y: {
+
+    y1: {
       title: {
         position: "left",
         display: true,
-        text: "ATLAS",
+        text: "USDC",
       },
     },
-    y1: {
+    y2: {
       position: "right",
       title: {
         display: true,
-        text: "USDC",
+        text: "ATLAS",
       },
     },
   },
@@ -144,6 +145,7 @@ function map_history_chart(data: any) {
     if (dataSetName === "usdc") {
       return {
         ...dataPoint,
+        yAxisID: "y1",
         chartType: "line",
         lineTension: 0.4,
         radius: 4,
@@ -156,6 +158,7 @@ function map_history_chart(data: any) {
       return {
         ...dataPoint,
         chartType: "line",
+        yAxisID: "y2",
         lineTension: 0,
         radius: 4,
         borderWidth: 0,
