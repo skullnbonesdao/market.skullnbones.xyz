@@ -1,5 +1,5 @@
 <template>
-  <div class="p-inputgroup flex-1">
+  <div v-if="!is_synced" class="p-inputgroup flex-1">
     <span class="p-inputgroup-addon text-sm basis-1/5">Sync-Status</span>
     <div class="flex w-full p-inputgroup-addon">
       <ApolloQuery
@@ -52,6 +52,8 @@ import { useGlobalStore } from "../../stores/GlobalStore";
 import NoData from "../elements/NoData.vue";
 import ProgressBar from "primevue/progressbar";
 
+const is_synced = ref(false);
+
 const props = defineProps({
   currency_mint: {
     type: String,
@@ -95,7 +97,10 @@ function calc_range_percentage(ranges: any[]) {
         else return 0;
       })
       .reduce((a: any, b: any) => a + b);
-    console.log(sum_ranges);
+
+    parseInt(((sum_ranges / total_range) * 100).toFixed(1)) === 100
+      ? (is_synced.value = true)
+      : (is_synced.value = false);
     return (sum_ranges / total_range) * 100;
   }
 }

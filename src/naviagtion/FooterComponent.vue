@@ -19,19 +19,19 @@
       </div>
     </div>
     <div class="flex flex-row gap-2">
-      <div class="p-card flex flex-col w-full p-2">
-        <div class="flex w-full justify-center text-center">
-          © [2023 S&B + HEIM] All Rights Reserved.
-        </div>
-        <div class="flex w-full justify-center">{{ version }}</div>
-      </div>
-
       <Button
         icon="pi pi-github"
         aria-label="Filter"
         @click="open_url('https://github.com/skullnbonesdao')"
       >
       </Button>
+
+      <div class="p-card flex flex-col w-full p-2">
+        <div class="flex w-full justify-center text-center">
+          © [2023 S&B + HEIM] All Rights Reserved.
+        </div>
+        <div class="flex w-full justify-center">{{ version }}</div>
+      </div>
 
       <Button
         icon="pi pi-discord"
@@ -41,7 +41,7 @@
       </Button>
     </div>
 
-    <div class="p-card p-2">
+    <div class="">
       <G_SyncStatusBar class="w-full"></G_SyncStatusBar>
     </div>
   </div>
