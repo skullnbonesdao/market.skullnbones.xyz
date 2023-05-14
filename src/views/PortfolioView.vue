@@ -12,9 +12,12 @@
           @click="
             useGlobalStore()
               .update_wallet(text_user_wallet_input)
-              .then(() => {})
+              .then(() => {
+                update_test();
+              })
           "
         />
+        <Button icon="pi pi-info" @click="update_test()" />
       </div>
       <div>
         <ToggleablesTemplate />
@@ -58,25 +61,13 @@
       </div>
 
       <div v-if="useGlobalStore().toggleables.load_tokens" class="p-card">
-        <Panel header="Tokens" toggleable collapsed>
+        <Panel header="Accounts" toggleable>
           <div class="flex justify-around">
             <NoData
               class="flex justify-center"
-              v-if="!useGlobalStore().wallet.tokenInfo.length"
+              v-if="!useGlobalStore().wallet.tokens.length"
             />
-            <WalletTokensTable v-else />
-          </div>
-        </Panel>
-      </div>
-
-      <div v-if="useGlobalStore().toggleables.load_nfts" class="p-card">
-        <Panel header="NFTs" toggleable collapsed>
-          <div class="flex justify-around">
-            <NoData
-              class="flex justify-center"
-              v-if="!useGlobalStore().wallet.nfts.data?.length"
-            />
-            <WalletNftsTable v-else />
+            <PortfolioAccountsView v-else class="flex w-full" />
           </div>
         </Panel>
       </div>
@@ -106,17 +97,16 @@ import Panel from "primevue/panel";
 import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
 import { useGlobalStore } from "../stores/GlobalStore";
 import { useWallet } from "solana-wallets-vue";
-import WalletTokensTable from "../components/elements/tables/WalletTokensTable.vue";
 import NoData from "../components/elements/NoData.vue";
 import WalletHistoryElement from "../components/elements/tables/WalletHistoryTable.vue";
 import CurrencyIcon from "../components/icon-helper/CurrencyIcon.vue";
 import OverviewChilds from "../components/elements/portfolio_elements/OverviewChilds.vue";
 import { computed, ref } from "vue";
 import { PublicKey } from "@solana/web3.js";
-import WalletNftsTable from "../components/elements/tables/WalletNftsTable.vue";
 import ScoreElement from "../components/elements/score/ScoreElement.vue";
 import ToggleablesTemplate from "../components/elements/templates/ToggleablesTemplate.vue";
 import PlayerProfile from "../components/elements/portfolio_elements/PlayerProfile.vue";
+import PortfolioAccountsView from "../components/elements/portfolio_elements/PortfolioAccountsView.vue";
 
 const text_user_wallet_input = ref(
   useWallet().publicKey.value?.toString() ?? ""
