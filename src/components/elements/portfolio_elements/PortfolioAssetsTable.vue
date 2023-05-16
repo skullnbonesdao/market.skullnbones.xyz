@@ -14,19 +14,19 @@ import { E_EXPLORER, EXPLORER } from "../../../static/explorer";
 import ExplorerIcon from "../icons_images/ExplorerIcon.vue";
 import Button from "primevue/button";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
-import * as spl from "@solana/spl-token";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
-  Token,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import { useWallet } from "solana-wallets-vue";
 import { useToast } from "primevue/usetoast";
 import Toast from "primevue/toast";
+import SendTokenModal from "../modals/SendTokenModal.vue";
 
 const expandedRows = ref([]);
 const is_unsecured = ref(false);
 const toast = useToast();
+const send_modal_visible = ref(false);
 
 const props = defineProps({
   option_l1: {
@@ -281,12 +281,9 @@ async function btn_action_burn(nft_mint_to_burn: string) {
                         ><i class="pi pi-exclamation-triangle"></i
                       ></Button>
 
-                      <Button
-                        disabled
-                        v-tooltip.bottom="'Send NFT'"
-                        class="p-button-secondary"
-                        ><i class="pi pi-send"></i
-                      ></Button>
+                      <SendTokenModal
+                        :mint_send_token="slotProps.data.token_mint"
+                      />
                     </div>
                   </div>
                 </div>
