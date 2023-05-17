@@ -5,7 +5,7 @@ import { useToast } from "primevue/usetoast";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import { useGlobalStore } from "../../../../stores/GlobalStore";
 import {
-  createBurnInstruction,
+  createBurnCheckedInstruction,
   createCloseAccountInstruction,
   getAssociatedTokenAddress,
 } from "@solana/spl-token";
@@ -45,17 +45,14 @@ async function btn_action_burn(
   const wallet = new PublicKey(wallet_str);
   const token_mint = new PublicKey(token_mint_str);
 
-  const account_to_burn = getAssociatedTokenAddress(token_mint, wallet);
+  const account_to_burn = await getAssociatedTokenAddress(token_mint, wallet);
 
-  const instuctions = new Transaction().add(
-    createBurnInstruction(account_to_burn, token_mint, wallet, amount),
-    createCloseAccountInstruction(account_to_burn, wallet, wallet)
+  tx.add(
+    createBurnCheckedInstruction(account_to_burn, token_mint, wallet, amount, 0)
   );
+  tx.add(createCloseAccountInstruction(account_to_burn, wallet, wallet));
 
-  const tx_signature = await useWallet().sendTransaction(
-    instuctions,
-    connection
-  );
+  const tx_signature = await useWallet().sendTransaction(tx, connection);
 
   const is_confirmed = await connection.confirmTransaction(
     tx_signature,

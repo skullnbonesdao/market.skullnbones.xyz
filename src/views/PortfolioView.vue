@@ -9,15 +9,8 @@
           v-model="text_user_wallet_input"
         /><Button
           icon="pi pi-search"
-          @click="
-            useGlobalStore()
-              .update_wallet(text_user_wallet_input)
-              .then(() => {
-                update_test();
-              })
-          "
+          @click="useGlobalStore().update_wallet(text_user_wallet_input)"
         />
-        <Button icon="pi pi-info" @click="update_test()" />
       </div>
       <div>
         <ToggleablesTemplate />

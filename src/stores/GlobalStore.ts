@@ -54,7 +54,7 @@ export interface I_TokenData {
   sa_api_data: StarAtlasAPIItem | undefined;
   token_list_info: tokenlist.Token | undefined;
   account_metadata: Sft | SftWithToken | Nft | NftWithToken | undefined;
-  metadata: any;
+  json_metadata: any;
 }
 
 export interface TokenInfo {
@@ -260,10 +260,10 @@ export const useGlobalStore = defineStore("globalStore", {
         let metadata = {};
 
         if (account_metadata && account_metadata.uri) {
-          // const resp = await fetch(account_metadata.uri)
-          //   .then((resp) => resp.json())
-          //   .then((json) => (metadata = json))
-          //   .catch((err) => console.log("Error fetching metadata-link" + err));
+          await fetch(account_metadata.uri)
+            .then((resp) => resp.json())
+            .then((json) => (metadata = json))
+            .catch((err) => console.log("Error fetching metadata-link" + err));
 
           this.wallet.tokens.push({
             token_account: token_account.pubkey.toString(),
@@ -278,7 +278,7 @@ export const useGlobalStore = defineStore("globalStore", {
                 api.mint ===
                 token_account.account.data.parsed.info.mint.toString()
             ),
-            metadata: metadata,
+            json_metadata: metadata,
           });
         } else {
           this.wallet.tokens.push({
@@ -294,7 +294,7 @@ export const useGlobalStore = defineStore("globalStore", {
                 api.mint ===
                 token_account.account.data.parsed.info.mint.toString()
             ),
-            metadata: metadata,
+            json_metadata: metadata,
           });
         }
       }
@@ -323,18 +323,18 @@ export const useGlobalStore = defineStore("globalStore", {
         await this._load_wallet_tokens2();
       }
 
-      if (this.toggleables.load_nfts) {
-        this.status = _update_status(
-          this.status,
-          true,
-          "Loading wallet NFTs...",
-          2,
-          3
-        );
-        await this._load_wallet_nfts().catch((err) =>
-          console.log("error fetching nfts")
-        );
-      }
+      // if (this.toggleables.load_nfts) {
+      //   this.status = _update_status(
+      //     this.status,
+      //     true,
+      //     "Loading wallet NFTs...",
+      //     2,
+      //     3
+      //   );
+      //   await this._load_wallet_nfts().catch((err) =>
+      //     console.log("error fetching nfts")
+      //   );
+      // }
 
       if (this.toggleables.load_score) {
         await useStaratlasGmStore().update_score_data();
@@ -357,6 +357,7 @@ export const useGlobalStore = defineStore("globalStore", {
         .then((data) => (this.sa_api_data = data));
     },
 
+    //TODO: RM
     async _load_wallet_tokens() {
       this.wallet.tokenInfo = [];
       let connection = new Connection(this.rpc.url);
@@ -440,6 +441,7 @@ export const useGlobalStore = defineStore("globalStore", {
       }
     },
 
+    //TODO: needed?
     async _load_wallet_nfts() {
       this.wallet.nfts.is_loading = true;
       const connection = new Connection(

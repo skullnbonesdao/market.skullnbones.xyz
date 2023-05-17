@@ -17,6 +17,7 @@ import { E_EXPLORER, EXPLORER } from "../../../static/explorer";
 import CloseTokenAccountButton from "../solana_actions/buttons/CloseTokenAccountButton.vue";
 import InputText from "primevue/inputtext";
 import { FilterMatchMode } from "primevue/api";
+import { BLACKLIST_URLS } from "../../../static/blacklist";
 
 const expandedRows = ref([]);
 
@@ -87,14 +88,22 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
             shape="circle"
           />
           <Avatar
-            v-else
+            v-else-if="slotProps.data.token_list_info"
             :image="slotProps.data.token_list_info?.logoURI"
             shape="circle"
           />
-          <!--          <Avatar-->
-          <!--            :image="slotProps.data.token_list_info?.logoURI"-->
-          <!--            shape="circle"-->
-          <!--          />-->
+          <Avatar
+            v-else-if="
+              BLACKLIST_URLS.some((black_url) =>
+                slotProps.data.json_metadata?.image
+                  ?.split('.')
+                  .at(-1)
+                  .includes(black_url)
+              )
+            "
+            :image="slotProps.data.json_metadata?.image"
+            shape="circle"
+          />
         </template>
       </Column>
       <Column field="account_metadata.symbol" header="Symbol"></Column>
@@ -131,7 +140,14 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
                     width="150"
                     preview
                   />
-
+                  <Image
+                    v-else
+                    class="basis-1/5"
+                    alt="Image"
+                    width="150"
+                    preview
+                  />
+                  json_metadata
                   <div class="grid grid-cols-1">
                     <div class="grid grid-cols-3 gap-2">
                       <p>Name:</p>
@@ -218,15 +234,6 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
 
                   <div class="flex w-full justify-end">
                     <div class="flex flex-row space-x-2">
-                      <CloseTokenAccountButton
-                        :mint_send_token="slotProps.data.token_mint"
-                        :max_amount_token="
-                          parseFloat(
-                            slotProps.data.account_info.data.parsed.info
-                              .tokenAmount.uiAmountString
-                          )
-                        "
-                      />
                       <BurnTokenButton
                         :mint_send_token="slotProps.data.token_mint"
                         :max_amount_token="
@@ -236,6 +243,17 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
                           )
                         "
                       />
+
+                      <CloseTokenAccountButton
+                        :mint_send_token="slotProps.data.token_mint"
+                        :max_amount_token="
+                          parseFloat(
+                            slotProps.data.account_info.data.parsed.info
+                              .tokenAmount.uiAmountString
+                          )
+                        "
+                      />
+
                       <SendTokenModal
                         :mint_send_token="slotProps.data.token_mint"
                         :max_amount_token="
@@ -272,6 +290,14 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
                 theme="my-awesome-json-theme"
                 :class="useGlobalStore().is_dark ? 'bg-gray-300' : ''"
                 :value="slotProps.data.sa_api_data"
+              ></json-viewer>
+            </TabPanel>
+            <TabPanel v-if="slotProps.data.json_metadata" header="JsonMetadata">
+              <json-viewer
+                expand-depth="5"
+                theme="my-awesome-json-theme"
+                :class="useGlobalStore().is_dark ? 'bg-gray-300' : ''"
+                :value="slotProps.data.json_metadata"
               ></json-viewer>
             </TabPanel>
           </TabView>
