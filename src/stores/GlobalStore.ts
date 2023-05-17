@@ -48,7 +48,7 @@ export const endpoints_list: RPCEndpoint[] = [
 ];
 
 export interface I_TokenData {
-  token_account: PublicKey;
+  token_account: String;
   token_mint: String;
   account_info: any;
   sa_api_data: StarAtlasAPIItem | undefined;
@@ -266,7 +266,7 @@ export const useGlobalStore = defineStore("globalStore", {
           //   .catch((err) => console.log("Error fetching metadata-link" + err));
 
           this.wallet.tokens.push({
-            token_account: token_account.pubkey,
+            token_account: token_account.pubkey.toString(),
             token_mint: token_account.account.data.parsed.info.mint.toString(),
             account_info: token_account.account,
             account_metadata: account_metadata,
@@ -282,7 +282,7 @@ export const useGlobalStore = defineStore("globalStore", {
           });
         } else {
           this.wallet.tokens.push({
-            token_account: token_account.pubkey,
+            token_account: token_account.pubkey.toString(),
             token_mint: token_account.account.data.parsed.info.mint.toString(),
             account_info: token_account.account,
             account_metadata: account_metadata,

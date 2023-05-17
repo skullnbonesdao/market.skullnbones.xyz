@@ -1,3 +1,9 @@
+<script setup lang="ts">
+import { E_EXPLORER, EXPLORER } from "../../../static/explorer";
+import { useGlobalStore } from "../../../stores/GlobalStore";
+import ExplorerIcon from "../../icon-helper/ExplorerIcon.vue";
+</script>
+
 <template>
   <div class="flex flex-row justify-around">
     <ExplorerIcon
@@ -17,11 +23,5 @@
     />
   </div>
 </template>
-
-<script setup lang="ts">
-import { E_EXPLORER, EXPLORER } from "../../../static/explorer";
-import ExplorerIcon from "../icons_images/ExplorerIcon.vue";
-import { useGlobalStore } from "../../../stores/GlobalStore";
-</script>
 
 <style scoped></style>

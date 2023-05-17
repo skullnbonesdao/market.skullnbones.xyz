@@ -1,3 +1,30 @@
+<script setup lang="ts">
+import { CURRENCIES } from "../../../static/currencies";
+import { calc_passed_time } from "../../../static/formatting/calc_passed_time";
+import PairImage from "../PairImage.vue";
+import ProgressSpinner from "primevue/progressspinner";
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+import NoData from "../NoData.vue";
+import CurrencyIcon from "../../icon-helper/CurrencyIcon.vue";
+import { E_EXPLORER, EXPLORER } from "../../../static/explorer";
+import { calc_percentage_for_fee } from "../../../static/formatting/calc_percentage";
+import ExplorerIcon from "../../icon-helper/ExplorerIcon.vue";
+
+const props = defineProps({
+  search_string: {
+    type: String,
+    default: "PX4",
+  },
+  limit: {
+    type: Number,
+    default: 0,
+  },
+});
+
+defineEmits(["search_string"]);
+</script>
+
 <template>
   <ApolloQuery
     class="p-card"
@@ -271,30 +298,4 @@
   </ApolloQuery>
 </template>
 
-<script setup lang="ts">
-import { CURRENCIES } from "../../../static/currencies";
-import { calc_passed_time } from "../../../static/formatting/calc_passed_time";
-import PairImage from "../PairImage.vue";
-import ProgressSpinner from "primevue/progressspinner";
-import DataTable from "primevue/datatable";
-import Column from "primevue/column";
-import NoData from "../NoData.vue";
-import CurrencyIcon from "../../icon-helper/CurrencyIcon.vue";
-import { E_EXPLORER, EXPLORER } from "../../../static/explorer";
-import ExplorerIcon from "../icons_images/ExplorerIcon.vue";
-import { calc_percentage_for_fee } from "../../../static/formatting/calc_percentage";
-
-const props = defineProps({
-  search_string: {
-    type: String,
-    default: "PX4",
-  },
-  limit: {
-    type: Number,
-    default: 0,
-  },
-});
-
-defineEmits(["search_string"]);
-</script>
 <style scoped></style>
