@@ -94,11 +94,8 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
           />
           <Avatar
             v-else-if="
-              BLACKLIST_URLS.some((black_url) =>
-                slotProps.data.json_metadata?.image
-                  ?.split('.')
-                  .at(-1)
-                  .includes(black_url)
+              !BLACKLIST_URLS.some((black_url) =>
+                slotProps.data.json_metadata?.image?.includes(black_url)
               )
             "
             :image="slotProps.data.json_metadata?.image"
@@ -133,7 +130,7 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
                     preview
                   />
                   <Image
-                    v-else
+                    v-else-if="slotProps.data.token_list_info?.logoURI"
                     class="basis-1/5"
                     :src="slotProps.data.token_list_info?.logoURI"
                     alt="Image"
@@ -141,12 +138,18 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
                     preview
                   />
                   <Image
-                    v-else
+                    v-else-if="
+                      !BLACKLIST_URLS.some((black_url) =>
+                        slotProps.data.json_metadata?.image?.includes(black_url)
+                      )
+                    "
+                    :src="slotProps.data.json_metadata?.image"
                     class="basis-1/5"
                     alt="Image"
                     width="150"
                     preview
                   />
+
                   json_metadata
                   <div class="grid grid-cols-1">
                     <div class="grid grid-cols-3 gap-2">
