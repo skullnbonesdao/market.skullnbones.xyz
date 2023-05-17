@@ -15,10 +15,14 @@ import BurnTokenButton from "../solana_actions/buttons/BurnTokenButton.vue";
 import ExplorerIcon from "../../icon-helper/ExplorerIcon.vue";
 import { E_EXPLORER, EXPLORER } from "../../../static/explorer";
 import CloseTokenAccountButton from "../solana_actions/buttons/CloseTokenAccountButton.vue";
+import InputText from "primevue/inputtext";
+import { FilterMatchMode } from "primevue/api";
 
 const expandedRows = ref([]);
 
-const send_modal_visible = ref(false);
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+});
 
 const props = defineProps({
   option_l1: {
@@ -53,7 +57,20 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
       v-model:expandedRows="expandedRows"
       :value="filter_list(option_l1, option_sa)"
       tableStyle="min-width: 50rem"
+      :global-filter-fields="['account_metadata.symbol']"
+      v-model:filters="filters"
     >
+      <template #header>
+        <div class="flex justify-content-end">
+          <span class="p-input-icon-left">
+            <i class="pi pi-search" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Keyword Search"
+            />
+          </span>
+        </div>
+      </template>
       <Column expander style="width: 5rem" />
       <Column>
         <template #body="slotProps">
@@ -99,8 +116,17 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
               <div>
                 <div class="flex flex-row space-x-2">
                   <Image
+                    v-if="slotProps.data.sa_api_data"
                     class="basis-1/5"
                     :src="slotProps.data.sa_api_data?.image"
+                    alt="Image"
+                    width="150"
+                    preview
+                  />
+                  <Image
+                    v-else
+                    class="basis-1/5"
+                    :src="slotProps.data.token_list_info?.logoURI"
                     alt="Image"
                     width="150"
                     preview
@@ -240,7 +266,7 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
                 :value="slotProps.data.account_metadata"
               ></json-viewer>
             </TabPanel>
-            <TabPanel header="StarAtlasData">
+            <TabPanel v-if="slotProps.data.sa_api_data" header="StarAtlasData">
               <json-viewer
                 expand-depth="5"
                 theme="my-awesome-json-theme"

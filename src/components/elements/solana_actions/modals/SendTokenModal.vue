@@ -39,7 +39,6 @@ async function btn_action_send(
   const connection = new Connection(useGlobalStore().rpc.url);
   let tx = new Transaction();
 
-  console.log(toWallet_str);
   const fromWallet = new PublicKey(fromWallet_str);
   const toWallet = new PublicKey(toWallet_str);
   const token_mint = new PublicKey(token_mint_str);

@@ -53,8 +53,20 @@ async function btn_close_account(
 
   if (is_confirmed) {
     console.log("Burned");
+    toast.add({
+      severity: "info",
+      summary: "Success",
+      detail: "Your token-account has been closed!",
+      life: 3000,
+    });
   } else {
     console.log("errror buring");
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Error closing your token-account!",
+      life: 3000,
+    });
   }
 }
 </script>

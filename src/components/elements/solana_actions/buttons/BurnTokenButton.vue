@@ -5,8 +5,9 @@ import { useToast } from "primevue/usetoast";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import { useGlobalStore } from "../../../../stores/GlobalStore";
 import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
+  createBurnInstruction,
+  createCloseAccountInstruction,
+  getAssociatedTokenAddress,
 } from "@solana/spl-token";
 import { useWallet } from "solana-wallets-vue";
 
@@ -33,36 +34,22 @@ function btn_make_unsecure() {
     life: 3000,
   });
 }
-async function btn_action_burn(nft_mint_to_burn: string) {
+async function btn_action_burn(
+  wallet_str: string,
+  token_mint_str: string,
+  amount: number
+) {
   const connection = new Connection(useGlobalStore().rpc.url);
+  let tx = new Transaction();
 
-  const associatedAddress = await Token.getAssociatedTokenAddress(
-    ASSOCIATED_TOKEN_PROGRAM_ID,
-    TOKEN_PROGRAM_ID,
-    new PublicKey(nft_mint_to_burn),
-    new PublicKey(useWallet().publicKey.value ?? "")
-  );
+  const wallet = new PublicKey(wallet_str);
+  const token_mint = new PublicKey(token_mint_str);
 
-  const burn_instruction = spl.Token.createBurnInstruction(
-    TOKEN_PROGRAM_ID,
-    new PublicKey(nft_mint_to_burn),
-    associatedAddress,
-    new PublicKey(useWallet().publicKey.value ?? ""),
-    [],
-    1
-  );
-
-  const close_account_instruction = spl.Token.createCloseAccountInstruction(
-    TOKEN_PROGRAM_ID,
-    associatedAddress,
-    new PublicKey(useWallet().publicKey.value ?? ""),
-    new PublicKey(useWallet().publicKey.value ?? ""),
-    []
-  );
+  const account_to_burn = getAssociatedTokenAddress(token_mint, wallet);
 
   const instuctions = new Transaction().add(
-    burn_instruction,
-    close_account_instruction
+    createBurnInstruction(account_to_burn, token_mint, wallet, amount),
+    createCloseAccountInstruction(account_to_burn, wallet, wallet)
   );
 
   const tx_signature = await useWallet().sendTransaction(
@@ -96,7 +83,11 @@ async function btn_action_burn(nft_mint_to_burn: string) {
   <Button
     v-else
     @click="
-      btn_action_burn(mint_send_token).then(() => {
+      btn_action_burn(
+        useWallet().publicKey.value.toString(),
+        mint_send_token,
+        max_amount_token
+      ).then(() => {
         is_unsecured = false;
       })
     "
