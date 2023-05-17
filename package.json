@@ -19,9 +19,7 @@
   },
   "devDependencies": {
     "@apollo/client": "^3.7.13",
-    "@metaplex-foundation/js": "^0.18.3",
-    "@metaplex-foundation/mpl-token-metadata": "^2.10.0",
-    "@solana/spl-token": "0.3.7",
+    "@metaplex-foundation/js": "^0.19.3",
     "@solana/wallet-adapter-wallets": "^0.19.16",
     "@solana/web3.js": "^1.75.0",
     "@solflare-wallet/utl-aggregator": "^0.0.13",
@@ -56,6 +54,7 @@
     "primeicons": "^6.0.1",
     "primevue": "^3.27.0",
     "sass": "^1.62.0",
+    "solana-spl-current": "npm:@solana/spl-token@^0.3.7",
     "solana-wallets-vue": "^0.6.0",
     "swagger-typescript-api": "^12.0.4",
     "tailwindcss": "^3.3.1",

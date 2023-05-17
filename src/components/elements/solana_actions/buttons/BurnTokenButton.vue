@@ -8,7 +8,7 @@ import {
   createBurnCheckedInstruction,
   createCloseAccountInstruction,
   getAssociatedTokenAddress,
-} from "@solana/spl-token";
+} from "solana-spl-current";
 import { useWallet } from "solana-wallets-vue";
 
 const is_unsecured = ref(false);
@@ -37,7 +37,8 @@ function btn_make_unsecure() {
 async function btn_action_burn(
   wallet_str: string,
   token_mint_str: string,
-  amount: number
+  amount: number,
+  decimal: number
 ) {
   const connection = new Connection(useGlobalStore().rpc.url);
   let tx = new Transaction();
@@ -48,7 +49,13 @@ async function btn_action_burn(
   const account_to_burn = await getAssociatedTokenAddress(token_mint, wallet);
 
   tx.add(
-    createBurnCheckedInstruction(account_to_burn, token_mint, wallet, amount, 0)
+    createBurnCheckedInstruction(
+      account_to_burn,
+      token_mint,
+      wallet,
+      amount,
+      decimal
+    )
   );
   tx.add(createCloseAccountInstruction(account_to_burn, wallet, wallet));
 
@@ -81,9 +88,10 @@ async function btn_action_burn(
     v-else
     @click="
       btn_action_burn(
-        useWallet().publicKey.value.toString(),
+        useWallet().publicKey.value?.toString() ?? '',
         mint_send_token,
-        max_amount_token
+        max_amount_token,
+        0
       ).then(() => {
         is_unsecured = false;
       })

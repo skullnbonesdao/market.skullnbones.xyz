@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
+import InputNumber from "primevue/inputnumber";
 import { ref } from "vue";
 import InputText from "primevue/inputtext";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
@@ -8,13 +9,13 @@ import { useGlobalStore } from "../../../../stores/GlobalStore";
 import {
   createTransferInstruction,
   getAssociatedTokenAddress,
-} from "@solana/spl-token";
+} from "solana-spl-current";
 import { useWallet } from "solana-wallets-vue";
 import SendIcon from "../../../icons/SendIcon.vue";
 
 const is_modal_visible = ref(false);
 const input_destination_wallet = ref("");
-const input_amount_to_send = ref(1);
+const input_amount_to_send = ref<number>(1);
 
 const props = defineProps({
   mint_send_token: {
@@ -99,7 +100,7 @@ async function btn_action_send(
         <InputText
           disabled
           placeholder="Sender address"
-          :value="useWallet().publicKey.value.toString()"
+          :value="useWallet().publicKey.value?.toString() ?? ''"
         />
       </div>
       <div class="p-inputgroup flex-1">
@@ -108,7 +109,6 @@ async function btn_action_send(
         </span>
         <InputText
           placeholder="Receiver address"
-          type="text"
           v-model="input_destination_wallet"
         />
       </div>
@@ -116,12 +116,11 @@ async function btn_action_send(
         <span class="p-inputgroup-addon">
           <SendIcon />
         </span>
-        <InputText
+        <InputNumber
           :class="
             input_amount_to_send > max_amount_token ? 'p-invalid' : 'p-valid'
           "
           placeholder="Amount"
-          type="number"
           v-model="input_amount_to_send"
         />
         <span
@@ -137,7 +136,7 @@ async function btn_action_send(
           icon="pi pi-send"
           @click="
             btn_action_send(
-              useWallet().publicKey.value.toString(),
+              useWallet().publicKey.value?.toString() ?? '',
               input_destination_wallet,
               mint_send_token
             )

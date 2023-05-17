@@ -7,7 +7,7 @@ import { useGlobalStore } from "../../../../stores/GlobalStore";
 import {
   createCloseAccountInstruction,
   getAssociatedTokenAddress,
-} from "@solana/spl-token";
+} from "solana-spl-current";
 import { useWallet } from "solana-wallets-vue";
 
 const toast = useToast();
@@ -75,7 +75,10 @@ async function btn_close_account(
   <Toast />
   <Button
     @click="
-      btn_close_account(useWallet().publicKey.value.toString(), mint_send_token)
+      btn_close_account(
+        useWallet().publicKey.value?.toString() ?? '',
+        mint_send_token
+      )
     "
     :disabled="max_amount_token != 0"
     v-tooltip.bottom="'Close token account'"
