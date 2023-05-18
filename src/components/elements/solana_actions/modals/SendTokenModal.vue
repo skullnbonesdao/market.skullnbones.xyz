@@ -7,8 +7,14 @@ import InputText from "primevue/inputtext";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import { useGlobalStore } from "../../../../stores/GlobalStore";
 import {
+  Account,
+  createAssociatedTokenAccountInstruction,
   createTransferInstruction,
+  getAccount,
   getAssociatedTokenAddress,
+  TOKEN_PROGRAM_ID,
+  TokenAccountNotFoundError,
+  TokenInvalidAccountOwnerError,
 } from "solana-spl-current";
 import { useWallet } from "solana-wallets-vue";
 import SendIcon from "../../../icons/SendIcon.vue";
@@ -52,6 +58,36 @@ async function btn_action_send(
 
   const toTokenAccount = await getAssociatedTokenAddress(token_mint, toWallet);
   console.log("toTokenAccount" + toTokenAccount);
+
+  let account: Account;
+  try {
+    account = await getAccount(
+      connection,
+      toTokenAccount,
+      "finalized",
+      TOKEN_PROGRAM_ID
+    );
+  } catch (error: unknown) {
+    // TokenAccountNotFoundError can be possible if the associated address has already received some lamports,
+    // becoming a system account. Assuming program derived addressing is safe, this is the only case for the
+    // TokenInvalidAccountOwnerError in this code path.
+    if (
+      error instanceof TokenAccountNotFoundError ||
+      error instanceof TokenInvalidAccountOwnerError
+    ) {
+      // As this isn't atomic, it's possible others can create associated accounts meanwhile.
+      tx.add(
+        createAssociatedTokenAccountInstruction(
+          fromWallet,
+          toTokenAccount,
+          toWallet,
+          token_mint
+        )
+      );
+    } else {
+      throw error;
+    }
+  }
 
   tx.add(
     createTransferInstruction(formTokenAccount, toTokenAccount, fromWallet, 1.0)

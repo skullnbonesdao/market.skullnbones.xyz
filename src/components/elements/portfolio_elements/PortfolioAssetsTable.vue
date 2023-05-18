@@ -150,7 +150,6 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
                     preview
                   />
 
-                  json_metadata
                   <div class="grid grid-cols-1">
                     <div class="grid grid-cols-3 gap-2">
                       <p>Name:</p>
@@ -236,7 +235,7 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
                   </div>
 
                   <div class="flex w-full justify-end">
-                    <div class="flex flex-row space-x-2">
+                    <div class="flex-row space-x-2">
                       <BurnTokenButton
                         :mint_send_token="slotProps.data.token_mint"
                         :max_amount_token="
@@ -244,6 +243,10 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
                             slotProps.data.account_info.data.parsed.info
                               .tokenAmount.uiAmountString
                           )
+                        "
+                        :token_decimals="
+                          slotProps.data.account_info.data.parsed.info
+                            .tokenAmount.decimals
                         "
                       />
 
