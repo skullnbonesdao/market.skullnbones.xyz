@@ -62,16 +62,18 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
       v-model:filters="filters"
     >
       <template #header>
-        <div class="flex justify-content-end">
+        <div class="flex">
+          <div class="flex w-full"></div>
           <span class="p-input-icon-left">
             <i class="pi pi-search" />
             <InputText
               v-model="filters['global'].value"
-              placeholder="Keyword Search"
+              placeholder="Search (name)"
             />
           </span>
         </div>
       </template>
+
       <Column expander style="width: 5rem" />
       <Column>
         <template #body="slotProps">
