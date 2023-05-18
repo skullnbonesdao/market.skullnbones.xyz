@@ -12,8 +12,7 @@ import "virtual:uno.css";
 import "./style.css";
 import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
-import "./themes/themes/soho/soho-light/theme.scss";
-
+import "./json-viewer-theme.scss";
 import HomeView from "./views/HomeView.vue";
 import MarketView from "./views/MarketView.vue";
 import { createRouter, createWebHashHistory } from "vue-router";
@@ -45,6 +44,7 @@ import { apolloClient, apolloProvider } from "./static/graphql/SNBGraphQL";
 import { DefaultApolloClient } from "@vue/apollo-composable";
 import TestView from "./views/TestView.vue";
 import VueApexCharts from "vue3-apexcharts";
+import JsonViewer from "vue-json-viewer";
 
 const walletOptions = {
   wallets: [
@@ -87,6 +87,7 @@ app
 const pinia = createPinia();
 
 app
+  .use(JsonViewer)
   .use(apolloProvider)
   .use(VueApolloComponents)
   .use(pinia)

@@ -1,6 +1,6 @@
 <template>
-  <div class="p-card">
-    <TabView>
+  <div class="w-full">
+    <TabView class="w-full">
       <TabPanel
         v-for="(option, idx) in options_l1"
         :key="idx"
@@ -27,10 +27,9 @@
 <script setup lang="ts">
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
-import { computed, onMounted, watch } from "vue";
-import { useGlobalStore } from "../stores/GlobalStore";
-import { ItemType } from "../static/StarAtlasAPIItem";
-import PortfolioAssetsTable from "../components/elements/portfolio_elements/PortfolioAssetsTable.vue";
+import { computed } from "vue";
+import { ItemType } from "../../../static/StarAtlasAPIItem";
+import PortfolioAssetsTable from "./PortfolioAssetsTable.vue";
 
 export interface I_OptionL1 {
   name: string;
@@ -39,16 +38,16 @@ export interface I_OptionL1 {
 
 const options_l1: I_OptionL1[] = [
   {
-    name: "StarAtlas",
-    value: "staratlas",
-  },
-  {
     name: "SFTs",
     value: "sft",
   },
   {
     name: "NFTs",
     value: "nft",
+  },
+  {
+    name: "StarAtlas",
+    value: "staratlas",
   },
 ];
 
@@ -59,17 +58,4 @@ const options_l2_sa = computed(() => {
   });
   return list;
 });
-
-onMounted(async () => {
-  if (useGlobalStore().status.is_initialized) {
-    await useGlobalStore()._load_wallet_tokens2();
-  }
-});
-
-watch(
-  () => useGlobalStore().status.is_initialized,
-  async () => {
-    await useGlobalStore()._load_wallet_tokens2();
-  }
-);
 </script>

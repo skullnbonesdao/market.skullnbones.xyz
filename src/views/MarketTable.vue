@@ -1,3 +1,70 @@
+<script setup lang="ts">
+import Dropdown from "primevue/dropdown";
+import ProgressSpinner from "primevue/progressspinner";
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+import ColumnGroup from "primevue/columngroup";
+import Row from "primevue/row";
+import Avatar from "primevue/avatar";
+import { onMounted, ref, watch } from "vue";
+import { ItemType } from "../static/StarAtlasAPIItem";
+import { useGlobalStore } from "../stores/GlobalStore";
+import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
+import { useStaratlasGmStore } from "../stores/StaratlasGmStore";
+import { FilterMatchMode } from "primevue/api";
+import InputText from "primevue/inputtext";
+import TokenPriceElement from "../components/elements/TokenPriceElement.vue";
+import PercentageVwapTemplate from "../components/elements/templates/PercentageTemplate.vue";
+import PriceTemplate from "../components/elements/templates/PriceTemplate.vue";
+import VwapTemplate from "../components/elements/templates/VwapTemplate.vue";
+
+import { E_EXPLORER, EXPLORER } from "../static/explorer";
+import ExplorerIcon from "../components/icon-helper/ExplorerIcon.vue";
+
+const is_loading = ref(true);
+
+interface OptionType {
+  value: string;
+}
+const table_filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  "api_data.name": { value: null, matchMode: FilterMatchMode.IN },
+});
+
+const option_selected = ref({
+  value: "Ship",
+});
+const options_values = ref<OptionType[]>([]);
+for (let itemTypeKey in ItemType) {
+  options_values.value.push({
+    value: itemTypeKey,
+  });
+}
+
+watch(
+  () => option_selected.value,
+  async () => {
+    await useStaratlasGmStore().update_filtered_market_table_data(
+      option_selected.value.value.toString()
+    );
+  }
+);
+watch(
+  () => useStaratlasGmStore().status.is_initialized,
+  async () => {
+    // if (useStaratlasGmStore().status.is_initalized) {
+    //   console.log("initalized");
+    //   await useStaratlasGmStore().update_filtered_market_table_data("Ship");
+    // }
+  }
+);
+onMounted(async () => {
+  if (useStaratlasGmStore().status.is_initialized) {
+    await useStaratlasGmStore().update_filtered_market_table_data("Ship");
+  }
+});
+</script>
+
 <template>
   <div class="flex flex-col space-y-2">
     <div class="flex flex-col w-full justify-center">
@@ -300,70 +367,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import Dropdown from "primevue/dropdown";
-import ProgressSpinner from "primevue/progressspinner";
-import DataTable from "primevue/datatable";
-import Column from "primevue/column";
-import ColumnGroup from "primevue/columngroup";
-import Row from "primevue/row";
-import Avatar from "primevue/avatar";
-import { onMounted, ref, watch } from "vue";
-import { ItemType } from "../static/StarAtlasAPIItem";
-import { useGlobalStore } from "../stores/GlobalStore";
-import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
-
-import { useStaratlasGmStore } from "../stores/StaratlasGmStore";
-import { FilterMatchMode } from "primevue/api";
-import InputText from "primevue/inputtext";
-import TokenPriceElement from "../components/elements/TokenPriceElement.vue";
-import PercentageVwapTemplate from "../components/elements/templates/PercentageTemplate.vue";
-import PriceTemplate from "../components/elements/templates/PriceTemplate.vue";
-import VwapTemplate from "../components/elements/templates/VwapTemplate.vue";
-import ExplorerIcon from "../components/elements/icons_images/ExplorerIcon.vue";
-import { E_EXPLORER, EXPLORER } from "../static/explorer";
-
-const is_loading = ref(true);
-
-interface OptionType {
-  value: string;
-}
-const table_filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  "api_data.name": { value: null, matchMode: FilterMatchMode.IN },
-});
-
-const option_selected = ref({
-  value: "Ship",
-});
-const options_values = ref<OptionType[]>([]);
-for (let itemTypeKey in ItemType) {
-  options_values.value.push({
-    value: itemTypeKey,
-  });
-}
-
-watch(
-  () => option_selected.value,
-  async () => {
-    await useStaratlasGmStore().update_filtered_market_table_data(
-      option_selected.value.value.toString()
-    );
-  }
-);
-watch(
-  () => useStaratlasGmStore().status.is_initialized,
-  async () => {
-    // if (useStaratlasGmStore().status.is_initalized) {
-    //   console.log("initalized");
-    //   await useStaratlasGmStore().update_filtered_market_table_data("Ship");
-    // }
-  }
-);
-onMounted(async () => {
-  if (useStaratlasGmStore().status.is_initialized) {
-    await useStaratlasGmStore().update_filtered_market_table_data("Ship");
-  }
-});
-</script>

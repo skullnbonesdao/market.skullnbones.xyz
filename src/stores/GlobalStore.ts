@@ -10,13 +10,22 @@ import { useLocalStorage } from "@vueuse/core";
 import { CURRENCIES } from "../static/currencies";
 import { get_multi_price } from "../static/swagger/birdseye_api/birdseye_api";
 
-import { Metaplex, Nft, SftWithToken } from "@metaplex-foundation/js";
+import {
+  Metaplex,
+  Nft,
+  NftWithToken,
+  Sft,
+  SftWithToken,
+} from "@metaplex-foundation/js";
 import { useWallet } from "solana-wallets-vue";
 import { BirdsEyePricesResponse } from "../static/swagger/birdseye_api/birdsyste_pirces_response";
 import { useStaratlasGmStore } from "./StaratlasGmStore";
 import { I_SAG_Player } from "../static/apis/SA_Galaxy/I_SAG_Player";
 import { get_player_profile } from "../static/apis/SA_Galaxy/SA_Galaxy";
 import { I_SagePrize } from "../static/apis/SA_Galaxy/I_Sage_Prizes";
+import * as tokenlist from "../static/apis/TokenList/I_TokenList";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { TOKEN_LIST } from "../static/apis/TokenList/TokenList";
 
 export interface Status {
   is_initialized: boolean;
@@ -37,6 +46,16 @@ export const endpoints_list: RPCEndpoint[] = [
   { name: "solana-main", url: "https://api.mainnet-beta.solana.com/" },
   { name: "solana-serum", url: "https://solana-api.projectserum.com/" },
 ];
+
+export interface I_TokenData {
+  token_account: String;
+  token_mint: String;
+  account_info: any;
+  sa_api_data: StarAtlasAPIItem | undefined;
+  token_list_info: tokenlist.Token | undefined;
+  account_metadata: Sft | SftWithToken | Nft | NftWithToken | undefined;
+  json_metadata: any;
+}
 
 export interface TokenInfo {
   address: String;
@@ -104,6 +123,7 @@ export const useGlobalStore = defineStore("globalStore", {
       profile: {} as I_SAG_Player,
       sol_balance: 0,
       is_web_wallet_connected: false,
+      tokens: [] as Array<I_TokenData>,
       tokenRaw: [] as Array<{
         pubkey: PublicKey;
         account: AccountInfo<ParsedAccountData>;
@@ -207,6 +227,79 @@ export const useGlobalStore = defineStore("globalStore", {
       );
     },
 
+    async _load_wallet_tokens2() {
+      this.wallet.tokens = [];
+
+      const connection = new Connection(useGlobalStore().rpc.url);
+      const meta = Metaplex.make(connection);
+
+      const parsed_token_accounts =
+        await connection.getParsedTokenAccountsByOwner(
+          new PublicKey(this.wallet.address),
+          {
+            programId: new PublicKey(TOKEN_PROGRAM_ID),
+          }
+        );
+
+      for (const token_account of parsed_token_accounts.value) {
+        let account_metadata: any = {};
+        await meta
+          .nfts()
+          .findByMint({
+            mintAddress: new PublicKey(
+              token_account.account.data.parsed?.info.mint
+            ),
+          })
+          .then((data) => {
+            account_metadata = data;
+          })
+          .catch((err) => {
+            console.log("Error fetching metaplex-data:" + err);
+          });
+
+        let metadata = {};
+
+        if (account_metadata && account_metadata.uri) {
+          await fetch(account_metadata.uri)
+            .then((resp) => resp.json())
+            .then((json) => (metadata = json))
+            .catch((err) => console.log("Error fetching metadata-link" + err));
+
+          this.wallet.tokens.push({
+            token_account: token_account.pubkey.toString(),
+            token_mint: token_account.account.data.parsed.info.mint.toString(),
+            account_info: token_account.account,
+            account_metadata: account_metadata,
+            token_list_info: TOKEN_LIST.tokens.find(
+              (t) => t.address === token_account.account.data.parsed?.info.mint
+            ),
+            sa_api_data: useGlobalStore().sa_api_data.find(
+              (api) =>
+                api.mint ===
+                token_account.account.data.parsed.info.mint.toString()
+            ),
+            json_metadata: metadata,
+          });
+        } else {
+          this.wallet.tokens.push({
+            token_account: token_account.pubkey.toString(),
+            token_mint: token_account.account.data.parsed.info.mint.toString(),
+            account_info: token_account.account,
+            account_metadata: account_metadata,
+            token_list_info: TOKEN_LIST.tokens.find(
+              (t) => t.address === token_account.account.data?.parsed?.info.mint
+            ),
+            sa_api_data: useGlobalStore().sa_api_data.find(
+              (api) =>
+                api.mint ===
+                token_account.account.data.parsed.info.mint.toString()
+            ),
+            json_metadata: metadata,
+          });
+        }
+      }
+    },
+
     async update_wallet(wallet: string) {
       this.wallet.address = wallet;
       PublicKey.isOnCurve(new PublicKey(wallet));
@@ -227,21 +320,21 @@ export const useGlobalStore = defineStore("globalStore", {
           0,
           3
         );
-        await this._load_wallet_tokens();
+        await this._load_wallet_tokens2();
       }
 
-      if (this.toggleables.load_nfts) {
-        this.status = _update_status(
-          this.status,
-          true,
-          "Loading wallet NFTs...",
-          2,
-          3
-        );
-        await this._load_wallet_nfts().catch((err) =>
-          console.log("error fetching nfts")
-        );
-      }
+      // if (this.toggleables.load_nfts) {
+      //   this.status = _update_status(
+      //     this.status,
+      //     true,
+      //     "Loading wallet NFTs...",
+      //     2,
+      //     3
+      //   );
+      //   await this._load_wallet_nfts().catch((err) =>
+      //     console.log("error fetching nfts")
+      //   );
+      // }
 
       if (this.toggleables.load_score) {
         await useStaratlasGmStore().update_score_data();
@@ -264,6 +357,7 @@ export const useGlobalStore = defineStore("globalStore", {
         .then((data) => (this.sa_api_data = data));
     },
 
+    //TODO: RM
     async _load_wallet_tokens() {
       this.wallet.tokenInfo = [];
       let connection = new Connection(this.rpc.url);
@@ -347,6 +441,7 @@ export const useGlobalStore = defineStore("globalStore", {
       }
     },
 
+    //TODO: needed?
     async _load_wallet_nfts() {
       this.wallet.nfts.is_loading = true;
       const connection = new Connection(
