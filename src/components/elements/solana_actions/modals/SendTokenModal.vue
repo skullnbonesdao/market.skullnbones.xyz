@@ -41,7 +41,8 @@ function toggle_send_modal() {
 async function btn_action_send(
   fromWallet_str: string,
   toWallet_str: string,
-  token_mint_str: string
+  token_mint_str: string,
+  amount: number
 ) {
   const connection = new Connection(useGlobalStore().rpc.url);
   let tx = new Transaction();
@@ -90,7 +91,12 @@ async function btn_action_send(
   }
 
   tx.add(
-    createTransferInstruction(formTokenAccount, toTokenAccount, fromWallet, 1.0)
+    createTransferInstruction(
+      formTokenAccount,
+      toTokenAccount,
+      fromWallet,
+      amount
+    )
   );
 
   const tx_signature = await useWallet().sendTransaction(tx, connection);
@@ -174,7 +180,8 @@ async function btn_action_send(
             btn_action_send(
               useWallet().publicKey.value?.toString() ?? '',
               input_destination_wallet,
-              mint_send_token
+              mint_send_token,
+              input_amount_to_send
             )
           "
         />
