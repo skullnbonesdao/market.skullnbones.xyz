@@ -244,6 +244,10 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
                               .tokenAmount.uiAmountString
                           )
                         "
+                        :token_decimals="
+                          slotProps.data.account_info.data.parsed.info
+                            .tokenAmount.decimals
+                        "
                       />
 
                       <CloseTokenAccountButton

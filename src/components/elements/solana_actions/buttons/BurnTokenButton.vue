@@ -23,6 +23,10 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
+  token_decimals: {
+    type: Number,
+    default: 0,
+  },
 });
 
 function btn_make_unsecure() {
@@ -91,7 +95,7 @@ async function btn_action_burn(
         useWallet().publicKey.value?.toString() ?? '',
         mint_send_token,
         max_amount_token,
-        0
+        token_decimals
       ).then(() => {
         is_unsecured = false;
       })
