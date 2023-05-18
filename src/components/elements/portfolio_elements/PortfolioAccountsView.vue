@@ -38,16 +38,16 @@ export interface I_OptionL1 {
 
 const options_l1: I_OptionL1[] = [
   {
-    name: "StarAtlas",
-    value: "staratlas",
-  },
-  {
     name: "SFTs",
     value: "sft",
   },
   {
     name: "NFTs",
     value: "nft",
+  },
+  {
+    name: "StarAtlas",
+    value: "staratlas",
   },
 ];
 
