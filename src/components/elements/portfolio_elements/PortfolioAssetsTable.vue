@@ -150,7 +150,6 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
                     preview
                   />
 
-                  json_metadata
                   <div class="grid grid-cols-1">
                     <div class="grid grid-cols-3 gap-2">
                       <p>Name:</p>
