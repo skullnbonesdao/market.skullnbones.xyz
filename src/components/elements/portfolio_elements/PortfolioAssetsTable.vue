@@ -235,7 +235,7 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
                   </div>
 
                   <div class="flex w-full justify-end">
-                    <div class="flex flex-row space-x-2">
+                    <div class="flex-row space-x-2">
                       <BurnTokenButton
                         :mint_send_token="slotProps.data.token_mint"
                         :max_amount_token="
