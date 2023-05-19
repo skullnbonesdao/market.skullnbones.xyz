@@ -27,8 +27,7 @@
 <script setup lang="ts">
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
-import { computed, onMounted, watch } from "vue";
-import { useGlobalStore } from "../stores/GlobalStore";
+import { computed } from "vue";
 import { ItemType } from "../static/StarAtlasAPIItem";
 import PortfolioAssetsTable from "../components/elements/portfolio_elements/PortfolioAssetsTable.vue";
 
@@ -59,17 +58,4 @@ const options_l2_sa = computed(() => {
   });
   return list;
 });
-
-onMounted(async () => {
-  if (useGlobalStore().status.is_initialized) {
-    await useGlobalStore()._load_wallet_tokens2();
-  }
-});
-
-watch(
-  () => useGlobalStore().status.is_initialized,
-  async () => {
-    await useGlobalStore()._load_wallet_tokens2();
-  }
-);
 </script>

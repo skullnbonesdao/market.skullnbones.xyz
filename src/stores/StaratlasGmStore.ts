@@ -17,6 +17,7 @@ import {
 import { CURRENCIES, E_CURRENCIES, I_CURRENCY } from "../static/currencies";
 import { ShipStakingInfo } from "@staratlas/factory/dist/score";
 import { StarAtlasAPIItem } from "../static/StarAtlasAPIItem";
+import { useUserWalletStore } from "./UserWalletStore";
 
 export interface OrderBookOrderMap {
   size: number;
@@ -437,7 +438,7 @@ export const useStaratlasGmStore = defineStore({
       this.status = _update_status(this.status, true, "Get User Fleet", 1, 3);
       const ship_staking_infos = await getAllFleetsForUserPublicKey(
         new Connection(useGlobalStore().rpc.url),
-        new PublicKey(useGlobalStore().wallet.address ?? ""),
+        new PublicKey(useUserWalletStore().address ?? ""),
         new PublicKey(SCORE_FLEET_PROGRAM_ID)
       );
 

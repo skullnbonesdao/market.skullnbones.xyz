@@ -5,12 +5,17 @@ export async function get_player_profile(
   address: string
 ): Promise<I_SAG_Player | undefined> {
   let data;
-  await fetch("https://galaxy.staratlas.com/players/" + address)
-    .then((resp) => resp.json())
-    .then((json) => (data = json as I_SAG_Player));
-  if (data) {
-    return data;
-  } else return undefined;
+  try {
+    await fetch("https://galaxy.staratlas.com/players/" + address)
+      .then((resp) => resp?.json())
+      .then((json) => (data = json as I_SAG_Player));
+    if (data) {
+      return data;
+    } else return undefined;
+  } catch (err) {
+    console.error("Error loading SA-Player profile - maybe there is none?");
+    return undefined;
+  }
 }
 
 export async function get_player_prizes(
