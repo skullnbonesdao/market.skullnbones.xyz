@@ -8,20 +8,20 @@
             :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
           />
 
-          <p
-            v-if="
-              useGlobalStore()
-                .wallet.tokenInfo.flatMap((t) => t.usd_value)
-                .reduce((sum, current) => sum + current, 0) > 0
-            "
-          >
-            {{
-              useGlobalStore()
-                .wallet.tokenInfo.flatMap((t) => t.usd_value)
-                .reduce((sum, current) => sum + current, 0)
-                .toFixed(2)
-            }}
-          </p>
+          <!--          <p-->
+          <!--            v-if="-->
+          <!--              useGlobalStore()-->
+          <!--                .wallet.tokenInfo.flatMap((t) => t.usd_value)-->
+          <!--                .reduce((sum, current) => sum + current, 0) > 0-->
+          <!--            "-->
+          <!--          >-->
+          <!--            {{-->
+          <!--              useGlobalStore()-->
+          <!--                .wallet.tokenInfo.flatMap((t) => t.usd_value)-->
+          <!--                .reduce((sum, current) => sum + current, 0)-->
+          <!--                .toFixed(2)-->
+          <!--            }}-->
+          <!--          </p>-->
           <Skeleton v-else width="5rem" class="mb-2"></Skeleton>
         </div>
       </Fieldset>
@@ -52,7 +52,7 @@
               :currency_mint="
                 CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint
               "
-              :wallet_address="useGlobalStore().wallet.address"
+              :wallet_address="useUserWalletStore().address?.toString()"
             ></G_VolumeElement>
           </div>
           <div class="flex flex-row space-x-2 items-center">
@@ -64,7 +64,7 @@
               :currency_mint="
                 CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint
               "
-              :wallet_address="useGlobalStore().wallet.address"
+              :wallet_address="useUserWalletStore().address?.toString()"
             ></G_VolumeElement>
           </div>
         </div>
@@ -76,7 +76,6 @@
 
 <script setup lang="ts">
 import { CURRENCIES, E_CURRENCIES } from "../../../static/currencies";
-import { useGlobalStore } from "../../../stores/GlobalStore";
 import Skeleton from "primevue/skeleton";
 import Panel from "primevue/panel";
 import CurrencyIcon from "../../icon-helper/CurrencyIcon.vue";
@@ -84,6 +83,7 @@ import Fieldset from "primevue/fieldset";
 import { computed } from "vue";
 import gql from "graphql-tag";
 import G_VolumeElement from "../../graphql/G_VolumeElement.vue";
+import { useUserWalletStore } from "../../../stores/UserWalletStore";
 
 const volume = computed(() => {
   gql`

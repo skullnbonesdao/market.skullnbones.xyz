@@ -74,10 +74,10 @@
         <Panel header="Market-History" toggleable>
           <div class="w-full">
             <PortfolioHistoryChart
-              :user_wallet="useUserWalletStore().address.toString()"
+              :user_wallet="useUserWalletStore().address?.toString() ?? ''"
             />
             <PortfolioHistoryTable
-              :user_wallet="useUserWalletStore().address.toString()"
+              :user_wallet="useUserWalletStore().address?.toString() ?? ''"
             />
           </div>
         </Panel>

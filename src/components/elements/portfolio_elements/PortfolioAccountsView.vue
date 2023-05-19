@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <TabView
       :active-index="active_option_l1"
-      @update:active-index="(value) => (active_option_l1 = value)"
+      @update:active-index="(value:any) => (active_option_l1 = value)"
       class="w-full"
     >
       <TabPanel
@@ -15,7 +15,7 @@
     <TabView
       v-if="options_l1[active_option_l1].name === 'StarAtlas'"
       :active-index="active_option_l2_sa"
-      @update:active-index="(value) => (active_option_l2_sa = value)"
+      @update:active-index="(value:any) => (active_option_l2_sa = value)"
     >
       <TabPanel
         v-for="(option2, idx) in options_l2_sa"
