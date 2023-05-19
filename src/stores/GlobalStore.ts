@@ -1,10 +1,5 @@
 import { defineStore } from "pinia";
-import {
-  AccountInfo,
-  Connection,
-  ParsedAccountData,
-  PublicKey,
-} from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
 import { StarAtlasAPIItem } from "../static/StarAtlasAPIItem";
 import { useLocalStorage } from "@vueuse/core";
 import { CURRENCIES } from "../static/currencies";
@@ -20,9 +15,7 @@ import {
 import { useWallet } from "solana-wallets-vue";
 import { BirdsEyePricesResponse } from "../static/swagger/birdseye_api/birdsyste_pirces_response";
 import { useStaratlasGmStore } from "./StaratlasGmStore";
-import { I_SAG_Player } from "../static/apis/SA_Galaxy/I_SAG_Player";
 import { get_player_profile } from "../static/apis/SA_Galaxy/SA_Galaxy";
-import { I_SagePrize } from "../static/apis/SA_Galaxy/I_Sage_Prizes";
 import * as tokenlist from "../static/apis/TokenList/I_TokenList";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { TOKEN_LIST } from "../static/apis/TokenList/TokenList";
@@ -118,20 +111,7 @@ export const useGlobalStore = defineStore("globalStore", {
       mint_asset: new PublicKey("foodQJAztMzX1DKpLaiounNe2BDMds5RNuPC6jsNrDG"),
       mint_pair: new PublicKey("ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx"),
     },
-    wallet: {
-      address: "",
-      profile: {} as I_SAG_Player,
-      sol_balance: 0,
-      is_web_wallet_connected: false,
-      tokens: [] as Array<I_TokenData>,
-      tokenRaw: [] as Array<{
-        pubkey: PublicKey;
-        account: AccountInfo<ParsedAccountData>;
-      }>,
-      tokenInfo: [] as Array<TokenInfo>,
-      nfts: {} as NftsData,
-      prizes: {} as Array<I_SagePrize>,
-    },
+
     sa_api_data: [] as StarAtlasAPIItem[],
   }),
   getters: {},

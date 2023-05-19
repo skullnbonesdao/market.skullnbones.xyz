@@ -14,7 +14,7 @@ import ExplorerIcon from "../../icon-helper/ExplorerIcon.vue";
 const props = defineProps({
   user_wallet: {
     type: String,
-    default: "NPC",
+    required: true,
   },
   limit: {
     type: Number,

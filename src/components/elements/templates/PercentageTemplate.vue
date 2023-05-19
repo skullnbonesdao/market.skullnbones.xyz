@@ -2,6 +2,7 @@
   <div
     v-if="percentage && isFinite(percentage) && percentage !> -99"
     class="flex flex-row items-center p-2 rounded-lg border-2 p-card"
+    :class="useGlobalStore().is_dark ? 'border-gray-900' : ''"
   >
     <i
       class="pi"

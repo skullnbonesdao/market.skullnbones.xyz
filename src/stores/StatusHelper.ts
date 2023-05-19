@@ -12,11 +12,12 @@ export class StatusHelper {
     this.status = {
       is_initialized: true,
       is_loading: false,
-      message: "init",
+      message: "initalized",
       step_current: 0,
       step_total: 0,
     };
   }
+
   status_set(message: string, step_current: number, step_total: number) {
     this.status.is_loading = true;
     this.status.message = message;

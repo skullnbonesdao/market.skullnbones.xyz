@@ -59,6 +59,8 @@ watch(
   }
 );
 onMounted(async () => {
+  await useStaratlasGmStore().init();
+
   if (useStaratlasGmStore().status.is_initialized) {
     await useStaratlasGmStore().update_filtered_market_table_data("Ship");
   }

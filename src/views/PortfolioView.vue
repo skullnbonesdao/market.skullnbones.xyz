@@ -9,11 +9,11 @@
           v-model="text_user_wallet_input"
         /><Button
           icon="pi pi-search"
-          @click="useGlobalStore().update_wallet(text_user_wallet_input)"
+          @click="useUserWalletStore().update(text_user_wallet_input)"
         />
       </div>
       <div>
-        <ToggleablesTemplate />
+        <!--        <ToggleablesTemplate />-->
       </div>
     </div>
 
@@ -21,7 +21,7 @@
       <NoData text="Invalid PublicKey!" class="flex justify-center" />
     </div>
 
-    <div v-if="!useGlobalStore().wallet.address" class="p-card">
+    <div v-if="!useUserWalletStore().address" class="p-card">
       <NoData text="No Wallet searched!" class="flex justify-center" />
     </div>
     <div v-else class="flex flex-col space-y-2">
@@ -29,12 +29,12 @@
         <div class="flex flex-col justify-center">
           <p>Connected to:</p>
           <p class="text-xs">
-            {{ useGlobalStore().wallet.address }}
+            {{ useUserWalletStore().address }}
           </p>
         </div>
         <div class="flex w-full justify-end items-center space-x-2">
           <p>
-            {{ useGlobalStore().wallet.sol_balance.toFixed(3) }}
+            {{ useUserWalletStore().sol_balance.toFixed(3) }}
           </p>
           <CurrencyIcon
             style="width: 50px"
@@ -43,40 +43,42 @@
         </div>
       </div>
 
-      <OverviewChilds />
+      <!--      <OverviewChilds />-->
 
       <div class="p-card">
-        <NoData
-          v-if="!useGlobalStore().wallet.profile"
-          class="flex justify-center"
-        />
-        <PlayerProfile v-else />
+        <PlayerProfile v-if="useUserWalletStore().sa_profile" />
       </div>
 
-      <div v-if="useGlobalStore().toggleables.load_tokens" class="p-card">
+      <div v-if="useUserWalletStore().tokens" class="p-card">
         <Panel header="Accounts" toggleable>
           <div class="flex justify-around">
             <NoData
               class="flex justify-center"
-              v-if="!useGlobalStore().wallet.tokens.length"
+              v-if="!useUserWalletStore().tokens.length"
             />
             <PortfolioAccountsView v-else class="flex w-full" />
           </div>
         </Panel>
       </div>
 
-      <div v-if="useGlobalStore().toggleables.load_score" class="p-card">
-        <Panel header="Score" toggleable collapsed>
-          <div class="flex justify-around">
-            <ScoreElement />
-          </div>
-        </Panel>
-      </div>
+      <!--      <div v-if="useGlobalStore().toggleables.load_score" class="p-card">-->
+      <!--        <Panel header="Score" toggleable collapsed>-->
+      <!--          <div class="flex justify-around">-->
+      <!--            <NoData :text="'disbaled'"></NoData>-->
+      <!--            <ScoreElement />-->
+      <!--          </div>-->
+      <!--        </Panel>-->
+      <!--      </div>-->
 
-      <div v-if="useGlobalStore().toggleables.load_history" class="p-card">
+      <div class="p-card">
         <Panel header="Market-History" toggleable>
-          <div class="flex justify-around">
-            <WalletHistoryElement />
+          <div class="w-full">
+            <PortfolioHistoryChart
+              :user_wallet="useUserWalletStore().address.toString()"
+            />
+            <PortfolioHistoryTable
+              :user_wallet="useUserWalletStore().address.toString()"
+            />
           </div>
         </Panel>
       </div>
@@ -88,22 +90,20 @@
 import InputText from "primevue/inputtext";
 import Panel from "primevue/panel";
 import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
-import { useGlobalStore } from "../stores/GlobalStore";
 import { useWallet } from "solana-wallets-vue";
 import NoData from "../components/elements/NoData.vue";
-import WalletHistoryElement from "../components/elements/tables/WalletHistoryTable.vue";
 import CurrencyIcon from "../components/icon-helper/CurrencyIcon.vue";
-import OverviewChilds from "../components/elements/portfolio_elements/OverviewChilds.vue";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { PublicKey } from "@solana/web3.js";
-import ScoreElement from "../components/elements/score/ScoreElement.vue";
-import ToggleablesTemplate from "../components/elements/templates/ToggleablesTemplate.vue";
 import PlayerProfile from "../components/elements/portfolio_elements/PlayerProfile.vue";
 import PortfolioAccountsView from "../components/elements/portfolio_elements/PortfolioAccountsView.vue";
+import { useUserWalletStore } from "../stores/UserWalletStore";
+import PortfolioHistoryChart from "../components/elements/portfolio_elements/PortfolioHistoryChart.vue";
+import PortfolioHistoryTable from "../components/elements/portfolio_elements/PortfolioHistoryTable.vue";
 
-const text_user_wallet_input = ref(
-  useWallet().publicKey.value?.toString() ?? ""
-);
+const text_user_wallet_input = computed(() => {
+  return useWallet().publicKey.value?.toString() ?? "";
+});
 
 const wallet = useWallet();
 

@@ -1,5 +1,8 @@
 <template>
-  <div class="flex flex-row gap-2 p-2 rounded-lg items-center border-2 p-card">
+  <div
+    class="flex flex-row gap-2 p-2 rounded-lg items-center border-2 p-card"
+    :class="useGlobalStore().is_dark ? 'border-gray-900' : ''"
+  >
     <div class="flex flex-col space-y-1 items-center">
       <CurrencyIcon
         v-if="props.currency"

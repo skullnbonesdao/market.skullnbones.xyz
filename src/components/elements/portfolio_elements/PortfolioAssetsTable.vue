@@ -18,6 +18,7 @@ import CloseTokenAccountButton from "../solana_actions/buttons/CloseTokenAccount
 import InputText from "primevue/inputtext";
 import { FilterMatchMode } from "primevue/api";
 import { BLACKLIST_URLS } from "../../../static/blacklist";
+import { useUserWalletStore } from "../../../stores/UserWalletStore";
 
 const expandedRows = ref([]);
 
@@ -38,16 +39,15 @@ const props = defineProps({
 
 function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
   if (option_l2) {
-    return useGlobalStore().wallet.tokens.filter(
+    return useUserWalletStore().tokens.filter(
       (element) =>
         element.sa_api_data?.attributes.itemType.toUpperCase() ===
         option_l2.toUpperCase()
     );
   }
-  return useGlobalStore().wallet.tokens.filter(
+  return useUserWalletStore().tokens.filter(
     (element) => (element.account_metadata?.model ?? "") === option_l1
   );
-  return useGlobalStore().wallet.tokens;
 }
 </script>
 
@@ -60,6 +60,8 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
       tableStyle="min-width: 50rem"
       :global-filter-fields="['account_metadata.symbol']"
       v-model:filters="filters"
+      sortField="account_metadata.symbol"
+      :sortOrder="1"
     >
       <template #header>
         <div class="flex">
@@ -105,8 +107,8 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
           />
         </template>
       </Column>
-      <Column field="account_metadata.symbol" header="Symbol"></Column>
-      <Column header="Type">
+      <Column field="account_metadata.symbol" header="Symbol" sortable></Column>
+      <Column header="Type" sortable>
         <template #body="slotProps">
           {{ slotProps.data.account_metadata.model.toUpperCase() }}
         </template>
@@ -115,6 +117,7 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
       <Column
         field="account_info.data.parsed.info.tokenAmount.uiAmount"
         header="Amount"
+        sortable
       ></Column>
       <Column header="Price"></Column> <Column header="Value"></Column>
       <template #expansion="slotProps">
