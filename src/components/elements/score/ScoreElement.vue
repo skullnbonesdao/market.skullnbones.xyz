@@ -8,6 +8,8 @@ import { useGlobalStore } from "../../../stores/GlobalStore";
 import NoData from "../NoData.vue";
 import { useUserWalletStore } from "../../../stores/UserWalletStore";
 import { ref } from "vue";
+import ShipHarvestButton from "./ShipHarvestButton.vue";
+import ShipRefillButton from "./ShipRefillButton.vue";
 
 const expandedRows = ref([]);
 
@@ -18,6 +20,8 @@ function calc_formatted_percentage(
 ): number {
   return parseFloat(((n / d) * 100).toFixed(decimals));
 }
+
+function test() {}
 </script>
 
 <template>
@@ -39,6 +43,13 @@ function calc_formatted_percentage(
               )?.name
             }}
           </p>
+        </template>
+      </Column>
+      <Column header="Amount">
+        <template #body="slotProps">
+          x{{
+            slotProps.data.ship_staking_info.shipQuantityInEscrow.toNumber()
+          }}
         </template>
       </Column>
 
@@ -95,6 +106,14 @@ function calc_formatted_percentage(
               )
             "
           ></ProgressBar>
+        </template>
+      </Column>
+      <Column>
+        <template #body="slotProps">
+          <div class="flex flex-row space-x-2">
+            <ShipRefillButton />
+            <ShipHarvestButton />
+          </div>
         </template>
       </Column>
 
