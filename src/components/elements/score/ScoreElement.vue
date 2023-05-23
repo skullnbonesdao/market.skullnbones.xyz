@@ -10,6 +10,7 @@ import { useUserWalletStore } from "../../../stores/UserWalletStore";
 import { ref } from "vue";
 import ShipHarvestButton from "./ShipHarvestButton.vue";
 import ShipRefillButton from "./ShipRefillButton.vue";
+import Avatar from "primevue/avatar";
 
 const expandedRows = ref([]);
 
@@ -34,6 +35,16 @@ function test() {}
       tableStyle="min-width: 50rem"
     >
       <Column expander style="width: 5rem" />
+      <Column>
+        <template #body="slotProps">
+          <Avatar
+            size="large"
+            shape="circle"
+            :image="'/webp/' + slotProps.data.mint + '.webp'"
+          ></Avatar>
+        </template>
+      </Column>
+
       <Column field="shipMint" header="Name">
         <template #body="slotPros">
           <p>
