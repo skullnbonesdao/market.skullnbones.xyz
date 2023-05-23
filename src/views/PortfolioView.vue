@@ -50,7 +50,7 @@
       </div>
 
       <div v-if="useUserWalletStore().tokens" class="p-card">
-        <Panel header="Accounts" toggleable>
+        <Panel header="Accounts" toggleable collapsed>
           <div class="flex justify-around">
             <NoData
               class="flex justify-center"
@@ -61,14 +61,13 @@
         </Panel>
       </div>
 
-      <!--      <div v-if="useGlobalStore().toggleables.load_score" class="p-card">-->
-      <!--        <Panel header="Score" toggleable collapsed>-->
-      <!--          <div class="flex justify-around">-->
-      <!--            <NoData :text="'disbaled'"></NoData>-->
-      <!--            <ScoreElement />-->
-      <!--          </div>-->
-      <!--        </Panel>-->
-      <!--      </div>-->
+      <div v-if="true" class="p-card">
+        <Panel header="Score" toggleable>
+          <div class="flex justify-around">
+            <ScoreElement />
+          </div>
+        </Panel>
+      </div>
 
       <div class="p-card">
         <Panel header="Market-History" toggleable>
@@ -100,6 +99,7 @@ import PortfolioAccountsView from "../components/elements/portfolio_elements/Por
 import { useUserWalletStore } from "../stores/UserWalletStore";
 import PortfolioHistoryChart from "../components/elements/portfolio_elements/PortfolioHistoryChart.vue";
 import PortfolioHistoryTable from "../components/elements/portfolio_elements/PortfolioHistoryTable.vue";
+import ScoreElement from "../components/elements/score/ScoreElement.vue";
 
 const text_user_wallet_input = computed(() => {
   return useWallet().publicKey.value?.toString() ?? "";

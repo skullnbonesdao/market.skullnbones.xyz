@@ -40,19 +40,25 @@ export interface I_Score_Data {
   ship_staking_info: ShipStakingInfo;
   score_vars_ship?: ScoreVarsShipInfo;
   parsed: {
-    food_percentage: number;
-    fuel_percentage: number;
-    food_current: number;
-    food_total: number;
-    food_delta: number;
+    food: {
+      total: number;
+      current: number;
+    };
 
-    currentCapacityTimestamp: number;
-    fuel_current: number;
-    fuel_total: number;
-    ammo_current: number;
-    ammo_total: number;
-    tool_current: number;
-    tool_total: number;
+    fuel: {
+      total: number;
+      current: number;
+    };
+
+    ammo: {
+      total: number;
+      current: number;
+    };
+
+    tool: {
+      total: number;
+      current: number;
+    };
   };
 }
 
@@ -191,29 +197,18 @@ export const useUserWalletStore = defineStore("userWalletStore", {
         const tripStart = ship.currentCapacityTimestamp.toNumber();
         const timePass = now - tripStart;
 
-        let remainTime_food = ship.foodCurrentCapacity.toNumber() - timePass;
-        const secondsLeft_food = remainTime_food;
-        const unitsBurnRate_food =
-          1 / (score_vars.millisecondsToBurnOneFood / 1000); // Per Second
-        const unitsLeft_food =
-          unitsBurnRate_food *
-          secondsLeft_food *
-          ship.shipQuantityInEscrow.toNumber();
-        const unitsLeftPct_food =
-          unitsLeft_food /
-          (score_vars.foodMaxReserve * ship.shipQuantityInEscrow.toNumber());
+        const food_total =
+          score_vars.foodMaxReserve * ship.shipQuantityInEscrow.toNumber();
+        const food_current =
+          food_total -
+          ((Date.now() - ship.fedAtTimestamp.toNumber() * 1000) /
+            score_vars.millisecondsToBurnOneFood) *
+            ship.shipQuantityInEscrow.toNumber();
 
-        let remainTime_fuel = ship.foodCurrentCapacity.toNumber() - timePass;
-        const secondsLeft_fuel = remainTime_fuel;
-        const unitsBurnRate_fuel =
-          1 / (score_vars.millisecondsToBurnOneFuel / 1000); // Per Second
-        const unitsLeft_fuel =
-          unitsBurnRate_fuel *
-          secondsLeft_fuel *
-          ship.shipQuantityInEscrow.toNumber();
-        const unitsLeftPct_fuel =
-          unitsLeft_fuel /
-          (score_vars.fuelMaxReserve * ship.shipQuantityInEscrow.toNumber());
+        const food_parsed = get_food_parsed(ship, score_vars);
+        const fuel_parsed = get_fuel_parsed(ship, score_vars);
+        const ammo_parsed = get_ammo_parsed(ship, score_vars);
+        const tool_parsed = get_tool_parsed(ship, score_vars);
 
         this.sa_score.push({
           mint: ship.shipMint.toString(),
@@ -221,20 +216,22 @@ export const useUserWalletStore = defineStore("userWalletStore", {
           score_vars_ship: score_vars,
 
           parsed: {
-            food_percentage: unitsLeftPct_food,
-            fuel_percentage: unitsLeftPct_fuel,
-
-            food_current: ship.foodQuantityInEscrow.toNumber(),
-            food_total: ship.foodCurrentCapacity.toNumber(),
-            food_delta: ship.fedAtTimestamp.toNumber(),
-
-            currentCapacityTimestamp: ship.currentCapacityTimestamp.toNumber(),
-            fuel_current: ship.foodQuantityInEscrow.toNumber() / 86400,
-            fuel_total: ship.fuelCurrentCapacity.toNumber() / 86400,
-            ammo_current: ship.armsCurrentCapacity.toNumber() / 86400,
-            ammo_total: ship.armsCurrentCapacity.toNumber() / 86400,
-            tool_current: ship.healthCurrentCapacity.toNumber() / 86400,
-            tool_total: ship.armsCurrentCapacity.toNumber() / 86400,
+            food: {
+              total: food_parsed.total,
+              current: food_parsed.current,
+            },
+            fuel: {
+              total: fuel_parsed.total,
+              current: fuel_parsed.current,
+            },
+            ammo: {
+              total: ammo_parsed.total,
+              current: ammo_parsed.current,
+            },
+            tool: {
+              total: tool_parsed.total,
+              current: tool_parsed.current,
+            },
           },
         });
       }
@@ -243,27 +240,117 @@ export const useUserWalletStore = defineStore("userWalletStore", {
   },
 });
 
-const getPassTimeSinceLastAction = (fleet: ShipStakingInfo): number => {
-  let lastRecordTime = fleet.currentCapacityTimestamp.toNumber();
-  let currentTime = (Date.now() / 1000) | 0;
-  return currentTime - lastRecordTime;
-};
+function get_food_parsed(
+  ship: ShipStakingInfo,
+  score_vars: ScoreVarsShipInfo
+): {
+  total: number;
+  current: number;
+} {
+  const total =
+    score_vars.foodMaxReserve * ship.shipQuantityInEscrow.toNumber();
 
-const getFoodDemand = (
-  scoreInfo: ScoreVarsShipInfo,
-  fleet: ShipStakingInfo
-): any => {
-  let timePass = getPassTimeSinceLastAction(fleet);
-  let remainTime = Math.max(0, fleet.foodCurrentCapacity.toNumber() - timePass);
-  let shipQuantity = fleet.shipQuantityInEscrow.toNumber();
-  let timeOnFullFood =
-    (scoreInfo.foodMaxReserve * scoreInfo.millisecondsToBurnOneFood) / 1000;
-  let demand =
-    ((timeOnFullFood - remainTime) /
-      (scoreInfo.millisecondsToBurnOneFood / 1000)) *
-    shipQuantity;
+  let current =
+    total -
+    ((Date.now() - ship.fedAtTimestamp.toNumber() * 1000) /
+      score_vars.millisecondsToBurnOneFood) *
+      ship.shipQuantityInEscrow.toNumber();
+
   return {
-    toBuy: demand,
-    timeLeft: remainTime,
+    total,
+    current,
   };
-};
+}
+
+function get_fuel_parsed(
+  ship: ShipStakingInfo,
+  score_vars: ScoreVarsShipInfo
+): {
+  total: number;
+  current: number;
+} {
+  const total =
+    score_vars.fuelMaxReserve * ship.shipQuantityInEscrow.toNumber();
+
+  let current =
+    total -
+    ((Date.now() - ship.fueledAtTimestamp.toNumber() * 1000) /
+      score_vars.millisecondsToBurnOneFuel) *
+      ship.shipQuantityInEscrow.toNumber();
+
+  return {
+    total,
+    current,
+  };
+}
+
+function get_ammo_parsed(
+  ship: ShipStakingInfo,
+  score_vars: ScoreVarsShipInfo
+): {
+  total: number;
+  current: number;
+} {
+  const total =
+    score_vars.armsMaxReserve * ship.shipQuantityInEscrow.toNumber();
+
+  let current =
+    total -
+    ((Date.now() - ship.armedAtTimestamp.toNumber() * 1000) /
+      score_vars.millisecondsToBurnOneArms) *
+      ship.shipQuantityInEscrow.toNumber();
+
+  return {
+    total,
+    current,
+  };
+}
+
+function get_tool_parsed(
+  ship: ShipStakingInfo,
+  score_vars: ScoreVarsShipInfo
+): {
+  total: number;
+  current: number;
+} {
+  const total =
+    score_vars.toolkitMaxReserve * ship.shipQuantityInEscrow.toNumber();
+
+  let current =
+    total -
+    ((Date.now() - ship.repairedAtTimestamp.toNumber() * 1000) /
+      score_vars.millisecondsToBurnOneToolkit) *
+      ship.shipQuantityInEscrow.toNumber();
+
+  return {
+    total,
+    current,
+  };
+}
+
+function get_resources_shortest_time(ship: ShipStakingInfo, score_vars: any) {
+  const r4_names = ["food", "fuel", "arms", "toolkit"];
+  const r4_Names = ["Food", "Fuel", "Arms", "Toolkit"];
+  let min_time = 0;
+  let depletion_r4_index = 0;
+
+  r4_names.forEach((name, idx) => {
+    const time =
+      (ship.shipQuantityInEscrow.toNumber() * score_vars[name + "MaxReserve"]) /
+      score_vars["millisecondsToBurnOneFuel" + r4_Names[idx]];
+    if (min_time === 0) {
+      min_time = time;
+      depletion_r4_index = idx;
+    }
+    if (min_time > time) {
+      min_time = time;
+      depletion_r4_index = idx;
+    }
+  });
+
+  // switch (r4_names[depletion_r4_index]): {
+  //
+  // }
+
+  return min_time;
+}

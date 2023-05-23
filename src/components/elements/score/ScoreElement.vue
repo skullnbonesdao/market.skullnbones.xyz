@@ -1,51 +1,22 @@
 <script setup lang="ts">
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
+import TabView from "primevue/tabview";
+import TabPanel from "primevue/tabpanel";
+import ProgressBar from "primevue/progressbar";
 import { useGlobalStore } from "../../../stores/GlobalStore";
 import NoData from "../NoData.vue";
 import { useUserWalletStore } from "../../../stores/UserWalletStore";
 import { ref } from "vue";
-import { ShipStakingInfo } from "@staratlas/factory/dist/score";
-import { ScoreVarsShipInfo } from "@staratlas/factory";
 
 const expandedRows = ref([]);
 
-function getRemainArmsDetails(
-  shipInfo: ScoreVarsShipInfo,
-  fleet: ShipStakingInfo
-): any {
-  const secondsLeft =
-    fleet.armsCurrentCapacity.toNumber() -
-    (Date.now() / 1000 - fleet.currentCapacityTimestamp.toNumber());
-  const unitsBurnRate = 1 / (shipInfo.millisecondsToBurnOneArms / 1000); // Per Second
-  const unitsBurnt =
-    unitsBurnRate * (Date.now() / 1000) * fleet.shipQuantityInEscrow.toNumber();
-  const unitsLeft =
-    unitsBurnRate * secondsLeft * fleet.shipQuantityInEscrow.toNumber();
-  const unitsLeftPct =
-    unitsLeft /
-    (shipInfo.armsMaxReserve * fleet.shipQuantityInEscrow.toNumber());
-  const maxSeconds =
-    shipInfo.armsMaxReserve *
-    fleet.shipQuantityInEscrow.toNumber() *
-    (shipInfo.millisecondsToBurnOneArms /
-      1000 /
-      fleet.shipQuantityInEscrow.toNumber());
-  // this is different than maxSeconds
-  const totalSeconds = fleet.armsCurrentCapacity.toNumber();
-  const maxUnits =
-    shipInfo.armsMaxReserve * fleet.shipQuantityInEscrow.toNumber();
-
-  return {
-    unitsBurnt,
-    unitsLeftPct,
-    unitsLeft: unitsLeft,
-    secondsLeft: Math.max(0, secondsLeft),
-    totalSeconds,
-    maxSeconds,
-    maxUnits,
-    burnRate: unitsBurnRate,
-  };
+function calc_formatted_percentage(
+  n: number,
+  d: number,
+  decimals: number = 0
+): number {
+  return parseFloat(((n / d) * 100).toFixed(decimals));
 }
 </script>
 
@@ -70,50 +41,101 @@ function getRemainArmsDetails(
           </p>
         </template>
       </Column>
-      <Column field="ship_staking_info" header="ship_staking_info"></Column>
-      <Column field="score_vars_ship" header="score_vars_ship"></Column>
-      <Column header="food_temp">
+
+      <Column header="FOOD">
         <template #body="slotProps">
-          {{ slotProps.data.parsed.food_temp }}
+          <ProgressBar
+            class="flex w-full"
+            :value="
+              calc_formatted_percentage(
+                slotProps.data.parsed.food.current,
+                slotProps.data.parsed.food.total
+              )
+            "
+          ></ProgressBar>
         </template>
       </Column>
 
-      <Column header="fuel_temp">
+      <Column header="FUEL">
         <template #body="slotProps">
-          {{ slotProps.data.parsed.fuel_temp }}
-        </template>
-      </Column>
-      <Column header="food_percentage">
-        <template #body="slotProps">
-          {{ slotProps.data.parsed.food_percentage }}
-        </template>
-      </Column>
-
-      <Column header="fuel_percentage">
-        <template #body="slotProps">
-          {{ slotProps.data.parsed.fuel_percentage }}
+          <ProgressBar
+            class="flex w-full"
+            :value="
+              calc_formatted_percentage(
+                slotProps.data.parsed.fuel.current,
+                slotProps.data.parsed.fuel.total
+              )
+            "
+          ></ProgressBar>
         </template>
       </Column>
 
-      <Column header="arms_data">
+      <Column header="AMMO">
         <template #body="slotProps">
-          {{
-            getRemainArmsDetails(
-              slotProps.data.score_vars_ship,
-              slotProps.data.ship_staking_info
-            )
-          }}
+          <ProgressBar
+            class="flex w-full"
+            :value="
+              calc_formatted_percentage(
+                slotProps.data.parsed.ammo.current,
+                slotProps.data.parsed.ammo.total
+              )
+            "
+          ></ProgressBar>
+        </template>
+      </Column>
+
+      <Column header="TOOL">
+        <template #body="slotProps">
+          <ProgressBar
+            class="flex w-full"
+            :value="
+              calc_formatted_percentage(
+                slotProps.data.parsed.tool.current,
+                slotProps.data.parsed.tool.total
+              )
+            "
+          ></ProgressBar>
         </template>
       </Column>
 
       <template #expansion="slotProps">
         <div>
-          <json-viewer
-            expand-depth="5"
-            theme="my-awesome-json-theme"
-            :class="useGlobalStore().is_dark ? 'bg-gray-300' : ''"
-            :value="slotProps.data"
-          ></json-viewer>
+          <TabView>
+            <TabPanel header="ShipStakingInfo">
+              <json-viewer
+                expand-depth="5"
+                theme="my-awesome-json-theme"
+                :class="useGlobalStore().is_dark ? 'bg-gray-300' : ''"
+                :value="
+                  Object.fromEntries(
+                    Object.keys(slotProps.data.ship_staking_info).map((k) => {
+                      return [
+                        k.toString(),
+                        slotProps.data.ship_staking_info[k].toString(),
+                      ];
+                    })
+                  )
+                "
+              ></json-viewer>
+            </TabPanel>
+            <TabPanel header="ScoreVarsShipInfo">
+              <json-viewer
+                expand-depth="5"
+                theme="my-awesome-json-theme"
+                :class="useGlobalStore().is_dark ? 'bg-gray-300' : ''"
+                :value="
+                  Object.fromEntries(
+                    Object.keys(slotProps.data.score_vars_ship).map((k) => {
+                      return [
+                        k.toString(),
+                        slotProps.data.score_vars_ship[k].toString(),
+                      ];
+                    })
+                  )
+                "
+              ></json-viewer>
+            </TabPanel>
+          </TabView>
         </div>
       </template>
     </DataTable>
