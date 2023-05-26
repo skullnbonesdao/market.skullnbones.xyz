@@ -405,7 +405,7 @@ import InputText from "primevue/inputtext";
 import ProgressSpinner from "primevue/progressspinner";
 import CurrencyIcon from "../components/icon-helper/CurrencyIcon.vue";
 import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
-import { computed, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { get_player_prizes } from "../static/apis/SA_Galaxy/SA_Galaxy";
 import { I_SagePrize } from "../static/apis/SA_Galaxy/I_Sage_Prizes";
 import Avatar from "primevue/avatar";
@@ -425,11 +425,26 @@ import SageLootHeatmap, {
   HeatMapData,
 } from "../components/charts/heatmap/SageLootHeatmap.vue";
 
-const text_user_wallet_input = ref<string>(
+const text_user_wallet_input = ref();
+
+/*const text_user_wallet_input = ref<string>(
   useWallet().publicKey.value?.toString() ??
     import.meta.env.VITE_DEV_SCORE_TEST_WALLET?.toString() ??
     ""
+);*/
+
+onMounted(() => {
+  text_user_wallet_input.value = useWallet().publicKey.value?.toString() ?? "";
+});
+
+watch(
+  () => useWallet().publicKey.value,
+  () => {
+    text_user_wallet_input.value =
+      useWallet().publicKey.value?.toString() ?? "";
+  }
 );
+
 const expandedRows = ref();
 const expandAll = () => {
   expandedRows.value = prizes.value.filter((p) => p.name);
