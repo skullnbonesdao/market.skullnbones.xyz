@@ -12,9 +12,6 @@
           @click="useUserWalletStore().update(text_user_wallet_input)"
         />
       </div>
-      <div>
-        <!--        <ToggleablesTemplate />-->
-      </div>
     </div>
 
     <div v-if="!has_valid_pubkey" class="p-card">
@@ -92,7 +89,7 @@ import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
 import { useWallet } from "solana-wallets-vue";
 import NoData from "../components/elements/NoData.vue";
 import CurrencyIcon from "../components/icon-helper/CurrencyIcon.vue";
-import { computed } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { PublicKey } from "@solana/web3.js";
 import PlayerProfile from "../components/elements/portfolio_elements/PlayerProfile.vue";
 import PortfolioAccountsView from "../components/elements/portfolio_elements/PortfolioAccountsView.vue";
@@ -101,9 +98,19 @@ import PortfolioHistoryChart from "../components/elements/portfolio_elements/Por
 import PortfolioHistoryTable from "../components/elements/portfolio_elements/PortfolioHistoryTable.vue";
 import ScoreElement from "../components/elements/score/ScoreElement.vue";
 
-const text_user_wallet_input = computed(() => {
-  return useWallet().publicKey.value?.toString() ?? "";
+const text_user_wallet_input = ref();
+
+onMounted(() => {
+  text_user_wallet_input.value = useWallet().publicKey.value?.toString() ?? "";
 });
+
+watch(
+  () => useWallet().publicKey.value,
+  () => {
+    text_user_wallet_input.value =
+      useWallet().publicKey.value?.toString() ?? "";
+  }
+);
 
 const wallet = useWallet();
 
