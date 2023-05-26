@@ -89,7 +89,7 @@ import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
 import { useWallet } from "solana-wallets-vue";
 import NoData from "../components/elements/NoData.vue";
 import CurrencyIcon from "../components/icon-helper/CurrencyIcon.vue";
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { PublicKey } from "@solana/web3.js";
 import PlayerProfile from "../components/elements/portfolio_elements/PlayerProfile.vue";
 import PortfolioAccountsView from "../components/elements/portfolio_elements/PortfolioAccountsView.vue";
@@ -99,6 +99,10 @@ import PortfolioHistoryTable from "../components/elements/portfolio_elements/Por
 import ScoreElement from "../components/elements/score/ScoreElement.vue";
 
 const text_user_wallet_input = ref();
+
+onMounted(() => {
+  text_user_wallet_input.value = useWallet().publicKey.value?.toString() ?? "";
+});
 
 watch(
   () => useWallet().publicKey.value,
