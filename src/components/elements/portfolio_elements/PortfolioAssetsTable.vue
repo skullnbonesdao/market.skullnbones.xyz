@@ -5,7 +5,6 @@ import Column from "primevue/column";
 import Image from "primevue/image";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
-import { I_OptionL1 } from "../../../views/TestView.vue";
 import { I_TokenData, useGlobalStore } from "../../../stores/GlobalStore";
 import { CURRENCIES } from "../../../static/currencies";
 import { ref } from "vue";

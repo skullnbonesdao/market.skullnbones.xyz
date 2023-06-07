@@ -22,15 +22,15 @@ import ToggleButton from "primevue/togglebutton";
           size="xlarge"
         />
 
-        <div class="text-xs">
+        <div class="text-xs" >
           {{
             useUserWalletStore().address?.toString().substring(0, 4) +
             "[...]" +
             useUserWalletStore()
               .address?.toString()
               .substring(
-                useUserWalletStore().address?.toString().length,
-                useUserWalletStore().address?.toString().length - 4
+                useUserWalletStore().address?.toString().length ?? 0,
+                useUserWalletStore().address?.toString().length ?? 0 - 4
               )
           }}
         </div>
@@ -79,7 +79,7 @@ import ToggleButton from "primevue/togglebutton";
               {{
                 calc_passed_time(
                   new Date(
-                    useUserWalletStore().sa_profile?.registrationDate
+                    useUserWalletStore().sa_profile?.registrationDate ?? 0
                   ).getTime() / 1000
                 )
               }}
