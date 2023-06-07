@@ -64,6 +64,13 @@ export interface I_Score_Data {
 
 export const useUserWalletStore = defineStore("userWalletStore", {
   state: () => ({
+    toggle_items: {
+      only_sa_accounts: true,
+      show_accounts: true,
+      show_score: true,
+      show_history: true,
+    },
+
     status: new StatusHelper(),
     address: {} as PublicKey | undefined,
     sol_balance: 0,
@@ -71,6 +78,7 @@ export const useUserWalletStore = defineStore("userWalletStore", {
     tokens: [] as Array<I_TokenData>,
     sa_score: [] as Array<I_Score_Data>,
   }),
+
   actions: {
     async update(address: String) {
       console.log(address);
@@ -81,9 +89,9 @@ export const useUserWalletStore = defineStore("userWalletStore", {
       this.status.status_set("Loading sa profile", 2, 4);
       await this._load_sa_profile();
       this.status.status_set("Loading score data", 3, 4);
-      await this._load_score_data();
+      if (this.toggle_items.show_score) await this._load_score_data();
       this.status.status_set("Loading tokens", 4, 4);
-      await this._load_tokens();
+      if (this.toggle_items.show_accounts) await this._load_tokens();
 
       this.status.done();
     },
