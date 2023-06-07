@@ -8,9 +8,18 @@
           placeholder="Enter a wallet address"
           v-model="text_user_wallet_input"
         /><Button
+          v-if="!useUserWalletStore().status.get()"
           icon="pi pi-search"
           @click="useUserWalletStore().update(text_user_wallet_input)"
         />
+        <Button
+          v-else
+          disabled
+          icon="pi pi-spinner"
+          @click="useUserWalletStore().update(text_user_wallet_input)"
+        >
+          <i class="pi pi-spinner animate-spin"></i>
+        </Button>
       </div>
     </div>
     <div class="grid grid-cols-10 gap-1">

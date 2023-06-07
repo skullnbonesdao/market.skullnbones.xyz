@@ -77,6 +77,7 @@ export const useUserWalletStore = defineStore("userWalletStore", {
     tokens: [] as Array<I_TokenData>,
     sa_score: [] as Array<I_Score_Data>,
   }),
+
   actions: {
     async update(address: String) {
       console.log(address);

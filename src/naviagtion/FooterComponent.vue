@@ -28,7 +28,7 @@
 
       <div class="p-card flex flex-col w-full p-2">
         <div class="flex w-full justify-center text-center">
-          © [2023 S&B + HEIM] All Rights Reserved.
+          © [2023 S&B] All Rights Reserved.
         </div>
         <div class="flex w-full justify-center">{{ version }}</div>
       </div>

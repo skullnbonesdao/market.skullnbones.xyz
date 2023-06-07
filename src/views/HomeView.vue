@@ -19,7 +19,7 @@
           <p
             class="max-w-2xl mb-6 font-light text-gray-100 lg:mb-8 md:text-lg lg:text-xl text-gray-100 dark:text-gray-300"
           >
-            Brought to you by S&B
+            ...become a member of S&B
           </p>
         </div>
         <div

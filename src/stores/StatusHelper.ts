@@ -18,6 +18,10 @@ export class StatusHelper {
     };
   }
 
+  get() {
+    return this.status.is_loading;
+  }
+
   status_set(message: string, step_current: number, step_total: number) {
     this.status.is_loading = true;
     this.status.message = message;
