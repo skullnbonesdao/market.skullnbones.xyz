@@ -10,6 +10,7 @@
       optionGroupLabel="label"
       optionGroupChildren="items"
       placeholder="Hint: type 'symbol-name'"
+      scrollHeight="500px"
     >
       <template #optiongroup="slotProps">
         <div class="flex align-items-center country-item">
@@ -125,50 +126,50 @@ const search = (event: any) => {
     }
   }
 
-  newFilteredCities.push({
-    label: "Address",
-    code: "Address",
-    items: [
-      {
-        label: search_user_selected.value,
-        value: search_user_selected.value,
-        api_search: {
-          type: SEARCH_TYPE.ADDRESS,
-          value: search_user_selected.value,
-        },
-      },
-    ],
-  });
+  // newFilteredCities.push({
+  //   label: "Address",
+  //   code: "Address",
+  //   items: [
+  //     {
+  //       label: search_user_selected.value,
+  //       value: search_user_selected.value,
+  //       api_search: {
+  //         type: SEARCH_TYPE.ADDRESS,
+  //         value: search_user_selected.value,
+  //       },
+  //     },
+  //   ],
+  // });
 
-  newFilteredCities.push({
-    label: "Signature",
-    code: "Signature",
-    items: [
-      {
-        label: search_user_selected.value,
-        value: search_user_selected.value,
-        api_search: {
-          type: SEARCH_TYPE.SIGNATURE,
-          value: search_user_selected.value,
-        },
-      },
-    ],
-  });
+  // newFilteredCities.push({
+  //   label: "Signature",
+  //   code: "Signature",
+  //   items: [
+  //     {
+  //       label: search_user_selected.value,
+  //       value: search_user_selected.value,
+  //       api_search: {
+  //         type: SEARCH_TYPE.SIGNATURE,
+  //         value: search_user_selected.value,
+  //       },
+  //     },
+  //   ],
+  // });
 
-  newFilteredCities.push({
-    label: "Mint",
-    code: "Mint",
-    items: [
-      {
-        label: search_user_selected.value,
-        value: search_user_selected.value,
-        api_search: {
-          type: SEARCH_TYPE.MINT,
-          value: search_user_selected.value,
-        },
-      },
-    ],
-  });
+  // newFilteredCities.push({
+  //   label: "Mint",
+  //   code: "Mint",
+  //   items: [
+  //     {
+  //       label: search_user_selected.value,
+  //       value: search_user_selected.value,
+  //       api_search: {
+  //         type: SEARCH_TYPE.MINT,
+  //         value: search_user_selected.value,
+  //       },
+  //     },
+  //   ],
+  // });
 
   filtered_search.value = newFilteredCities;
 };
