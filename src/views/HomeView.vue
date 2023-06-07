@@ -13,13 +13,13 @@
           <div
             class="max-w-2xl mb-4 text-4xl tracking-tight leading-none md:text-5xl xl:text-6xl text-gray-100 dark:text-gray-300 animate-fade-in-down animate-count-1 animate-duration-2s fw100"
           >
-            Buy Bitcoin!
+            Study Bitcoin!
           </div>
 
           <p
             class="max-w-2xl mb-6 font-light text-gray-100 lg:mb-8 md:text-lg lg:text-xl text-gray-100 dark:text-gray-300"
           >
-            A cooperation between HEIM and S&B
+            Brought to you by S&B
           </p>
         </div>
         <div
