@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import {useUserWalletStore} from "../../stores/UserWalletStore";
-import ToggleButton from "primevue/togglebutton";
 import Avatar from "primevue/avatar";
 import {calc_passed_time} from "../../static/formatting/calc_passed_time";
 import Fieldset from "primevue/fieldset";
 import CurrencyIcon from "../../components/icon-helper/CurrencyIcon.vue";
 import {CURRENCIES, E_CURRENCIES} from "../../static/currencies";
+import ToggleButton from "primevue/togglebutton";
 </script>
 
 <template>
-  <div>
+
     <div class="flex flex-col space-y-2 m-2">
-      <div class="flex flex-col items-center space-y-1">
+      <div v-if="useUserWalletStore().address" class="flex flex-col items-center space-y-1">
         <Avatar
           :image="
             'https://storage.googleapis.com/star-atlas-assets/avatars/' +
@@ -35,7 +35,8 @@ import {CURRENCIES, E_CURRENCIES} from "../../static/currencies";
           }}
         </div>
       </div>
-      <Fieldset>
+
+      <Fieldset v-if="useUserWalletStore().address">
         <template #legend>
           <div class="flex items-center">
             <i-mdi-face-man-profile class="mr-2" />
@@ -87,7 +88,7 @@ import {CURRENCIES, E_CURRENCIES} from "../../static/currencies";
         </div>
       </Fieldset>
 
-      <Fieldset>
+      <Fieldset v-if="useUserWalletStore().address && useUserWalletStore().toggle_items.show_accounts">
         <template #legend>
           <div class="flex items-center">
             <i-mdi-wallet class="mr-2" />
@@ -122,8 +123,7 @@ import {CURRENCIES, E_CURRENCIES} from "../../static/currencies";
         </div>
       </Fieldset>
 
-
-      <Fieldset>
+      <Fieldset v-if="useUserWalletStore().address && useUserWalletStore().toggle_items.show_score">
         <template #legend>
           <div class="flex items-center">
             <i-mdi-rocket class="mr-2" />
@@ -158,8 +158,7 @@ import {CURRENCIES, E_CURRENCIES} from "../../static/currencies";
         </div>
       </Fieldset>
 
-
-      <Fieldset>
+      <Fieldset v-if="useUserWalletStore().address && useUserWalletStore().toggle_items.show_history">
         <template #legend>
           <div class="flex items-center">
             <i-mdi-history class="mr-2" />
@@ -194,31 +193,40 @@ import {CURRENCIES, E_CURRENCIES} from "../../static/currencies";
         </div>
       </Fieldset>
 
-      <div v-if="false" class="grid grid-cols-1 mx-2 space-y-1">
-        <ToggleButton
-          v-model="useUserWalletStore().toggle_items.show_accounts"
-          onLabel="Accounts"
-          offLabel="Accounts"
-          onIcon="pi pi-check"
-          offIcon="pi pi-times"
-        />
-        <ToggleButton
-          v-model="useUserWalletStore().toggle_items.show_score"
-          onLabel="Accounts"
-          offLabel="Accounts"
-          onIcon="pi pi-check"
-          offIcon="pi pi-times"
-        />
-        <ToggleButton
-          v-model="useUserWalletStore().toggle_items.show_history"
-          onLabel="Accounts"
-          offLabel="Accounts"
-          onIcon="pi pi-check"
-          offIcon="pi pi-times"
-        />
-      </div>
+      <Fieldset>
+        <template #legend>
+          <div class="flex items-center">
+            <i-mdi-cog class="mr-2" />
+            <span class="font-bold text-lg">Options</span>
+          </div>
+        </template>
+
+        <div class="grid grid-cols-1 gap-2">
+            <ToggleButton
+                v-model="useUserWalletStore().toggle_items.show_accounts"
+                onLabel="Load Accounts"
+                offLabel="No Accounts"
+                onIcon="pi pi-check"
+                offIcon="pi pi-times"
+            />
+
+            <ToggleButton
+                v-model="useUserWalletStore().toggle_items.show_score"
+                onLabel="Load Score"
+                offLabel="No Score"
+                onIcon="pi pi-check"
+                offIcon="pi pi-times"
+            />
+            <ToggleButton
+                v-model="useUserWalletStore().toggle_items.show_history"
+                onLabel="Load Trades"
+                offLabel="No Trades"
+                onIcon="pi pi-check"
+                offIcon="pi pi-times"
+            />
+        </div>
+      </Fieldset>
     </div>
-  </div>
 </template>
 
 <style scoped></style>

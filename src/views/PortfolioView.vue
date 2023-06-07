@@ -13,7 +13,7 @@
         />
       </div>
     </div>
-    <div class="grid grid-cols-10 gap-1" v-if="useUserWalletStore().address">
+    <div class="grid grid-cols-10 gap-1">
       <div class="p-card col-span-2">
         <ProfileSideBar />
       </div>
@@ -22,7 +22,11 @@
           <NoData text="No Wallet searched!" class="flex justify-center" />
         </div>
         <div v-else>
-          <Panel header="Accounts" toggleable>
+          <Panel
+            header="Accounts"
+            v-if="useUserWalletStore().toggle_items.show_accounts"
+            toggleable
+          >
             <div class="flex justify-around">
               <NoData
                 class="flex justify-center"
@@ -31,12 +35,20 @@
               <PortfolioAccountsView v-else class="flex w-full" />
             </div>
           </Panel>
-          <Panel header="Score" toggleable>
+          <Panel
+            header="Score"
+            v-if="useUserWalletStore().toggle_items.show_score"
+            toggleable
+          >
             <div class="flex justify-around">
               <ScoreElement />
             </div>
           </Panel>
-          <Panel header="Trade" toggleable>
+          <Panel
+            header="Trade"
+            v-if="useUserWalletStore().toggle_items.show_history"
+            toggleable
+          >
             <PortfolioHistoryChart
               class="w-full"
               :user_wallet="useUserWalletStore().address?.toString() ?? ''"

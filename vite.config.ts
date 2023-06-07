@@ -5,6 +5,7 @@ import * as path from "path";
 // @ts-ignore
 import nodePolyfills from "vite-plugin-node-stdlib-browser";
 import Icons from "unplugin-icons/vite";
+// @ts-ignore
 import Components from "unplugin-vue-components/vite";
 import IconsResolver from "unplugin-icons/resolver";
 

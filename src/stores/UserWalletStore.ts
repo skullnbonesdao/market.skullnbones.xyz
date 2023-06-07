@@ -87,9 +87,9 @@ export const useUserWalletStore = defineStore("userWalletStore", {
       this.status.status_set("Loading sa profile", 2, 4);
       await this._load_sa_profile();
       this.status.status_set("Loading score data", 3, 4);
-      await this._load_score_data();
+      if (this.toggle_items.show_score) await this._load_score_data();
       this.status.status_set("Loading tokens", 4, 4);
-      await this._load_tokens();
+      if (this.toggle_items.show_accounts) await this._load_tokens();
 
       this.status.done();
     },
