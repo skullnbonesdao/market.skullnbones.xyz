@@ -65,6 +65,7 @@ export interface I_Score_Data {
 export const useUserWalletStore = defineStore("userWalletStore", {
   state: () => ({
     toggle_items: {
+      only_sa_accounts: true,
       show_accounts: true,
       show_score: true,
       show_history: true,

@@ -36,6 +36,18 @@
             v-if="useUserWalletStore().toggle_items.show_accounts"
             toggleable
           >
+            <template #header>
+              <div class="flex flex-row w-full items-center pr-2">
+                <p class="p-panel-title w-full">Accounts</p>
+                <ToggleButton
+                  disabled
+                  v-model="useUserWalletStore().toggle_items.only_sa_accounts"
+                  class="whitespace-nowrap"
+                  onLabel="All"
+                  offLabel="SA Only"
+                />
+              </div>
+            </template>
             <div class="flex justify-around">
               <NoData
                 class="flex justify-center"
@@ -85,6 +97,7 @@ import PortfolioHistoryTable from "../components/elements/portfolio_elements/Por
 import ScoreElement from "../components/elements/score/ScoreElement.vue";
 import ProfileSideBar from "./Portfolio/ProfileSideBar.vue";
 import PortfolioHistoryChart from "../components/elements/portfolio_elements/PortfolioHistoryChart.vue";
+import ToggleButton from "primevue/togglebutton";
 
 const text_user_wallet_input = ref();
 
