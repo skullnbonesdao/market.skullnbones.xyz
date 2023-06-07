@@ -101,7 +101,6 @@ export const useGlobalStore = defineStore("globalStore", {
       mint_asset: new PublicKey("foodQJAztMzX1DKpLaiounNe2BDMds5RNuPC6jsNrDG"),
       mint_pair: new PublicKey("ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx"),
     },
-
     sa_api_data: [] as StarAtlasAPIItem[],
   }),
   getters: {},

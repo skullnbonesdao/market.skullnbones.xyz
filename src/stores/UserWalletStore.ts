@@ -64,6 +64,12 @@ export interface I_Score_Data {
 
 export const useUserWalletStore = defineStore("userWalletStore", {
   state: () => ({
+    toggle_items: {
+      show_accounts: true,
+      show_score: true,
+      show_history: true,
+    },
+
     status: new StatusHelper(),
     address: {} as PublicKey | undefined,
     sol_balance: 0,

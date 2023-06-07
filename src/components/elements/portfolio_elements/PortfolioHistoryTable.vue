@@ -18,7 +18,7 @@ const props = defineProps({
   },
   limit: {
     type: Number,
-    default: 10,
+    default: 1000000,
   },
 });
 </script>
@@ -30,11 +30,11 @@ const props = defineProps({
         query wallet_history($user_wallet: String!, $limit: Int!) {
           trades(
             limit: $limit
-            order_by: { block: desc } 
+            order_by: { block: desc }
             where: {
             _or: [{
             order_initializer: { _eq: $user_wallet }
-            },{  
+            },{
             order_taker: { _eq: $user_wallet }
             }]}
           ) {
@@ -119,50 +119,44 @@ const props = defineProps({
               </div>
             </template>
           </Column>
-          <Column field="mint" header="Mint">
-            <template #body="slotProps">
-              <div class="flex flex-row space-x-2 text-xs">
-                <div class="flex flex-col">
-                  <div>Token:</div>
-                  <div>Asset:</div>
-                </div>
-                <div class="flex flex-col">
-                  <div>{{ slotProps.data.currency_mint }}</div>
 
-                  <div>{{ slotProps.data.asset_mint }}</div>
-                </div>
+          <Column field="explorer" header="Explorer" style="min-width: 200px">
+            <template #body="slotProps">
+              <div class="flex flex-row items-center space-x-2">
+                <ExplorerIcon
+                  class="w-5"
+                  :explorer="
+                    EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)
+                  "
+                  :signature="slotProps.data.signature"
+                />
+                <ExplorerIcon
+                  class="w-5"
+                  :explorer="
+                    EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)
+                  "
+                  :signature="slotProps.data.signature"
+                />
               </div>
             </template>
           </Column>
-          <Column field="wallets" header="Wallets">
+
+          <Column field="wallets" header="Side">
             <template #body="slotProps">
-              <div class="flex flex-row space-x-2 text-xs">
-                <div class="flex flex-col">
-                  <div>Maker:</div>
-                  <div>Taker:</div>
-                </div>
-                <div class="flex flex-col">
-                  <div
-                    :class="
-                      slotProps.data.asset_receiving_wallet ===
-                      slotProps.data.order_initializer
-                        ? 'text-green-500'
-                        : 'text-red-500'
-                    "
-                  >
-                    {{ slotProps.data.order_initializer }}
-                  </div>
-                  <div
-                    :class="
-                      slotProps.data.asset_receiving_wallet ===
-                      slotProps.data.order_taker
-                        ? 'text-green-500'
-                        : 'text-red-500'
-                    "
-                  >
-                    {{ slotProps.data.order_taker }}
-                  </div>
-                </div>
+              <div
+                :class="
+                  slotProps.data.asset_receiving_wallet ===
+                  slotProps.data.order_initializer
+                    ? 'text-green-500'
+                    : 'text-red-500'
+                "
+              >
+                {{
+                  slotProps.data.asset_receiving_wallet ===
+                  slotProps.data.order_initializer
+                    ? "BUY"
+                    : "SELL"
+                }}
               </div>
             </template>
           </Column>
@@ -212,26 +206,6 @@ const props = defineProps({
                   "
                 />
                 <span>{{ slotProps.data.total_cost.toFixed(2) }}</span>
-              </div>
-            </template>
-          </Column>
-          <Column field="explorer" header="Explorer" style="min-width: 200px">
-            <template #body="slotProps">
-              <div class="flex flex-row justify-center items-center space-x-2">
-                <ExplorerIcon
-                  class="w-5"
-                  :explorer="
-                    EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)
-                  "
-                  :signature="slotProps.data.signature"
-                />
-                <ExplorerIcon
-                  class="w-5"
-                  :explorer="
-                    EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)
-                  "
-                  :signature="slotProps.data.signature"
-                />
               </div>
             </template>
           </Column>
