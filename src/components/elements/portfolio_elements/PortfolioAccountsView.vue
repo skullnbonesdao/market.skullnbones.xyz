@@ -1,43 +1,5 @@
-<template>
-  <div class="flex flex-col">
-    <TabView
-      :active-index="active_option_l1"
-      @update:active-index="(value:any) => (active_option_l1 = value)"
-      class="w-full"
-    >
-      <TabPanel
-        v-for="(option, idx) in options_l1"
-        :key="idx"
-        :header="option.name"
-      >
-      </TabPanel>
-    </TabView>
-    <TabView
-      v-if="options_l1[active_option_l1].name === 'StarAtlas'"
-      :active-index="active_option_l2_sa"
-      @update:active-index="(value:any) => (active_option_l2_sa = value)"
-    >
-      <TabPanel
-        v-for="(option2, idx) in options_l2_sa"
-        :key="idx"
-        :header="option2"
-      >
-      </TabPanel>
-    </TabView>
-    <PortfolioAssetsTable
-      v-if="options_l1[active_option_l1].name === 'StarAtlas'"
-      :option_l1="options_l1[active_option_l1].value"
-      :option_sa="options_l2_sa[active_option_l2_sa]"
-    />
-    <PortfolioAssetsTable
-      v-else
-      :option_l1="options_l1[active_option_l1].value"
-    />
-  </div>
-</template>
 <script setup lang="ts">
-import TabView from "primevue/tabview";
-import TabPanel from "primevue/tabpanel";
+import Dropdown from "primevue/dropdown";
 import { computed, ref } from "vue";
 import { ItemType } from "../../../static/StarAtlasAPIItem";
 import PortfolioAssetsTable from "./PortfolioAssetsTable.vue";
@@ -63,14 +25,46 @@ const options_l1: I_OptionL1[] = [
 ];
 
 const options_l2_sa = computed(() => {
-  let list: string[] = [];
+  let list: I_OptionL1[] = [];
   Object.keys(ItemType).forEach((item) => {
-    list.push(item.toString());
+    list.push({
+      name: item.toString(),
+      value: item.toString(),
+    });
   });
   return list;
 });
 
-const active_option_l1 = ref(0);
+const active_option_l1 = ref({ name: "SFTs", value: "sft" });
 
-const active_option_l2_sa = ref(0);
+const active_option_l2_sa = ref({ name: "Ship", value: "Ship" });
 </script>
+
+<template>
+  <div class="flex flex-col space-y-1">
+    <div class="space-y-1">
+      <Dropdown
+        v-model="active_option_l1"
+        :options="options_l1"
+        optionLabel="name"
+        placeholder="Select a Type"
+        class="w-full"
+      />
+      <Dropdown
+        v-if="active_option_l1.value === 'staratlas'"
+        v-model="active_option_l2_sa"
+        :options="options_l2_sa"
+        optionLabel="name"
+        placeholder="Select a Type"
+        class="w-full"
+      />
+    </div>
+
+    <PortfolioAssetsTable
+      v-if="active_option_l1.value === 'staratlas'"
+      :option_l1="active_option_l1.value"
+      :option_sa="active_option_l2_sa.value"
+    />
+    <PortfolioAssetsTable v-else :option_l1="active_option_l1.value" />
+  </div>
+</template>
