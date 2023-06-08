@@ -83,7 +83,7 @@ const score_total_atlas_value = computed(() => {
         </template>
 
         <div class="grid grid-cols-2 mx-2">
-          <div>Value: </div>
+          <div>Totals: </div>
           <div class="flex flex-row justify-end items-center space-x-1">
             <p>{{(accounts_total_usdc_value + score_total_usdc_value).toFixed(2)}}</p>
             <CurrencyIcon
