@@ -165,14 +165,14 @@ function export_json(table_data: {}) {
               <div
                 :class="
                   slotProps.data.asset_receiving_wallet ===
-                  slotProps.data.order_initializer
+                  useUserWalletStore().address.toString()
                     ? 'text-green-500'
                     : 'text-red-500'
                 "
               >
                 {{
                   slotProps.data.asset_receiving_wallet ===
-                  slotProps.data.order_initializer
+                  useUserWalletStore().address.toString()
                     ? "BUY"
                     : "SELL"
                 }}
