@@ -197,9 +197,16 @@ export const useUserWalletStore = defineStore("userWalletStore", {
           let usdc_price = await fetch_token_price_birdseye(
             token_account.account.data.parsed.info.mint.toString()
           );
-          let atlas_price = await fetch_token_price_birdseye(
-            CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ?? ""
-          );
+
+          let atlas_price =
+            token_account.account.data.parsed.info.mint.toString() !=
+            (CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ?? "")
+              ? usdc_price /
+                (await fetch_token_price_birdseye(
+                  CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ??
+                    ""
+                ))
+              : 1;
 
           this.tokens.push({
             token_account: token_account.pubkey.toString(),
@@ -207,7 +214,7 @@ export const useUserWalletStore = defineStore("userWalletStore", {
             account_info: token_account.account,
             account_metadata: account_metadata,
             market_price: {
-              atlas: usdc_price / atlas_price,
+              atlas: atlas_price,
               usdc: usdc_price,
             },
             token_list_info: TOKEN_LIST.tokens.find(
