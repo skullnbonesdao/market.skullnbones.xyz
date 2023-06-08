@@ -27,6 +27,7 @@ import {
 import { gql } from "graphql-tag";
 import { apolloClient } from "../static/graphql/SNBGraphQL";
 import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
+import { get_multi_price } from "../static/apis/Birdseye/BirdseyeAPI";
 
 export interface I_TokenData {
   token_account: String;
@@ -93,6 +94,11 @@ export const useUserWalletStore = defineStore("userWalletStore", {
 
   actions: {
     async update(address: String) {
+      this.sol_balance = 0;
+      this.tokens = [];
+      this.sa_score = [];
+      this.sa_profile = undefined;
+
       console.log(address);
       this.address = new PublicKey(address);
 
@@ -127,6 +133,11 @@ export const useUserWalletStore = defineStore("userWalletStore", {
             programId: new PublicKey(TOKEN_PROGRAM_ID),
           }
         );
+
+      let token_prices = await get_multi_price(
+        CURRENCIES.flatMap((c) => c.mint)
+      );
+      console.log(token_prices);
 
       this.status.status_set(
         "Loading token list",
@@ -172,16 +183,10 @@ export const useUserWalletStore = defineStore("userWalletStore", {
                 CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ??
                   ""
               ),
-              usdc:
-                (await fetch_market_price_from_snb(
-                  token_account.account.data.parsed.info.mint.toString(),
-                  CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint ??
-                    ""
-                )) === 0
-                  ? await fetch_token_price_birdseye(
-                      token_account.account.data.parsed.info.mint.toString()
-                    )
-                  : 0,
+              usdc: await fetch_market_price_from_snb(
+                token_account.account.data.parsed.info.mint.toString(),
+                CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint ?? ""
+              ),
             },
             token_list_info: TOKEN_LIST.tokens.find(
               (t) => t.address === token_account.account.data.parsed?.info.mint
@@ -194,23 +199,23 @@ export const useUserWalletStore = defineStore("userWalletStore", {
             json_metadata: metadata,
           });
         } else {
-          let usdc_price =
-            token_account.account.data.parsed.info.mint.toString() !=
-            (CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint ?? "")
-              ? await fetch_token_price_birdseye(
-                  token_account.account.data.parsed.info.mint.toString()
-                )
-              : 1;
+          const usdc_price =
+            token_prices?.data[
+              token_account.account.data.parsed.info.mint.toString()
+            ]?.value;
 
-          let atlas_price =
-            token_account.account.data.parsed.info.mint.toString() !=
-            (CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ?? "")
-              ? usdc_price /
-                (await fetch_token_price_birdseye(
-                  CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ??
-                    ""
-                ))
-              : 1;
+          let atlas_price = 0;
+          if (usdc_price) {
+            atlas_price =
+              token_account.account.data.parsed.info.mint.toString() !=
+              CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint
+                ? usdc_price /
+                  (token_prices?.data[
+                    CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
+                      ?.mint ?? ""
+                  ]?.value ?? 0)
+                : 1;
+          }
 
           this.tokens.push({
             token_account: token_account.pubkey.toString(),
@@ -481,14 +486,4 @@ async function fetch_market_price_from_snb(mint: string, currency: string) {
         return 0;
       });
   return 0;
-}
-
-async function fetch_token_price_birdseye(mint: string) {
-  console.log("price");
-  let price = 0;
-  await fetch("https://public-api.birdeye.so/public/price?address=" + mint)
-    .then((resp) => resp.json())
-    .then((json) => (price = json.data.value))
-    .catch((err) => console.error(err));
-  return price;
 }
