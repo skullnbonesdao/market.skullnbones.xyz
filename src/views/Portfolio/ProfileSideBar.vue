@@ -78,7 +78,36 @@ const score_total_atlas_value = computed(() => {
         <template #legend>
           <div class="flex items-center">
             <i-mdi-face-man-profile class="mr-2" />
-            <span class="font-bold text-lg">Profile</span>
+            <span class="font-bold text-lg">Overview</span>
+          </div>
+        </template>
+
+        <div class="grid grid-cols-2 mx-2">
+          <div>Value: </div>
+          <div class="flex flex-row justify-end items-center space-x-1">
+            <p>{{(accounts_total_usdc_value + score_total_usdc_value).toFixed(2)}}</p>
+            <CurrencyIcon
+                style="height: 14px"
+                :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
+            />
+          </div>
+          <div></div>
+          <div class="flex flex-row justify-end items-center space-x-1">
+            <p>{{(accounts_total_atlas_value + score_total_atlas_value).toFixed(2)}}</p>
+            <CurrencyIcon
+                style="height: 14px"
+                :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
+            />
+          </div>
+        </div>
+      </Fieldset>
+
+
+      <Fieldset v-if="useUserWalletStore().address">
+        <template #legend>
+          <div class="flex items-center">
+            <i-mdi-face-man-profile class="mr-2" />
+            <span class="font-bold text-lg">SA-Profile</span>
           </div>
         </template>
 
