@@ -26,13 +26,13 @@ import G_TradesTotalElement from "../../components/graphql/G_TradesTotalElement.
 
         <div class="text-xs" >
           {{
-            useUserWalletStore().address?.toString().substring(0, 4) +
+            useUserWalletStore().address?.toString().substring(0, 5) +
             "[...]" +
             useUserWalletStore()
               .address?.toString()
               .substring(
                 useUserWalletStore().address?.toString().length ?? 0,
-                useUserWalletStore().address?.toString().length ?? 0 - 4
+                  (useUserWalletStore().address?.toString().length ?? 0) - 5
               )
           }}
         </div>
@@ -177,20 +177,22 @@ import G_TradesTotalElement from "../../components/graphql/G_TradesTotalElement.
             <div>Volume:</div>
           </div>
 
-          <div class="grid grid-cols-2 text-right">
+          <div class="grid grid-cols-2 text-right 	">
             <div class="flex justify-end  -mr-1">
               <CurrencyIcon
                   class="w-6"
                   :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
               />
             </div>
-            <div class="flex justify-end -mr-1">
+            <div class="flex justify-end -mr-1 ">
               <CurrencyIcon
-                  class="w-6 "
+                  class="w-6"
                   :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
               />
             </div>
-            <G_TradesTotalElement  :currency_mint="
+            <G_TradesTotalElement
+                class=" "
+                :currency_mint="
                 CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint
               "
                                    :wallet_address="useUserWalletStore().address?.toString()"/>
