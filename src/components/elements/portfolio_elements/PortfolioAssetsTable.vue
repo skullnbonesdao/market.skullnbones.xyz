@@ -118,7 +118,13 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
         field="account_info.data.parsed.info.tokenAmount.uiAmount"
         header="Quantity"
         sortable
-      ></Column>
+      >
+        <template #body="slotProps">
+          x{{
+            slotProps.data.account_info.data.parsed.info.tokenAmount.uiAmount
+          }}
+        </template>
+      </Column>
       <Column field="market_price" header="Price">
         <template #body="slotProps">
           <div class="grid grid-cols-2 gap-1 text-right">
