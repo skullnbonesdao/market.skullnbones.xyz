@@ -194,9 +194,13 @@ export const useUserWalletStore = defineStore("userWalletStore", {
             json_metadata: metadata,
           });
         } else {
-          let usdc_price = await fetch_token_price_birdseye(
-            token_account.account.data.parsed.info.mint.toString()
-          );
+          let usdc_price =
+            token_account.account.data.parsed.info.mint.toString() !=
+            (CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint ?? "")
+              ? await fetch_token_price_birdseye(
+                  token_account.account.data.parsed.info.mint.toString()
+                )
+              : 1;
 
           let atlas_price =
             token_account.account.data.parsed.info.mint.toString() !=
