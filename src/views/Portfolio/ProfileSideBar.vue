@@ -6,6 +6,8 @@ import Fieldset from "primevue/fieldset";
 import CurrencyIcon from "../../components/icon-helper/CurrencyIcon.vue";
 import {CURRENCIES, E_CURRENCIES} from "../../static/currencies";
 import ToggleButton from "primevue/togglebutton";
+import G_TradesVolumeElement from "../../components/graphql/G_TradesVolumeElement.vue";
+import G_TradesTotalElement from "../../components/graphql/G_TradesTotalElement.vue";
 </script>
 
 <template>
@@ -166,31 +168,53 @@ import ToggleButton from "primevue/togglebutton";
           </div>
         </template>
 
-        <div class="grid grid-cols-2 mx-2">
-          <div>Total:</div>
-          <div class="flex flex-row justify-end space-x-1">
-
-            <p>-</p>
-            <p>&#8721</p>
+        <div class="grid grid-cols-2">
+          <div class="grid grid-cols-1">
+            <div class="text-transparent">
+              currenty
+            </div>
+            <div>Count:</div>
+            <div>Volume:</div>
           </div>
-          <div>Value:</div>
 
-          <div class="flex flex-row justify-end items-center space-x-1">
-            <p>-</p>
-            <CurrencyIcon
-                style="height: 14px"
-                :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
-            />
-          </div>
-          <div></div>
-          <div class="flex flex-row justify-end items-center space-x-1">
-            <p>-</p>
-            <CurrencyIcon
-                style="height: 14px"
-                :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
-            />
+          <div class="grid grid-cols-2 text-right">
+            <div class="flex justify-end  -mr-1">
+              <CurrencyIcon
+                  class="w-6"
+                  :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
+              />
+            </div>
+            <div class="flex justify-end -mr-1">
+              <CurrencyIcon
+                  class="w-6 "
+                  :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
+              />
+            </div>
+            <G_TradesTotalElement  :currency_mint="
+                CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint
+              "
+                                   :wallet_address="useUserWalletStore().address?.toString()"/>
+
+            <G_TradesTotalElement  :currency_mint="
+                CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint
+              "
+                                   :wallet_address="useUserWalletStore().address?.toString()"/>
+            <G_TradesVolumeElement
+                :currency_mint="
+                CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint
+              "
+                :wallet_address="useUserWalletStore().address?.toString()"
+            ></G_TradesVolumeElement>
+            <G_TradesVolumeElement
+                :currency_mint="
+                CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint
+              "
+                :wallet_address="useUserWalletStore().address?.toString()"
+            ></G_TradesVolumeElement>
           </div>
         </div>
+
+
       </Fieldset>
 
       <Fieldset>
