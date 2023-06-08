@@ -6,6 +6,37 @@ import Fieldset from "primevue/fieldset";
 import CurrencyIcon from "../../components/icon-helper/CurrencyIcon.vue";
 import {CURRENCIES, E_CURRENCIES} from "../../static/currencies";
 import ToggleButton from "primevue/togglebutton";
+import G_TradesVolumeElement from "../../components/graphql/G_TradesVolumeElement.vue";
+import G_TradesTotalElement from "../../components/graphql/G_TradesTotalElement.vue";
+import {computed} from "vue";
+
+
+const accounts_total_usdc_value = computed(() => {
+  return  useUserWalletStore().tokens
+      .map(token => (token.market_price.usdc ?? 0) * token.account_info.data.parsed.info.tokenAmount.uiAmount )
+      .reduce((a,b) => a+b, 0)
+})
+
+
+const accounts_total_atlas_value = computed(() => {
+  return  useUserWalletStore().tokens
+      .map(token => (token.market_price.atlas ?? 0) * token.account_info.data.parsed.info.tokenAmount.uiAmount )
+      .reduce((a,b) => a+b, 0)
+})
+
+
+const score_total_usdc_value = computed(() => {
+ return  useUserWalletStore().sa_score
+     .map(ship => (ship.market_price.usdc ?? 0) *  ship.ship_staking_info.shipQuantityInEscrow.toNumber())
+     .reduce((a,b) => a+b, 0)
+})
+
+const score_total_atlas_value = computed(() => {
+  return  useUserWalletStore().sa_score
+      .map(ship => (ship.market_price.atlas ?? 0) *  ship.ship_staking_info.shipQuantityInEscrow.toNumber())
+      .reduce((a,b) => a+b, 0)
+})
+
 </script>
 
 <template>
@@ -13,6 +44,7 @@ import ToggleButton from "primevue/togglebutton";
     <div class="flex flex-col space-y-2 m-2">
       <div v-if="useUserWalletStore().address" class="flex flex-col items-center space-y-1">
         <Avatar
+            v-if="useUserWalletStore().sa_profile?.avatarId"
           :image="
             'https://storage.googleapis.com/star-atlas-assets/avatars/' +
             useUserWalletStore().sa_profile?.avatarId +
@@ -21,16 +53,22 @@ import ToggleButton from "primevue/togglebutton";
           shape="circle"
           size="xlarge"
         />
+        <Avatar
+        v-else
+        image="/webp/9bccaxs8YihGCRkPqcFMPkPbVBwNNjzHc4iHvsfQNs6x.webp"
+        shape="circle"
+        size="xlarge"
+        />
 
         <div class="text-xs" >
           {{
-            useUserWalletStore().address?.toString().substring(0, 4) +
+            useUserWalletStore().address?.toString().substring(0, 5) +
             "[...]" +
             useUserWalletStore()
               .address?.toString()
               .substring(
                 useUserWalletStore().address?.toString().length ?? 0,
-                useUserWalletStore().address?.toString().length ?? 0 - 4
+                  (useUserWalletStore().address?.toString().length ?? 0) - 5
               )
           }}
         </div>
@@ -106,7 +144,7 @@ import ToggleButton from "primevue/togglebutton";
           <div>Value:</div>
 
           <div class="flex flex-row justify-end items-center space-x-1">
-            <p>-</p>
+            <p>{{accounts_total_usdc_value.toFixed(2)}}</p>
             <CurrencyIcon
                 style="height: 14px"
                 :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
@@ -114,7 +152,7 @@ import ToggleButton from "primevue/togglebutton";
           </div>
           <div></div>
           <div class="flex flex-row justify-end items-center space-x-1">
-            <p>-</p>
+            <p>{{accounts_total_atlas_value.toFixed(2)}}</p>
             <CurrencyIcon
                 style="height: 14px"
                 :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
@@ -141,7 +179,9 @@ import ToggleButton from "primevue/togglebutton";
           <div>Value:</div>
 
           <div class="flex flex-row justify-end items-center space-x-1">
-            <p>-</p>
+            <p>
+              {{ score_total_usdc_value.toFixed(2)}}
+            </p>
             <CurrencyIcon
                 style="height: 14px"
                 :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
@@ -149,7 +189,7 @@ import ToggleButton from "primevue/togglebutton";
           </div>
           <div></div>
           <div class="flex flex-row justify-end items-center space-x-1">
-            <p>-</p>
+            <p>{{score_total_atlas_value.toFixed(2)}}</p>
             <CurrencyIcon
                 style="height: 14px"
                 :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
@@ -166,31 +206,55 @@ import ToggleButton from "primevue/togglebutton";
           </div>
         </template>
 
-        <div class="grid grid-cols-2 mx-2">
-          <div>Total:</div>
-          <div class="flex flex-row justify-end space-x-1">
-
-            <p>-</p>
-            <p>&#8721</p>
+        <div class="grid grid-cols-2">
+          <div class="grid grid-cols-1">
+            <div class="text-transparent">
+              currenty
+            </div>
+            <div>Count:</div>
+            <div>Volume:</div>
           </div>
-          <div>Value:</div>
 
-          <div class="flex flex-row justify-end items-center space-x-1">
-            <p>-</p>
-            <CurrencyIcon
-                style="height: 14px"
-                :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
-            />
-          </div>
-          <div></div>
-          <div class="flex flex-row justify-end items-center space-x-1">
-            <p>-</p>
-            <CurrencyIcon
-                style="height: 14px"
-                :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
-            />
+          <div class="grid grid-cols-2 text-right 	">
+            <div class="flex justify-end  -mr-1">
+              <CurrencyIcon
+                  class="w-6"
+                  :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
+              />
+            </div>
+            <div class="flex justify-end -mr-1 ">
+              <CurrencyIcon
+                  class="w-6"
+                  :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
+              />
+            </div>
+            <G_TradesTotalElement
+                class=" "
+                :currency_mint="
+                CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint
+              "
+                                   :wallet_address="useUserWalletStore().address?.toString()"/>
+
+            <G_TradesTotalElement  :currency_mint="
+                CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint
+              "
+                                   :wallet_address="useUserWalletStore().address?.toString()"/>
+            <G_TradesVolumeElement
+                :currency_mint="
+                CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint
+              "
+                :wallet_address="useUserWalletStore().address?.toString()"
+            ></G_TradesVolumeElement>
+            <G_TradesVolumeElement
+                :currency_mint="
+                CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint
+              "
+                :wallet_address="useUserWalletStore().address?.toString()"
+            ></G_TradesVolumeElement>
           </div>
         </div>
+
+
       </Fieldset>
 
       <Fieldset>

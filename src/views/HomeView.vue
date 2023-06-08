@@ -13,14 +13,14 @@
           <div
             class="max-w-2xl mb-4 text-4xl tracking-tight leading-none md:text-5xl xl:text-6xl text-gray-100 dark:text-gray-300 animate-fade-in-down animate-count-1 animate-duration-2s fw100"
           >
-            Study Bitcoin!
+            trading experience
           </div>
 
-          <p
+          <!--          <p
             class="max-w-2xl mb-6 font-light text-gray-100 lg:mb-8 md:text-lg lg:text-xl text-gray-100 dark:text-gray-300"
           >
-            ...become a member of S&B
-          </p>
+            by S&B
+          </p>-->
         </div>
         <div
           class="hidden lg:mt-0 lg:col-span-5 lg:flex animate-pulse animate-duration-5s shadow-2xl"

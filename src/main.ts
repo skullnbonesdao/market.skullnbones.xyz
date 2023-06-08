@@ -13,6 +13,8 @@ import "./style.css";
 import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
 import "./json-viewer-theme.scss";
+import "./assets/themes/mytheme/theme.scss";
+import "./assets/themes/saga/saga-purple/theme.scss";
 import HomeView from "./views/HomeView.vue";
 import MarketView from "./views/MarketView.vue";
 import { createRouter, createWebHashHistory } from "vue-router";

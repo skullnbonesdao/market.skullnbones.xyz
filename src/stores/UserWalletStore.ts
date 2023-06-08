@@ -24,11 +24,18 @@ import {
   ScoreVarsShipInfo,
   ShipStakingInfo,
 } from "@staratlas/factory/dist/score";
+import { gql } from "graphql-tag";
+import { apolloClient } from "../static/graphql/SNBGraphQL";
+import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
 
 export interface I_TokenData {
   token_account: String;
   token_mint: String;
   account_info: any;
+  market_price: {
+    atlas?: number;
+    usdc?: number;
+  };
   sa_api_data: StarAtlasAPIItem | undefined;
   token_list_info: tokenlist.Token | undefined;
   account_metadata: Sft | SftWithToken | Nft | NftWithToken | undefined;
@@ -39,6 +46,10 @@ export interface I_Score_Data {
   mint: string;
   ship_staking_info: ShipStakingInfo;
   score_vars_ship?: ScoreVarsShipInfo;
+  market_price: {
+    atlas?: number;
+    usdc?: number;
+  };
   parsed: {
     food: {
       total: number;
@@ -139,6 +150,7 @@ export const useUserWalletStore = defineStore("userWalletStore", {
 
         let metadata = {};
 
+        //IF SA asset
         if (account_metadata && account_metadata.uri) {
           await fetch(account_metadata.uri)
             .then((resp) => resp.json())
@@ -150,6 +162,17 @@ export const useUserWalletStore = defineStore("userWalletStore", {
             token_mint: token_account.account.data.parsed.info.mint.toString(),
             account_info: token_account.account,
             account_metadata: account_metadata,
+            market_price: {
+              atlas: await fetch_market_price_from_snb(
+                token_account.account.data.parsed.info.mint.toString(),
+                CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ??
+                  ""
+              ),
+              usdc: await fetch_market_price_from_snb(
+                token_account.account.data.parsed.info.mint.toString(),
+                CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint ?? ""
+              ),
+            },
             token_list_info: TOKEN_LIST.tokens.find(
               (t) => t.address === token_account.account.data.parsed?.info.mint
             ),
@@ -166,6 +189,10 @@ export const useUserWalletStore = defineStore("userWalletStore", {
             token_mint: token_account.account.data.parsed.info.mint.toString(),
             account_info: token_account.account,
             account_metadata: account_metadata,
+            market_price: {
+              atlas: 0,
+              usdc: 0,
+            },
             token_list_info: TOKEN_LIST.tokens.find(
               (t) => t.address === token_account.account.data?.parsed?.info.mint
             ),
@@ -222,7 +249,16 @@ export const useUserWalletStore = defineStore("userWalletStore", {
           mint: ship.shipMint.toString(),
           ship_staking_info: ship,
           score_vars_ship: score_vars,
-
+          market_price: {
+            atlas: await fetch_market_price_from_snb(
+              ship.shipMint.toString(),
+              CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ?? ""
+            ),
+            usdc: await fetch_market_price_from_snb(
+              ship.shipMint.toString(),
+              CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint ?? ""
+            ),
+          },
           parsed: {
             food: {
               total: food_parsed.total,
@@ -383,4 +419,38 @@ function get_tool_parsed(
     total,
     current,
   };
+}
+
+async function fetch_market_price_from_snb(mint: string, currency: string) {
+  if (useGlobalStore().sa_api_data.find((asset) => asset.mint === mint))
+    return await apolloClient
+      .query({
+        query: gql`
+          query get_price($mint: String!, $currency: String!) {
+            trades(
+              where: {
+                _and: {
+                  asset_mint: { _eq: $mint }
+                  currency_mint: { _eq: $currency }
+                }
+              }
+              limit: 1
+            ) {
+              price
+            }
+          }
+        `,
+        variables: {
+          mint: mint,
+          currency: currency,
+        },
+      })
+      .then((response) => {
+        return response.data.trades[0].price;
+      })
+      .catch((err) => {
+        console.error(err);
+        return 0;
+      });
+  return 0;
 }

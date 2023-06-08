@@ -22,7 +22,6 @@
           <!--                .toFixed(2)-->
           <!--            }}-->
           <!--          </p>-->
-          <Skeleton v-else width="5rem" class="mb-2"></Skeleton>
         </div>
       </Fieldset>
 

@@ -10,6 +10,8 @@ import CurrencyIcon from "../../icon-helper/CurrencyIcon.vue";
 import { E_EXPLORER, EXPLORER } from "../../../static/explorer";
 import { calc_percentage_for_fee } from "../../../static/formatting/calc_percentage";
 import ExplorerIcon from "../../icon-helper/ExplorerIcon.vue";
+import download from "downloadjs";
+import { useUserWalletStore } from "../../../stores/UserWalletStore";
 
 const props = defineProps({
   user_wallet: {
@@ -21,6 +23,14 @@ const props = defineProps({
     default: 1000000,
   },
 });
+
+function export_json(table_data: {}) {
+  download(
+    JSON.stringify(table_data, null, 4),
+    "trades_" + useUserWalletStore().address + ".json",
+    "application/json"
+  );
+}
 </script>
 
 <template>
@@ -69,10 +79,6 @@ const props = defineProps({
 
       <!-- Result -->
       <div v-else-if="data" class="result apollo p-card">
-        <p class="w-full text-end text-orange-400">
-          Limited to: last {{ limit }} trades
-        </p>
-
         <NoData v-if="!data.trades.length" class="justify-center"></NoData>
         <DataTable
           v-else
@@ -81,6 +87,19 @@ const props = defineProps({
           scrollHeight="800px"
           tableStyle="min-width: 50rem"
         >
+          <template #footer>
+            <div class="flex flex-row w-full items-center">
+              <p class="w-full text-sm text-orange-400">
+                Limited to: last {{ limit }} trades
+              </p>
+
+              <Button
+                icon="pi pi-external-link"
+                label="Export"
+                @click="export_json(data.trades)"
+              />
+            </div>
+          </template>
           <Column header="Pair">
             <template #body="slotProps">
               <div class="flex flex-col items-center">
@@ -146,14 +165,14 @@ const props = defineProps({
               <div
                 :class="
                   slotProps.data.asset_receiving_wallet ===
-                  slotProps.data.order_initializer
+                  useUserWalletStore().address?.toString()
                     ? 'text-green-500'
                     : 'text-red-500'
                 "
               >
                 {{
                   slotProps.data.asset_receiving_wallet ===
-                  slotProps.data.order_initializer
+                  useUserWalletStore().address?.toString()
                     ? "BUY"
                     : "SELL"
                 }}
