@@ -8,6 +8,20 @@ import {CURRENCIES, E_CURRENCIES} from "../../static/currencies";
 import ToggleButton from "primevue/togglebutton";
 import G_TradesVolumeElement from "../../components/graphql/G_TradesVolumeElement.vue";
 import G_TradesTotalElement from "../../components/graphql/G_TradesTotalElement.vue";
+import {computed} from "vue";
+
+const score_total_usdc_value = computed(() => {
+ return  useUserWalletStore().sa_score
+     .map(ship => (ship.market_price.usdc ?? 0) *  ship.ship_staking_info.shipQuantityInEscrow.toNumber())
+     .reduce((a,b) => a+b, 0)
+})
+
+const score_total_atlas_value = computed(() => {
+  return  useUserWalletStore().sa_score
+      .map(ship => (ship.market_price.atlas ?? 0) *  ship.ship_staking_info.shipQuantityInEscrow.toNumber())
+      .reduce((a,b) => a+b, 0)
+})
+
 </script>
 
 <template>
@@ -143,7 +157,9 @@ import G_TradesTotalElement from "../../components/graphql/G_TradesTotalElement.
           <div>Value:</div>
 
           <div class="flex flex-row justify-end items-center space-x-1">
-            <p>-</p>
+            <p>
+              {{ score_total_usdc_value.toFixed(2)}}
+            </p>
             <CurrencyIcon
                 style="height: 14px"
                 :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
@@ -151,7 +167,7 @@ import G_TradesTotalElement from "../../components/graphql/G_TradesTotalElement.
           </div>
           <div></div>
           <div class="flex flex-row justify-end items-center space-x-1">
-            <p>-</p>
+            <p>{{score_total_atlas_value.toFixed(2)}}</p>
             <CurrencyIcon
                 style="height: 14px"
                 :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
