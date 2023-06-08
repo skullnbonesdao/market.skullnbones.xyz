@@ -11,6 +11,8 @@ import { ref } from "vue";
 import ShipHarvestButton from "./ShipHarvestButton.vue";
 import ShipRefillButton from "./ShipRefillButton.vue";
 import Avatar from "primevue/avatar";
+import CurrencyIcon from "../../icon-helper/CurrencyIcon.vue";
+import { CURRENCIES, E_CURRENCIES } from "../../../static/currencies";
 
 const expandedRows = ref([]);
 
@@ -56,11 +58,64 @@ function test() {}
           </p>
         </template>
       </Column>
-      <Column header="Amount">
+
+      <Column header="Quantity">
         <template #body="slotProps">
           x{{
             slotProps.data.ship_staking_info.shipQuantityInEscrow.toNumber()
           }}
+        </template>
+      </Column>
+
+      <Column field="market_price" header="Price">
+        <template #body="slotProps">
+          <div class="grid grid-cols-2 gap-1 text-right">
+            <CurrencyIcon
+              class="w-6"
+              :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
+            />
+            <p>
+              {{ slotProps.data.market_price.usdc.toFixed(2) }}
+            </p>
+            <CurrencyIcon
+              class="w-6"
+              :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
+            />
+            <p>
+              {{ slotProps.data.market_price.atlas.toFixed(2) }}
+            </p>
+          </div>
+        </template>
+      </Column>
+
+      <Column header="Value">
+        <template #body="slotProps">
+          <div class="grid grid-cols-2 gap-1 text-right">
+            <CurrencyIcon
+              class="w-6"
+              :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
+            />
+            <p>
+              {{
+                (
+                  slotProps.data.market_price.usdc *
+                  slotProps.data.ship_staking_info.shipQuantityInEscrow.toNumber()
+                ).toFixed(2)
+              }}
+            </p>
+            <CurrencyIcon
+              class="w-6"
+              :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
+            />
+            <p>
+              {{
+                (
+                  slotProps.data.market_price.atlas *
+                  slotProps.data.ship_staking_info.shipQuantityInEscrow.toNumber()
+                ).toFixed(2)
+              }}
+            </p>
+          </div>
         </template>
       </Column>
 
@@ -119,6 +174,7 @@ function test() {}
           ></ProgressBar>
         </template>
       </Column>
+
       <Column>
         <template #body="slotProps">
           <div class="flex flex-row space-x-2">

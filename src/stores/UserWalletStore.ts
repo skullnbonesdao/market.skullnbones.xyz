@@ -24,6 +24,9 @@ import {
   ScoreVarsShipInfo,
   ShipStakingInfo,
 } from "@staratlas/factory/dist/score";
+import { gql } from "graphql-tag";
+import { apolloClient } from "../static/graphql/SNBGraphQL";
+import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
 
 export interface I_TokenData {
   token_account: String;
@@ -39,6 +42,10 @@ export interface I_Score_Data {
   mint: string;
   ship_staking_info: ShipStakingInfo;
   score_vars_ship?: ScoreVarsShipInfo;
+  market_price: {
+    atlas?: number;
+    usdc?: number;
+  };
   parsed: {
     food: {
       total: number;
@@ -222,7 +229,16 @@ export const useUserWalletStore = defineStore("userWalletStore", {
           mint: ship.shipMint.toString(),
           ship_staking_info: ship,
           score_vars_ship: score_vars,
-
+          market_price: {
+            atlas: await fetch_market_price(
+              ship.shipMint.toString(),
+              CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ?? ""
+            ),
+            usdc: await fetch_market_price(
+              ship.shipMint.toString(),
+              CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint ?? ""
+            ),
+          },
           parsed: {
             food: {
               total: food_parsed.total,
@@ -383,4 +399,35 @@ function get_tool_parsed(
     total,
     current,
   };
+}
+
+async function fetch_market_price(mint: string, currency: string) {
+  return await apolloClient
+    .query({
+      query: gql`
+        query get_price($mint: String!, $currency: String!) {
+          trades(
+            where: {
+              _and: {
+                asset_mint: { _eq: $mint }
+                currency_mint: { _eq: $currency }
+              }
+            }
+            limit: 1
+          ) {
+            price
+          }
+        }
+      `,
+      variables: {
+        mint: mint,
+        currency: currency,
+      },
+    })
+    .then((response) => {
+      return response.data.trades[0].price;
+    })
+    .catch((err) => {
+      throw err;
+    });
 }
