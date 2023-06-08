@@ -26,19 +26,25 @@
       <div class="p-card col-span-2">
         <ProfileSideBar />
       </div>
-      <div class="w-full p-card col-span-8">
+      <div class="w-full col-span-8">
         <div v-if="!useUserWalletStore().address" class="p-card">
           <NoData text="No Wallet searched!" class="flex justify-center" />
         </div>
-        <div v-else>
+        <div v-else class="flex flex-col space-y-2">
           <Panel
             header="Accounts"
             v-if="useUserWalletStore().toggle_items.show_accounts"
             toggleable
           >
             <template #header>
-              <div class="flex flex-row w-full items-center pr-2">
+              <div class="flex flex-row w-full items-center pr-2 space-x-2">
                 <p class="p-panel-title w-full">Accounts</p>
+                <ToggleButton
+                  v-model="useUserWalletStore().toggle_items.hide_zero_balances"
+                  onLabel="Hiding 0 balances"
+                  offLabel="Showing 0 balances"
+                  class="w-15rem whitespace-nowrap"
+                />
                 <ToggleButton
                   disabled
                   v-model="useUserWalletStore().toggle_items.only_sa_accounts"

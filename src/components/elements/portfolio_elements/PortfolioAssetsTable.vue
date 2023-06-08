@@ -7,7 +7,7 @@ import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 import { I_TokenData, useGlobalStore } from "../../../stores/GlobalStore";
 import { CURRENCIES, E_CURRENCIES } from "../../../static/currencies";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import NoData from "../NoData.vue";
 import SendTokenModal from "../solana_actions/modals/SendTokenModal.vue";
 import BurnTokenButton from "../solana_actions/buttons/BurnTokenButton.vue";
@@ -37,26 +37,37 @@ const props = defineProps({
   },
 });
 
-function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
-  if (option_l2) {
-    return useUserWalletStore().tokens.filter(
+const table_data = computed(() => {
+  let data: I_TokenData[] = [];
+
+  if (props.option_sa) {
+    data = useUserWalletStore().tokens.filter(
       (element) =>
         element.sa_api_data?.attributes.itemType.toUpperCase() ===
-        option_l2.toUpperCase()
+        props.option_sa?.toUpperCase()
+    );
+  } else {
+    data = useUserWalletStore().tokens.filter(
+      (element) => (element.account_metadata?.model ?? "") === props.option_l1
     );
   }
-  return useUserWalletStore().tokens.filter(
-    (element) => (element.account_metadata?.model ?? "") === option_l1
-  );
-}
+
+  if (useUserWalletStore().toggle_items.hide_zero_balances) {
+    data = data.filter(
+      (element) =>
+        element.account_info.data.parsed.info.tokenAmount.uiAmount > 0
+    );
+  }
+  return data as I_TokenData[];
+});
 </script>
 
 <template>
   <div>
     <DataTable
-      v-if="filter_list(option_l1, option_sa).length"
+      v-if="table_data.length"
       v-model:expandedRows="expandedRows"
-      :value="filter_list(option_l1, option_sa)"
+      :value="table_data"
       tableStyle="min-width: 50rem"
       :global-filter-fields="['account_metadata.symbol']"
       v-model:filters="filters"
@@ -64,8 +75,7 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
       :sortOrder="1"
     >
       <template #header>
-        <div class="flex">
-          <div class="flex w-full"></div>
+        <div class="flex w-full justify-end space-x-2">
           <span class="p-input-icon-left">
             <i class="pi pi-search" />
             <InputText

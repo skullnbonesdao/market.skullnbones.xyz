@@ -76,6 +76,7 @@ export interface I_Score_Data {
 export const useUserWalletStore = defineStore("userWalletStore", {
   state: () => ({
     toggle_items: {
+      hide_zero_balances: true,
       only_sa_accounts: true,
       show_accounts: true,
       show_score: true,
@@ -134,6 +135,7 @@ export const useUserWalletStore = defineStore("userWalletStore", {
       );
       for (const token_account of parsed_token_accounts.value) {
         let account_metadata: any = {};
+
         await meta
           .nfts()
           .findByMint({
@@ -147,6 +149,8 @@ export const useUserWalletStore = defineStore("userWalletStore", {
           .catch((err) => {
             console.log("Error fetching metaplex-data:" + err);
           });
+
+        console.log(account_metadata);
 
         let metadata = {};
 
@@ -168,10 +172,16 @@ export const useUserWalletStore = defineStore("userWalletStore", {
                 CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ??
                   ""
               ),
-              usdc: await fetch_market_price_from_snb(
-                token_account.account.data.parsed.info.mint.toString(),
-                CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint ?? ""
-              ),
+              usdc:
+                (await fetch_market_price_from_snb(
+                  token_account.account.data.parsed.info.mint.toString(),
+                  CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint ??
+                    ""
+                )) === 0
+                  ? await fetch_token_price_birdseye(
+                      token_account.account.data.parsed.info.mint.toString()
+                    )
+                  : 0,
             },
             token_list_info: TOKEN_LIST.tokens.find(
               (t) => t.address === token_account.account.data.parsed?.info.mint
@@ -184,14 +194,21 @@ export const useUserWalletStore = defineStore("userWalletStore", {
             json_metadata: metadata,
           });
         } else {
+          let usdc_price = await fetch_token_price_birdseye(
+            token_account.account.data.parsed.info.mint.toString()
+          );
+          let atlas_price = await fetch_token_price_birdseye(
+            CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ?? ""
+          );
+
           this.tokens.push({
             token_account: token_account.pubkey.toString(),
             token_mint: token_account.account.data.parsed.info.mint.toString(),
             account_info: token_account.account,
             account_metadata: account_metadata,
             market_price: {
-              atlas: 0,
-              usdc: 0,
+              atlas: usdc_price / atlas_price,
+              usdc: usdc_price,
             },
             token_list_info: TOKEN_LIST.tokens.find(
               (t) => t.address === token_account.account.data?.parsed?.info.mint
@@ -453,4 +470,14 @@ async function fetch_market_price_from_snb(mint: string, currency: string) {
         return 0;
       });
   return 0;
+}
+
+async function fetch_token_price_birdseye(mint: string) {
+  console.log("price");
+  let price = 0;
+  await fetch("https://public-api.birdeye.so/public/price?address=" + mint)
+    .then((resp) => resp.json())
+    .then((json) => (price = json.data.value))
+    .catch((err) => console.error(err));
+  return price;
 }
