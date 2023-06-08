@@ -6,7 +6,7 @@ import Image from "primevue/image";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 import { I_TokenData, useGlobalStore } from "../../../stores/GlobalStore";
-import { CURRENCIES } from "../../../static/currencies";
+import { CURRENCIES, E_CURRENCIES } from "../../../static/currencies";
 import { ref } from "vue";
 import NoData from "../NoData.vue";
 import SendTokenModal from "../solana_actions/modals/SendTokenModal.vue";
@@ -18,6 +18,7 @@ import InputText from "primevue/inputtext";
 import { FilterMatchMode } from "primevue/api";
 import { BLACKLIST_URLS } from "../../../static/blacklist";
 import { useUserWalletStore } from "../../../stores/UserWalletStore";
+import CurrencyIcon from "../../icon-helper/CurrencyIcon.vue";
 
 const expandedRows = ref([]);
 
@@ -115,10 +116,63 @@ function filter_list(option_l1: String, option_l2?: string): I_TokenData[] {
 
       <Column
         field="account_info.data.parsed.info.tokenAmount.uiAmount"
-        header="Amount"
+        header="Quantity"
         sortable
       ></Column>
-      <Column header="Price"></Column> <Column header="Value"></Column>
+      <Column field="market_price" header="Price">
+        <template #body="slotProps">
+          <div class="grid grid-cols-2 gap-1 text-right">
+            <CurrencyIcon
+              class="w-6"
+              :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
+            />
+            <p>
+              {{ slotProps.data.market_price.usdc.toFixed(2) }}
+            </p>
+            <CurrencyIcon
+              class="w-6"
+              :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
+            />
+            <p>
+              {{ slotProps.data.market_price.atlas.toFixed(2) }}
+            </p>
+          </div>
+        </template>
+      </Column>
+
+      <Column header="Value">
+        <template #body="slotProps">
+          <div class="grid grid-cols-2 gap-1 text-right">
+            <CurrencyIcon
+              class="w-6"
+              :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
+            />
+            <p>
+              {{
+                (
+                  slotProps.data.market_price.usdc *
+                  slotProps.data.account_info.data.parsed.info.tokenAmount
+                    .uiAmount
+                ).toFixed(2)
+              }}
+            </p>
+            <CurrencyIcon
+              class="w-6"
+              :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
+            />
+            <p>
+              {{
+                (
+                  slotProps.data.market_price.atlas *
+                  slotProps.data.account_info.data.parsed.info.tokenAmount
+                    .uiAmount
+                ).toFixed(2)
+              }}
+            </p>
+          </div>
+        </template>
+      </Column>
+
       <template #expansion="slotProps">
         <div>
           <TabView>

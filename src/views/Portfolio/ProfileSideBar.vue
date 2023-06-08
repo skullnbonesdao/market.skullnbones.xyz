@@ -10,6 +10,21 @@ import G_TradesVolumeElement from "../../components/graphql/G_TradesVolumeElemen
 import G_TradesTotalElement from "../../components/graphql/G_TradesTotalElement.vue";
 import {computed} from "vue";
 
+
+const accounts_total_usdc_value = computed(() => {
+  return  useUserWalletStore().tokens
+      .map(token => (token.market_price.usdc ?? 0) * token.account_info.data.parsed.info.tokenAmount.uiAmount )
+      .reduce((a,b) => a+b, 0)
+})
+
+
+const accounts_total_atlas_value = computed(() => {
+  return  useUserWalletStore().tokens
+      .map(token => (token.market_price.atlas ?? 0) * token.account_info.data.parsed.info.tokenAmount.uiAmount )
+      .reduce((a,b) => a+b, 0)
+})
+
+
 const score_total_usdc_value = computed(() => {
  return  useUserWalletStore().sa_score
      .map(ship => (ship.market_price.usdc ?? 0) *  ship.ship_staking_info.shipQuantityInEscrow.toNumber())
@@ -29,6 +44,7 @@ const score_total_atlas_value = computed(() => {
     <div class="flex flex-col space-y-2 m-2">
       <div v-if="useUserWalletStore().address" class="flex flex-col items-center space-y-1">
         <Avatar
+            v-if="useUserWalletStore().sa_profile?.avatarId"
           :image="
             'https://storage.googleapis.com/star-atlas-assets/avatars/' +
             useUserWalletStore().sa_profile?.avatarId +
@@ -36,6 +52,12 @@ const score_total_atlas_value = computed(() => {
           "
           shape="circle"
           size="xlarge"
+        />
+        <Avatar
+        v-else
+        image="/webp/9bccaxs8YihGCRkPqcFMPkPbVBwNNjzHc4iHvsfQNs6x.webp"
+        shape="circle"
+        size="xlarge"
         />
 
         <div class="text-xs" >
@@ -122,7 +144,7 @@ const score_total_atlas_value = computed(() => {
           <div>Value:</div>
 
           <div class="flex flex-row justify-end items-center space-x-1">
-            <p>-</p>
+            <p>{{accounts_total_usdc_value.toFixed(2)}}</p>
             <CurrencyIcon
                 style="height: 14px"
                 :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
@@ -130,7 +152,7 @@ const score_total_atlas_value = computed(() => {
           </div>
           <div></div>
           <div class="flex flex-row justify-end items-center space-x-1">
-            <p>-</p>
+            <p>{{accounts_total_atlas_value.toFixed(2)}}</p>
             <CurrencyIcon
                 style="height: 14px"
                 :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
