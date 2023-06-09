@@ -6,6 +6,9 @@ const props = defineProps({
   explorer: Object as PropType<I_EXPLORER>,
   signature: String,
   address: String,
+  width: {
+    default: 24,
+  },
 });
 </script>
 
@@ -25,7 +28,6 @@ const props = defineProps({
         "
       >
         <img
-          style="width: 24px"
           class="rounded-md"
           :src="props.explorer?.image_path"
           alt="explorer_image"
@@ -43,7 +45,6 @@ const props = defineProps({
         "
       >
         <img
-          style="width: 24px"
           class="rounded-md"
           :src="props.explorer?.image_path"
           alt="explorer_image"
@@ -61,7 +62,6 @@ const props = defineProps({
         "
       >
         <img
-          style="width: 24px"
           class="rounded-md"
           :src="props.explorer?.image_path"
           alt="explorer_image"

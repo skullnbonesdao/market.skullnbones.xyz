@@ -47,6 +47,7 @@ import { DefaultApolloClient } from "@vue/apollo-composable";
 import TestView from "./views/TestView.vue";
 import VueApexCharts from "vue3-apexcharts";
 import JsonViewer from "vue-json-viewer";
+import InsightView from "./views/InsightView.vue";
 
 const walletOptions = {
   wallets: [
@@ -64,6 +65,7 @@ const routes = [
   { path: "/explorer", component: ExplorerView },
   { path: "/portfolio", component: PortfolioView },
   { path: "/sageprizes", component: SagePrizes },
+  { path: "/insights", component: InsightView },
   { path: "/about", component: AboutView },
 
   { path: "/test", component: TestView },
