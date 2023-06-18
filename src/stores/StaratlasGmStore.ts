@@ -22,6 +22,7 @@ import { useUserWalletStore } from "./UserWalletStore";
 export interface OrderBookOrderMap {
   size: number;
   price: number;
+  owners: [string];
 }
 
 type getInitializeOrderTransactionResponse = {

@@ -38,49 +38,60 @@ import { computed, onMounted, ref } from "vue";
 import { useGlobalStore } from "../../../stores/GlobalStore";
 import OrderBookHeader from "./OrderBookHeader.vue";
 import OrderBookRow from "./OrderBookRow.vue";
-import { useStaratlasGmStore } from "../../../stores/StaratlasGmStore";
+import {
+  OrderBookOrderMap,
+  useStaratlasGmStore,
+} from "../../../stores/StaratlasGmStore";
 import ProgressSpinner from "primevue/progressspinner";
 
 const is_loading = ref(true);
-const orders_grouped_buy = ref([]);
-const orders_grouped_sell = ref([]);
-const max_size_buy = ref(0);
-const max_size_sell = ref(0);
+
 const selectedCurrency = ref();
 
 onMounted(async () => {
-  await useStaratlasGmStore().gmClientService.initialize();
+  await useStaratlasGmStore().order_book_service.initialize();
   is_loading.value = false;
 });
 
 const buy_order = computed(() => {
-  return useStaratlasGmStore()
-    .gmClientService.getBuyOrdersByCurrencyAndItem(
+  let orderbook_map: OrderBookOrderMap[] = [];
+
+  useStaratlasGmStore()
+    .order_book_service.getSellOrdersByCurrencyAndItem(
       useGlobalStore().symbol.mint_pair.toString(),
       useGlobalStore().symbol.mint_asset.toString()
     )
-    .map((order) => {
-      return {
+    .forEach((order) => {
+      orderbook_map.push({
         price: order.uiPrice,
         size: order.orderQtyRemaining,
-      };
-    })
-    .sort((a, b) => a.price - b.price)
-    .reverse();
+        owners: [order.owner],
+      });
+    });
+
+  orderbook_map.sort((a, b) => a.price - b.price).reverse();
+
+  return orderbook_map;
 });
 
 const sell_order = computed(() => {
-  return useStaratlasGmStore()
-    .gmClientService.getSellOrdersByCurrencyAndItem(
+  let orderbook_map: OrderBookOrderMap[] = [];
+
+  useStaratlasGmStore()
+    .order_book_service.getSellOrdersByCurrencyAndItem(
       useGlobalStore().symbol.mint_pair.toString(),
       useGlobalStore().symbol.mint_asset.toString()
     )
-    .map((order) => {
-      return {
+    .forEach((order) => {
+      orderbook_map.push({
         price: order.uiPrice,
         size: order.orderQtyRemaining,
-      };
-    })
-    .sort((a, b) => a.price - b.price);
+        owners: [order.owner],
+      });
+    });
+
+  orderbook_map.sort((a, b) => a.price - b.price);
+
+  return orderbook_map;
 });
 </script>
