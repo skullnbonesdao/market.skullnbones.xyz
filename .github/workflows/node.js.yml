@@ -30,6 +30,9 @@ jobs:
           VITE_SNB_UDF_URL: ${{ secrets.VITE_SNB_UDF_URL }}
           VITE_SNB_GRAPHQL_URL: ${{ secrets.VITE_SNB_GRAPHQL_URL }}
           VITE_SNB_GRAPHQL_TOKEN: ${{ secrets.VITE_SNB_GRAPHQL_TOKEN }}
+          VITE_SNB_RPC_ALCHEMY_1: ${{ secrets.VITE_SNB_RPC_ALCHEMY_1 }}
+          VITE_SNB_RPC_ALCHEMY_2: ${{ secrets.VITE_SNB_RPC_ALCHEMY_2 }}
+          VITE_SNB_RPC_ALCHEMY_3: ${{ secrets.VITE_SNB_RPC_ALCHEMY_3 }}
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
