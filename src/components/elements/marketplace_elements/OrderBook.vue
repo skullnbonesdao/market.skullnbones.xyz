@@ -7,22 +7,22 @@
         <order-book-header></order-book-header>
         <order-book-header :reverse_order="true"></order-book-header>
         <div>
-          <div v-for="orderBlock in buy_order" :key="orderBlock">
+          <div v-for="orderBlock in buy_order">
             <order-book-row
               class=""
               :order="orderBlock"
               side="buy"
-              :max_size="max_size_buy"
+              :max_size="Math.max(...buy_order.map((o) => o.size))"
             />
           </div>
         </div>
         <div>
-          <div v-for="orderBlock in sell_order" :key="idx">
+          <div v-for="orderBlock in sell_order">
             <order-book-row
               class=""
               :order="orderBlock"
               side="sell"
-              :max_size="max_size_sell"
+              :max_size="Math.max(...sell_order.map((o) => o.size))"
               :reverse_order="true"
             />
           </div>
@@ -50,14 +50,11 @@ const selectedCurrency = ref();
 
 onMounted(async () => {
   await useStaratlasGmStore().order_book_service.initialize();
-
-  await useStaratlasGmStore().getOpenOrdersForAsset(
-    useGlobalStore().symbol.mint_asset.toString()
-  );
+  await useStaratlasGmStore().order_book_service.loadInitialOrders();
 });
 
 const buy_order = computed(() => {
-  return (buy_order.value = useStaratlasGmStore()
+  return useStaratlasGmStore()
     .order_book_service.getBuyOrdersByCurrencyAndItem(
       useGlobalStore().symbol.mint_pair.toString(),
       useGlobalStore().symbol.mint_asset.toString()
@@ -69,11 +66,11 @@ const buy_order = computed(() => {
       };
     })
     .sort((a, b) => a.price - b.price)
-    .reverse());
+    .reverse();
 });
 
 const sell_order = computed(() => {
-  return (buy_order.value = useStaratlasGmStore()
+  return useStaratlasGmStore()
     .order_book_service.getSellOrdersByCurrencyAndItem(
       useGlobalStore().symbol.mint_pair.toString(),
       useGlobalStore().symbol.mint_asset.toString()
@@ -84,6 +81,6 @@ const sell_order = computed(() => {
         size: order.orderQtyRemaining,
       };
     })
-    .sort((a, b) => a.price - b.price));
+    .sort((a, b) => a.price - b.price);
 });
 </script>
