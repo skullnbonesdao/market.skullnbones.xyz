@@ -58,23 +58,6 @@ function update_from_search(symbol: any) {
     symbol.mint_currency
   );
 }
-
-function toggle_show_order_setter() {
-  if (show_order_setter.value) {
-    show_order_setter.value = false;
-  } else {
-    show_order_setter.value = true;
-  }
-}
-
-const selectedCities = ref();
-const cities = ref([
-  { name: "New York", code: "NY" },
-  { name: "Rome", code: "RM" },
-  { name: "London", code: "LDN" },
-  { name: "Istanbul", code: "IST" },
-  { name: "Paris", code: "PRS" },
-]);
 </script>
 
 <style scoped></style>

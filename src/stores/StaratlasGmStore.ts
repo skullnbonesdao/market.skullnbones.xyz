@@ -22,7 +22,7 @@ import { useUserWalletStore } from "./UserWalletStore";
 export interface OrderBookOrderMap {
   size: number;
   price: number;
-  owners: string[];
+  owners: [string];
 }
 
 type getInitializeOrderTransactionResponse = {
@@ -65,6 +65,10 @@ export const useStaratlasGmStore = defineStore({
     score_table_data: [] as ScoreTableData[],
     market_table_data: [] as MarketTablData[],
     order_book_service: new GmOrderbookService(
+      new Connection(useGlobalStore().rpc.url),
+      new PublicKey(GM_PROGRAM_ID)
+    ),
+    gmClientService: new GmOrderbookService(
       new Connection(useGlobalStore().rpc.url),
       new PublicKey(GM_PROGRAM_ID)
     ),
@@ -117,143 +121,6 @@ export const useStaratlasGmStore = defineStore({
       return Math.max.apply(Math, filtered);
     },
 
-    async getOpenOrdersForAsset(assetMint: string) {
-      await useStaratlasGmStore()
-        .client.getOpenOrdersForAsset(
-          new Connection(useGlobalStore().rpc.url),
-          new PublicKey(assetMint),
-          new PublicKey(GM_PROGRAM_ID)
-        )
-        .then((response: any) => {
-          this.orders = response;
-          this.atlasOrders.sellOrders = [];
-          this.atlasOrders.buyOrders = [];
-          this.usdcOrders.sellOrders = [];
-          this.usdcOrders.buyOrders = [];
-          this.orders
-            .filter(
-              (order) =>
-                order.orderType === "buy" &&
-                order.currencyMint ===
-                  CURRENCIES.find(
-                    (c) => c.type === E_CURRENCIES.ATLAS
-                  )?.mint.toString()
-            )
-            ?.sort(sort_prices)
-            .forEach((order) => {
-              if (
-                this.atlasOrders.buyOrders.some(
-                  (stored) => stored.price === order.uiPrice
-                )
-              ) {
-                this.atlasOrders.buyOrders
-                  .find((stored) => stored.price === order.uiPrice)
-                  ?.owners.push(order.owner);
-                this.atlasOrders.buyOrders.find(
-                  (stored) => stored.price === order.uiPrice
-                )!.size += order.orderQtyRemaining;
-              } else
-                this.atlasOrders.buyOrders.push({
-                  owners: [order.owner],
-                  price: order.uiPrice,
-                  size: order.orderQtyRemaining,
-                });
-            });
-
-          this.orders
-            .filter(
-              (order) =>
-                order.orderType === "sell" &&
-                order.currencyMint ===
-                  CURRENCIES.find(
-                    (c) => c.type === E_CURRENCIES.ATLAS
-                  )?.mint.toString()
-            )
-            ?.sort(sort_prices)
-            .forEach((order) => {
-              if (
-                this.atlasOrders.sellOrders.some(
-                  (stored) => stored.price === order.uiPrice
-                )
-              ) {
-                this.atlasOrders.sellOrders
-                  .find((stored) => stored.price === order.uiPrice)
-                  ?.owners.push(order.owner);
-                this.atlasOrders.sellOrders.find(
-                  (stored) => stored.price === order.uiPrice
-                )!.size += order.orderQtyRemaining;
-              } else
-                this.atlasOrders.sellOrders.push({
-                  owners: [order.owner],
-                  price: order.uiPrice,
-                  size: order.orderQtyRemaining,
-                });
-            });
-
-          this.orders
-            .filter(
-              (order) =>
-                order.orderType === "buy" &&
-                order.currencyMint ===
-                  CURRENCIES.find(
-                    (c) => c.type === E_CURRENCIES.USDC
-                  )?.mint.toString()
-            )
-            ?.sort(sort_prices)
-            .forEach((order) => {
-              if (
-                this.usdcOrders.buyOrders.some(
-                  (stored) => stored.price === order.uiPrice
-                )
-              ) {
-                this.usdcOrders.buyOrders
-                  .find((stored) => stored.price === order.uiPrice)
-                  ?.owners.push(order.owner);
-                this.usdcOrders.buyOrders.find(
-                  (stored) => stored.price === order.uiPrice
-                )!.size += order.orderQtyRemaining;
-              } else
-                this.usdcOrders.buyOrders.push({
-                  owners: [order.owner],
-                  price: order.uiPrice,
-                  size: order.orderQtyRemaining,
-                });
-            });
-
-          this.orders
-            .filter(
-              (order) =>
-                order.orderType === "sell" &&
-                order.currencyMint ===
-                  CURRENCIES.find(
-                    (c) => c.type === E_CURRENCIES.USDC
-                  )?.mint.toString()
-            )
-            ?.sort(sort_prices)
-            .forEach((order) => {
-              if (
-                this.usdcOrders.sellOrders.some(
-                  (stored) => stored.price === order.uiPrice
-                )
-              ) {
-                this.usdcOrders.sellOrders
-                  .find((stored) => stored.price === order.uiPrice)
-                  ?.owners.push(order.owner);
-                this.usdcOrders.sellOrders.find(
-                  (stored) => stored.price === order.uiPrice
-                )!.size += order.orderQtyRemaining;
-              } else
-                this.usdcOrders.sellOrders.push({
-                  owners: [order.owner],
-                  price: order.uiPrice,
-                  size: order.orderQtyRemaining,
-                });
-            });
-        })
-        .catch((err: any) =>
-          console.log("{getOpenOrdersForAssetError}: " + err)
-        );
-    },
     async getInitializeOrderTransaction(
       playerPublicKey: PublicKey,
       assetMint: string,

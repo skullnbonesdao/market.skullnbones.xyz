@@ -1,6 +1,6 @@
 {
   "name": "primevue-quickstart-create-vue-ts",
-  "version": "0.4.32-beta",
+  "version": "0.4.34-beta",
   "scripts": {
     "create_swagger_interfaces": "npx swagger-typescript-api -p ./api.skullnbones-swapper.json -o ./src/static/swagger/skullnbones_api -n skullnbones_api.ts",
     "dev": "vite --host",
@@ -11,7 +11,7 @@
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@vue/compiler-sfc": "^3.2.31",
+    "@vue/compiler-sfc": "^3.2.32",
     "cross-env": "^7.0.3",
     "graphql2chartjs": "^0.3.1",
     "node-stdlib-browser": "^1.2.0",
@@ -25,7 +25,7 @@
     "@solana/web3.js": "^1.75.0",
     "@solflare-wallet/utl-aggregator": "^0.0.13",
     "@solflare-wallet/utl-sdk": "^1.4.0",
-    "@staratlas/factory": "^0.5.1",
+    "@staratlas/factory": "^0.5.3",
     "@types/d3": "^7.4.0",
     "@types/downloadjs": "^1.4.3",
     "@types/node": "^16.11.68",

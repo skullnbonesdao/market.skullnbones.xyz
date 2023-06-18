@@ -8,7 +8,6 @@ import { get_multi_price } from "../static/swagger/birdseye_api/birdseye_api";
 import { Nft, NftWithToken, Sft, SftWithToken } from "@metaplex-foundation/js";
 import { BirdsEyePricesResponse } from "../static/swagger/birdseye_api/birdsyste_pirces_response";
 import * as tokenlist from "../static/apis/TokenList/I_TokenList";
-import { useStaratlasGmStore } from "./StaratlasGmStore";
 
 export interface Status {
   is_initialized: boolean;
@@ -24,10 +23,13 @@ export interface RPCEndpoint {
 }
 
 export const endpoints_list: RPCEndpoint[] = [
-  { name: "extrnode", url: "https://solana-mainnet.rpc.extrnode.com" },
-  { name: "ankr", url: "https://rpc.ankr.com/solana" },
-  { name: "solana-main", url: "https://api.mainnet-beta.solana.com/" },
-  { name: "solana-serum", url: "https://solana-api.projectserum.com/" },
+  { name: "alchemy_1", url: import.meta.env.VITE_SNB_RPC_ALCHEMY_1 },
+  { name: "alchemy_2", url: import.meta.env.VITE_SNB_RPC_ALCHEMY_2 },
+  { name: "alchemy_3", url: import.meta.env.VITE_SNB_RPC_ALCHEMY_3 },
+  //  { name: "extrnode", url: "https://solana-mainnet.rpc.extrnode.com" },
+  //  { name: "ankr", url: "https://rpc.ankr.com/solana" },
+  //  { name: "solana-main", url: "https://api.mainnet-beta.solana.com/" },
+  //  { name: "solana-serum", url: "https://solana-api.projectserum.com/" },
 ];
 
 export interface I_TokenData {
@@ -143,9 +145,9 @@ export const useGlobalStore = defineStore("globalStore", {
 
       this.symbol.name = symbol;
       ////Deprecated
-      useStaratlasGmStore().getOpenOrdersForAsset(
-        this.symbol.mint_asset.toString()
-      );
+      // useStaratlasGmStore().getOpenOrdersForAsset(
+      //   this.symbol.mint_asset.toString()
+      // );
     },
 
     async update_connection(rpc_name: string) {
