@@ -1,6 +1,9 @@
 <template>
   <div class="flex flex-col text-sm lg:text-base" style="min-width: 450px">
-    <ProgressSpinner v-if="is_loading" class="flex justify-center" />
+    <ProgressSpinner
+      v-if="!buy_order.length || !sell_order.length"
+      class="flex justify-center"
+    />
 
     <div v-else>
       <div class="grid grid-cols-2">
@@ -49,8 +52,7 @@ const is_loading = ref(true);
 const selectedCurrency = ref();
 
 onMounted(async () => {
-  await useStaratlasGmStore().order_book_service.initialize();
-  is_loading.value = false;
+  await useStaratlasGmStore().init();
 });
 
 const buy_order = computed(() => {
