@@ -62,21 +62,23 @@
             </div>
           </div>
 
-          <div class="flex flex-col items-end">
-            <AssetRarityBadge
-              :asset_class="
-                useGlobalStore().sa_api_data.find(
-                  (a) =>
-                    a.mint === useGlobalStore().symbol.mint_asset.toString()
-                )?.attributes?.rarity
-              "
-            />
+          <div class="flex border-r h-full"></div>
+
+          <div class="flex flex-col items-center">
             <AssetItemTypeBadge
               :asset_class="
                 useGlobalStore().sa_api_data.find(
                   (a) =>
                     a.mint === useGlobalStore().symbol.mint_asset.toString()
                 )?.attributes?.itemType
+              "
+            />
+            <AssetRarityBadge
+              :asset_class="
+                useGlobalStore().sa_api_data.find(
+                  (a) =>
+                    a.mint === useGlobalStore().symbol.mint_asset.toString()
+                )?.attributes?.rarity
               "
             />
             <AssetTextBadge
@@ -89,12 +91,12 @@
             />
           </div>
         </div>
+
+        <div class="flex border-r h-full"></div>
       </div>
-      <div
-        class="flex items-center px-3 border-l"
-        @click="$emit('search_clicked')"
-      >
-        <i class="pi pi-search" style="font-size: 1.5rem"></i>
+
+      <div class="flex items-center" @click="$emit('search_clicked')">
+        <i class="pi pi-search p-2" style="font-size: 1.5rem"></i>
       </div>
     </div>
   </div>
