@@ -1,4 +1,3 @@
-
-# market.skullnbones.xyz - beta
-
+# market.skullnbones.xyz
+ 
     
