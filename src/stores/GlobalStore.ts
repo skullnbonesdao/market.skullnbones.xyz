@@ -8,7 +8,6 @@ import { get_multi_price } from "../static/swagger/birdseye_api/birdseye_api";
 import { Nft, NftWithToken, Sft, SftWithToken } from "@metaplex-foundation/js";
 import { BirdsEyePricesResponse } from "../static/swagger/birdseye_api/birdsyste_pirces_response";
 import * as tokenlist from "../static/apis/TokenList/I_TokenList";
-import { useStaratlasGmStore } from "./StaratlasGmStore";
 
 export interface Status {
   is_initialized: boolean;
@@ -143,9 +142,9 @@ export const useGlobalStore = defineStore("globalStore", {
 
       this.symbol.name = symbol;
       ////Deprecated
-      useStaratlasGmStore().getOpenOrdersForAsset(
-        this.symbol.mint_asset.toString()
-      );
+      // useStaratlasGmStore().getOpenOrdersForAsset(
+      //   this.symbol.mint_asset.toString()
+      // );
     },
 
     async update_connection(rpc_name: string) {

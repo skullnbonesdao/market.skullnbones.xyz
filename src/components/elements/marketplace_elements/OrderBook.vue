@@ -7,7 +7,7 @@
         <order-book-header></order-book-header>
         <order-book-header :reverse_order="true"></order-book-header>
         <div>
-          <div v-for="orderBlock in orders_grouped_buy" :key="orderBlock">
+          <div v-for="orderBlock in buy_order" :key="orderBlock">
             <order-book-row
               class=""
               :order="orderBlock"
@@ -17,7 +17,7 @@
           </div>
         </div>
         <div>
-          <div v-for="(orderBlock, idx) in orders_grouped_sell" :key="idx">
+          <div v-for="orderBlock in sell_order" :key="idx">
             <order-book-row
               class=""
               :order="orderBlock"
@@ -34,15 +34,14 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watchEffect } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useGlobalStore } from "../../../stores/GlobalStore";
 import OrderBookHeader from "./OrderBookHeader.vue";
 import OrderBookRow from "./OrderBookRow.vue";
-import { CURRENCIES } from "../../../static/currencies";
 import { useStaratlasGmStore } from "../../../stores/StaratlasGmStore";
 import ProgressSpinner from "primevue/progressspinner";
 
-const is_loading = ref(true);
+const is_loading = ref(false);
 const orders_grouped_buy = ref([]);
 const orders_grouped_sell = ref([]);
 const max_size_buy = ref(0);
@@ -50,59 +49,41 @@ const max_size_sell = ref(0);
 const selectedCurrency = ref();
 
 onMounted(async () => {
+  await useStaratlasGmStore().order_book_service.initialize();
+
   await useStaratlasGmStore().getOpenOrdersForAsset(
     useGlobalStore().symbol.mint_asset.toString()
   );
 });
 
-watchEffect(async () => {
-  is_loading.value = true;
-  selectedCurrency.value =
-    CURRENCIES.find(
-      (currency) =>
-        useGlobalStore().symbol.mint_pair.toString() === currency.mint
-    )?.name ?? "";
+const buy_order = computed(() => {
+  return (buy_order.value = useStaratlasGmStore()
+    .order_book_service.getBuyOrdersByCurrencyAndItem(
+      useGlobalStore().symbol.mint_pair.toString(),
+      useGlobalStore().symbol.mint_asset.toString()
+    )
+    .map((order) => {
+      return {
+        price: order.uiPrice,
+        size: order.orderQtyRemaining,
+      };
+    })
+    .sort((a, b) => a.price - b.price)
+    .reverse());
+});
 
-  if (selectedCurrency.value === "ATLAS") {
-    orders_grouped_buy.value =
-      useStaratlasGmStore().atlasOrders.buyOrders?.sort(
-        (a, b) => b.price - a.price
-      );
-    orders_grouped_sell.value =
-      useStaratlasGmStore().atlasOrders.sellOrders?.sort(
-        (a, b) => a.price - b.price
-      );
-
-    max_size_buy.value = useStaratlasGmStore().atlasOrders.buyOrders?.reduce(
-      (max, obj) => {
-        return obj.size > max.size ? obj : max;
-      }
-    ).size;
-    max_size_sell.value = useStaratlasGmStore().atlasOrders.sellOrders?.reduce(
-      (max, obj) => {
-        return obj.size > max.size ? obj : max;
-      }
-    ).size;
-  } else {
-    orders_grouped_buy.value = useStaratlasGmStore().usdcOrders.buyOrders.sort(
-      (a, b) => b.price - a.price
-    );
-    orders_grouped_sell.value =
-      useStaratlasGmStore().usdcOrders.sellOrders?.sort(
-        (a, b) => a.price - b.price
-      );
-
-    max_size_buy.value = useStaratlasGmStore().usdcOrders.buyOrders?.reduce(
-      (max, obj) => {
-        return obj.size > max.size ? obj : max;
-      }
-    ).size;
-    max_size_sell.value = useStaratlasGmStore().usdcOrders.sellOrders?.reduce(
-      (max, obj) => {
-        return obj.size > max.size ? obj : max;
-      }
-    ).size;
-  }
-  is_loading.value = false;
+const sell_order = computed(() => {
+  return (buy_order.value = useStaratlasGmStore()
+    .order_book_service.getSellOrdersByCurrencyAndItem(
+      useGlobalStore().symbol.mint_pair.toString(),
+      useGlobalStore().symbol.mint_asset.toString()
+    )
+    .map((order) => {
+      return {
+        price: order.uiPrice,
+        size: order.orderQtyRemaining,
+      };
+    })
+    .sort((a, b) => a.price - b.price));
 });
 </script>
