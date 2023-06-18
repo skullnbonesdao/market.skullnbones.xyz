@@ -5,13 +5,18 @@ import { onMounted } from "vue";
 import StatusStoreTemplate from "./components/elements/templates/StatusStoreTemplate.vue";
 import FooterComponent from "./naviagtion/FooterComponent.vue";
 import { useUserWalletStore } from "./stores/UserWalletStore";
+import { useStaratlasGmStore } from "./stores/StaratlasGmStore";
+
+useGlobalStore();
+useStaratlasGmStore();
+useUserWalletStore();
 
 onMounted(async () => {
   useUserWalletStore().address = undefined;
   await useGlobalStore().init();
 
   //works better ignoring the start of the GN
-  //  await useStaratlasGmStore().init();
+  useStaratlasGmStore().init();
 });
 
 //useStaratlasGmStore().init();

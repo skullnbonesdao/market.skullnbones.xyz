@@ -79,12 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  getOpenOrdersForPlayer,
-  GmClientService,
-  Order,
-  OrderAccountItem,
-} from "@staratlas/factory";
+import { GmClientService, Order } from "@staratlas/factory";
 import Toast from "primevue/toast";
 import Button from "primevue/button";
 import DataTable from "primevue/datatable";
@@ -97,7 +92,6 @@ import { onMounted, ref, watch } from "vue";
 import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
 import PairImage from "./PairImage.vue";
 import { CURRENCIES } from "../../static/currencies";
-import * as wasi from "wasi";
 import { useToast } from "primevue/usetoast";
 import ProgressSpinner from "primevue/progressspinner";
 
@@ -118,17 +112,19 @@ onMounted(async () => {
 });
 
 async function fetch_orders() {
-  is_loading.value = true;
+  if (useWallet().publicKey.value) {
+    is_loading.value = true;
 
-  let gm_client = new GmClientService();
+    let gm_client = new GmClientService();
 
-  open_orders.value = await gm_client.getOpenOrdersForPlayer(
-    new Connection(useGlobalStore().rpc.url),
-    useWallet().publicKey.value ?? new PublicKey(""),
-    new PublicKey(GM_PROGRAM_ID)
-  );
+    open_orders.value = await gm_client.getOpenOrdersForPlayer(
+      new Connection(useGlobalStore().rpc.url),
+      useWallet().publicKey.value ?? new PublicKey(""),
+      new PublicKey(GM_PROGRAM_ID)
+    );
 
-  is_loading.value = false;
+    is_loading.value = false;
+  }
 }
 
 async function cancel_order(order_address: string) {
