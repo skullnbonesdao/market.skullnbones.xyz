@@ -13,10 +13,10 @@
       <template #end>
         <div class="flex flex-row space-x-2 items-center">
           <div
-            class="pr-2 flex space-x-1"
+            class="pr-2 flex space-x-1 uppercase bg-purple-100 text-purple-800 font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300"
             v-tooltip.bottom="'Current Transactions per second'"
           >
-            <p>
+            <p class="text-sm">
               {{ useTPS().tps.toFixed(0) }}
             </p>
             <p class="text-xs">
