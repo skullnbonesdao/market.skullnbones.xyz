@@ -364,6 +364,13 @@ onMounted(async () => {
                 :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)"
                 :address="slotProps.data.api_data.mint.toString()"
               />
+              <ExplorerIcon
+                class="w-6"
+                :explorer="
+                  EXPLORER.find((e) => e.type === E_EXPLORER.STARATLAS)
+                "
+                :address="slotProps.data.api_data.mint.toString()"
+              />
             </div>
           </template>
         </Column>
