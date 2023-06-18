@@ -56,29 +56,7 @@
                   />
                 </div>
                 <div class="flex items-center sm:float-right">
-                  <div
-                    class="text-sm"
-                    :class="
-                      price_24_change === 1
-                        ? 'i-carbon-arrow-right text-gray'
-                        : price_24_change >= 1
-                        ? 'i-carbon-arrow-down-right text-red'
-                        : 'i-carbon-arrow-up-right text-green'
-                    "
-                  ></div>
-
-                  <div
-                    class="text-right text-sm"
-                    :class="
-                      price_24_change === 1
-                        ? 'text-gray'
-                        : price_24_change > 1
-                        ? 'text-red'
-                        : 'text-green'
-                    "
-                  >
-                    <G_Market24hChange :symbol="useGlobalStore().symbol.name" />
-                  </div>
+                  <G_Market24hChange :symbol="useGlobalStore().symbol.name" />
                 </div>
               </div>
             </div>
