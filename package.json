@@ -1,6 +1,6 @@
 {
   "name": "primevue-quickstart-create-vue-ts",
-  "version": "0.4.30-beta",
+  "version": "0.4.32-beta",
   "scripts": {
     "create_swagger_interfaces": "npx swagger-typescript-api -p ./api.skullnbones-swapper.json -o ./src/static/swagger/skullnbones_api -n skullnbones_api.ts",
     "dev": "vite --host",
@@ -35,6 +35,7 @@
     "@vue/apollo-option": "*",
     "@vue/tsconfig": "^0.1.3",
     "apexcharts": "^3.40.0",
+    "apollo-boost": "^0.4.9",
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.10",
     "apollo-link": "^1.2.14",

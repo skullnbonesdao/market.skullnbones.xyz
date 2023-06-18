@@ -10,18 +10,15 @@
   >
     <div
       class="grid grid-cols-2 bg-bar gap-2"
-      :class="reverse_order ? 'flex-row-reverse' : ''"
+      :dir="reverse_order ? 'rtl' : ''"
     >
       <!--            <p class="basis-1/3" :class="reverse_order ? 'text-right' : 'text-left'">{{ order?.owners.length }}</p>-->
-      <p
-        class="flex"
-        :class="reverse_order ? 'text-right order-1' : 'text-left'"
-      >
+      <p class="flex" :class="reverse_order ? 'text-left' : 'text-right'">
         {{ order?.size }}
       </p>
       <p
         class="flex bg-text"
-        :class="reverse_order ? 'text-left' : 'text-right'"
+        :class="reverse_order ? 'text-left ' : 'text-right'"
       >
         {{ order?.price.toFixed(8).substring(0, 10) }}
       </p>

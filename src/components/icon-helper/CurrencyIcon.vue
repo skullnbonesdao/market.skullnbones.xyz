@@ -12,9 +12,11 @@ const props = defineProps({
 <template>
   <img
     :class="
-      props.currency?.type === E_CURRENCIES.ATLAS ? 'border-2 border-black' : ''
+      props.currency?.type === E_CURRENCIES.ATLAS
+        ? ' border-black'
+        : 'border-transparent'
     "
-    class="rounded-full"
+    class="border-2 rounded-full"
     :src="props.currency?.image_path"
     alt="asset_image"
   />

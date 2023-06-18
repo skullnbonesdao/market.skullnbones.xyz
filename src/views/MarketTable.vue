@@ -355,10 +355,12 @@ onMounted(async () => {
           <template #body="slotProps">
             <div class="flex flex-row justify-center items-center space-x-2">
               <ExplorerIcon
+                class="w-6"
                 :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)"
                 :address="slotProps.data.api_data.mint.toString()"
               />
               <ExplorerIcon
+                class="w-6"
                 :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)"
                 :address="slotProps.data.api_data.mint.toString()"
               />
