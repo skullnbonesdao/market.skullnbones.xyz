@@ -7,8 +7,8 @@ import { get_multi_price } from "../static/swagger/birdseye_api/birdseye_api";
 
 import { Nft, NftWithToken, Sft, SftWithToken } from "@metaplex-foundation/js";
 import { BirdsEyePricesResponse } from "../static/swagger/birdseye_api/birdsyste_pirces_response";
-import { useStaratlasGmStore } from "./StaratlasGmStore";
 import * as tokenlist from "../static/apis/TokenList/I_TokenList";
+import { useStaratlasGmStore } from "./StaratlasGmStore";
 
 export interface Status {
   is_initialized: boolean;
@@ -127,12 +127,12 @@ export const useGlobalStore = defineStore("globalStore", {
     },
 
     update_symbol(symbol: string, mint_asset?: string, mint_pair?: string) {
-      this.symbol.name = symbol;
-
       this.symbol.mint_asset = mint_asset
         ? new PublicKey(mint_asset)
         : new PublicKey(
-            this.sa_api_data.find((api) => symbol.includes(symbol))?.mint ?? ""
+            this.sa_api_data.find(
+              (api) => api.symbol == symbol.substring(0, symbol.length - 4)
+            )?.mint ?? ""
           );
 
       this.symbol.mint_pair = mint_pair
@@ -141,6 +141,7 @@ export const useGlobalStore = defineStore("globalStore", {
             CURRENCIES.find((c) => symbol.includes(symbol))?.mint ?? ""
           );
 
+      this.symbol.name = symbol;
       ////Deprecated
       useStaratlasGmStore().getOpenOrdersForAsset(
         this.symbol.mint_asset.toString()

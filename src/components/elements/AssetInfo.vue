@@ -23,15 +23,20 @@
             />
           </div>
           <div class="flex w-full flex-col sm:flex-row items-baseline">
-            <h3 class="w-full">
-              {{
-                useGlobalStore().sa_api_data.find(
-                  (asset) =>
-                    asset.mint.toString() ===
-                    useGlobalStore().symbol.mint_asset.toString()
-                )?.name
-              }}
-            </h3>
+            <div class="w-full">
+              <h3>
+                {{
+                  useGlobalStore().sa_api_data.find(
+                    (asset) =>
+                      asset.mint.toString() ===
+                      useGlobalStore().symbol.mint_asset.toString()
+                  )?.name
+                }}
+              </h3>
+              <p>
+                {{ useGlobalStore().symbol.name }}
+              </p>
+            </div>
             <div class="flex flex-row items-center space-x-2 sm:justify-end">
               <div>
                 <div class="flex flex-row items-center space-x1">
@@ -119,13 +124,8 @@
 
 <script setup lang="ts">
 import { useGlobalStore } from "../../stores/GlobalStore";
-import { ref, watch } from "vue";
 
 import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
-import {
-  Api,
-  Trade,
-} from "../../static/swagger/skullnbones_api/skullnbones_api";
 import { CURRENCIES } from "../../static/currencies";
 import AssetRarityBadge from "./badges/AssetRarityBadge.vue";
 import AssetTextBadge from "./badges/AssetTextBadge.vue";
@@ -133,57 +133,6 @@ import AssetItemTypeBadge from "./badges/AssetItemTypeBadge.vue";
 import PairImage from "./PairImage.vue";
 import G_CurrentMarketPrice from "../graphql/G_CurrentMarketPrice.vue";
 import G_Market24hChange from "../graphql/G_Market24hChange.vue";
-
-const api = new Api({ baseUrl: "https://api2.skullnbones.xyz" });
-
-const price_24_h = ref(0.0);
-const price_last = ref(0.0);
-const price_24_change = ref(0.0);
-
-fetch_price_24_h();
-
-watch(useGlobalStore().symbol, (new_value) => {
-  fetch_price_24_h();
-});
-
-// async function action_update_symbol(symbol: string) {
-//     show_search_modal.value = false
-//     if (symbol.length > 0) {
-//         useGlobalStore().draw_tv = true
-//         useGlobalStore().updateSymbol(symbol)
-//     }
-//     console.log(symbol)
-// }
-
-async function fetch_price_24_h() {
-  let tsNow = Math.round(new Date().getTime() / 1000);
-  let tsYesterday = tsNow - 24 * 3600;
-  let api_trade: Trade[] = [];
-
-  let price_temp = 0;
-
-  //Get trade now-24h
-  await api.trades
-    .getSymbol({
-      symbol: useGlobalStore().symbol?.name,
-      limit: 1,
-      to: tsYesterday,
-    })
-    .then((resp) => resp.data)
-    .then((data) => {
-      console.log(data[0]);
-      price_24_h.value = data[0].price;
-    });
-  //Get trade now
-  await api.trades
-    .getSymbol({ symbol: useGlobalStore().symbol?.name, limit: 1, to: tsNow })
-    .then((resp) => resp.data)
-    .then((data) => {
-      console.log(data[0]);
-      price_last.value = data[0].price;
-    });
-  price_24_change.value = price_24_h.value / price_last.value;
-}
 
 defineEmits(["search_clicked"]);
 </script>
