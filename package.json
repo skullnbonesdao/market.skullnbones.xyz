@@ -1,6 +1,6 @@
 {
   "name": "primevue-quickstart-create-vue-ts",
-  "version": "0.4.31-beta",
+  "version": "0.4.32-beta",
   "scripts": {
     "create_swagger_interfaces": "npx swagger-typescript-api -p ./api.skullnbones-swapper.json -o ./src/static/swagger/skullnbones_api -n skullnbones_api.ts",
     "dev": "vite --host",
