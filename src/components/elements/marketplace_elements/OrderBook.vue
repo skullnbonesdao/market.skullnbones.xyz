@@ -59,7 +59,7 @@ const buy_order = computed(() => {
   let orderbook_map: OrderBookOrderMap[] = [];
 
   useStaratlasGmStore()
-    .order_book_service.getSellOrdersByCurrencyAndItem(
+    .gmClientService.getSellOrdersByCurrencyAndItem(
       useGlobalStore().symbol.mint_pair.toString(),
       useGlobalStore().symbol.mint_asset.toString()
     )
@@ -80,7 +80,7 @@ const sell_order = computed(() => {
   let orderbook_map: OrderBookOrderMap[] = [];
 
   useStaratlasGmStore()
-    .order_book_service.getSellOrdersByCurrencyAndItem(
+    .gmClientService.getSellOrdersByCurrencyAndItem(
       useGlobalStore().symbol.mint_pair.toString(),
       useGlobalStore().symbol.mint_asset.toString()
     )
