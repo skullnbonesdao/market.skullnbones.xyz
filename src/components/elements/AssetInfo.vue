@@ -35,9 +35,12 @@
             <div class="flex flex-row items-center space-x-2 sm:justify-end">
               <div>
                 <div class="flex flex-row items-center space-x1">
-                  <p>{{ price_last?.toFixed(6) }}</p>
+                  <G_CurrentMarketPrice
+                    :symbol="useGlobalStore().symbol.name"
+                  />
+
                   <CurrencyIcon
-                    class="w-4 h-4"
+                    class="w-6"
                     :currency="
                       CURRENCIES.find(
                         (c) =>
@@ -69,11 +72,7 @@
                         : 'text-green'
                     "
                   >
-                    {{
-                      price_24_change >= 1
-                        ? (price_24_change - 1).toFixed(2)
-                        : (1 - price_24_change).toFixed(2)
-                    }}%
+                    <G_Market24hChange :symbol="useGlobalStore().symbol.name" />
                   </div>
                 </div>
               </div>
@@ -132,6 +131,8 @@ import AssetRarityBadge from "./badges/AssetRarityBadge.vue";
 import AssetTextBadge from "./badges/AssetTextBadge.vue";
 import AssetItemTypeBadge from "./badges/AssetItemTypeBadge.vue";
 import PairImage from "./PairImage.vue";
+import G_CurrentMarketPrice from "../graphql/G_CurrentMarketPrice.vue";
+import G_Market24hChange from "../graphql/G_Market24hChange.vue";
 
 const api = new Api({ baseUrl: "https://api2.skullnbones.xyz" });
 

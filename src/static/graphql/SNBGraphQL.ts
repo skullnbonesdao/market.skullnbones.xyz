@@ -1,10 +1,7 @@
-import { ApolloClient } from "apollo-client";
-import { InMemoryCache } from "apollo-cache-inmemory";
-
 // @ts-ignore
-import { createApolloProvider } from "@vue/apollo-option";
+import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import { createHttpLink } from "@apollo/client";
+import { createApolloProvider } from "@vue/apollo-option";
 
 // HTTP connection to the API
 const httpLink = createHttpLink({
