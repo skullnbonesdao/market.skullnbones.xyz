@@ -33,7 +33,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { useGlobalStore } from "../../../stores/GlobalStore";
 import OrderBookHeader from "./OrderBookHeader.vue";
@@ -41,7 +41,7 @@ import OrderBookRow from "./OrderBookRow.vue";
 import { useStaratlasGmStore } from "../../../stores/StaratlasGmStore";
 import ProgressSpinner from "primevue/progressspinner";
 
-const is_loading = ref(false);
+const is_loading = ref(true);
 const orders_grouped_buy = ref([]);
 const orders_grouped_sell = ref([]);
 const max_size_buy = ref(0);
@@ -49,13 +49,13 @@ const max_size_sell = ref(0);
 const selectedCurrency = ref();
 
 onMounted(async () => {
-  await useStaratlasGmStore().order_book_service.initialize();
-  await useStaratlasGmStore().order_book_service.loadInitialOrders();
+  await useStaratlasGmStore().gmClientService.initialize();
+  is_loading.value = false;
 });
 
 const buy_order = computed(() => {
   return useStaratlasGmStore()
-    .order_book_service.getBuyOrdersByCurrencyAndItem(
+    .gmClientService.getBuyOrdersByCurrencyAndItem(
       useGlobalStore().symbol.mint_pair.toString(),
       useGlobalStore().symbol.mint_asset.toString()
     )
@@ -71,7 +71,7 @@ const buy_order = computed(() => {
 
 const sell_order = computed(() => {
   return useStaratlasGmStore()
-    .order_book_service.getSellOrdersByCurrencyAndItem(
+    .gmClientService.getSellOrdersByCurrencyAndItem(
       useGlobalStore().symbol.mint_pair.toString(),
       useGlobalStore().symbol.mint_asset.toString()
     )

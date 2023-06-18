@@ -23,10 +23,13 @@ export interface RPCEndpoint {
 }
 
 export const endpoints_list: RPCEndpoint[] = [
-  { name: "extrnode", url: "https://solana-mainnet.rpc.extrnode.com" },
-  { name: "ankr", url: "https://rpc.ankr.com/solana" },
-  { name: "solana-main", url: "https://api.mainnet-beta.solana.com/" },
-  { name: "solana-serum", url: "https://solana-api.projectserum.com/" },
+  { name: "alchemy_1", url: import.meta.env.VITE_SNB_RPC_ALCHEMY_1 },
+  { name: "alchemy_2", url: import.meta.env.VITE_SNB_RPC_ALCHEMY_2 },
+  { name: "alchemy_3", url: import.meta.env.VITE_SNB_RPC_ALCHEMY_3 },
+  //  { name: "extrnode", url: "https://solana-mainnet.rpc.extrnode.com" },
+  //  { name: "ankr", url: "https://rpc.ankr.com/solana" },
+  //  { name: "solana-main", url: "https://api.mainnet-beta.solana.com/" },
+  //  { name: "solana-serum", url: "https://solana-api.projectserum.com/" },
 ];
 
 export interface I_TokenData {
