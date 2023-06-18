@@ -64,10 +64,10 @@ export const useStaratlasGmStore = defineStore({
     status: {} as Status,
     score_table_data: [] as ScoreTableData[],
     market_table_data: [] as MarketTablData[],
-    order_book_service: new GmOrderbookService(
-      new Connection(useGlobalStore().rpc.url),
-      new PublicKey(GM_PROGRAM_ID)
-    ),
+    // order_book_service: new GmOrderbookService(
+    //   new Connection(useGlobalStore().rpc.url),
+    //   new PublicKey(GM_PROGRAM_ID)
+    // ),
     gmClientService: new GmOrderbookService(
       new Connection(useGlobalStore().rpc.url),
       new PublicKey(GM_PROGRAM_ID)
@@ -98,7 +98,7 @@ export const useStaratlasGmStore = defineStore({
         step: 0,
         step_total: 1,
       };
-      this.order_book_service.loadInitialOrders();
+      this.gmClientService.loadInitialOrders();
       this.status = _update_status(this.status, false, "GM init done", 1, 1);
       // this.order_book_service.initialize().then(() => {
       //   this.status = _update_status(this.status, false, "GM init done", 1, 1);
@@ -200,7 +200,7 @@ export const useStaratlasGmStore = defineStore({
       )) {
         let orders = Array.from(
           await useStaratlasGmStore()
-            .order_book_service.getAllOrdersByItemMint(filtered.mint)
+            .gmClientService.getAllOrdersByItemMint(filtered.mint)
             .values()
         );
 
