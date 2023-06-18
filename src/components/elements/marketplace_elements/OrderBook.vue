@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col text-sm lg:text-base">
+  <div class="flex flex-col text-sm lg:text-base" style="min-width: 400px">
     <ProgressSpinner v-if="is_loading" class="flex justify-center" />
 
     <div v-else class="flex overflow-hidden">
