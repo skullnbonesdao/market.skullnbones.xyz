@@ -1,25 +1,59 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { Connection, PublicKey } from "@solana/web3.js";
+import { useGlobalStore } from "../stores/GlobalStore";
+import { FindNftsByOwnerOutput, Metaplex } from "@metaplex-foundation/js";
 
-const nodes = ref([
-  {
-    key: "0",
-    label: "Documents",
-    data: "Documents Folder",
-    icon: "pi pi-fw pi-inbox",
-  },
-]);
+import { onMounted, ref, watchEffect } from "vue";
+
+const connection = new Connection(useGlobalStore().rpc.url);
+const mx = new Metaplex(connection);
+
+const assets = ref<FindNftsByOwnerOutput>();
+const mints = ref();
+const meta = ref<any[]>();
+
+const details = ref();
+
+onMounted(async () => {
+  let wallet_nfts = await mx.nfts().findAllByOwner({
+    owner: new PublicKey("38s5kQmKd4qSQKQcfLabSqbrxEbuhryUgQMEfb5TCwMt"),
+  });
+
+  assets.value = wallet_nfts;
+
+  mints.value = wallet_nfts.map((asset: any) => {
+    return asset.mintAddress;
+  });
+
+  // for (const asset of wallet_nfts as Metadata[]) {
+  //   details.value.push(
+  //     await mx.nfts().load({
+  //       metadata: asset,
+  //     })
+  //   );
+  // }
+
+  // let token_metada: any[] = [];
+  // for (const mint of token_mints) {
+  //   token_metada.push(await mx.nfts().findByMint({ mintAddress: mint }));
+  // }
+  // meta.value = token_metada;
+});
+watchEffect(async () => {
+  if (!assets.value) {
+    return;
+  }
+
+  details.value = await Promise.all(
+    assets.value.map((metadata) =>
+      metadata.model === "metadata" ? mx.nfts().load({ metadata }) : "err"
+    )
+  );
+});
 </script>
 
 <template>
-  <div class="flex flex-row">
-    <div class="basis-1/3 p-card rounded-none">
-      <div class="grid">
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-      </div>
-    </div>
-    <div class="w-full p-card rounded-none">card</div>
+  <div v-for="asset in details">
+    {{ asset }}
   </div>
 </template>

@@ -20,9 +20,9 @@
   "devDependencies": {
     "@apollo/client": "^3.7.13",
     "@iconify/json": "^2.2.75",
-    "@metaplex-foundation/js": "^0.19.3",
+    "@metaplex-foundation/js": "0.17.0",
     "@solana/wallet-adapter-wallets": "^0.19.16",
-    "@solana/web3.js": "^1.75.0",
+    "@solana/web3.js": "^1.41.4",
     "@solflare-wallet/utl-aggregator": "^0.0.13",
     "@solflare-wallet/utl-sdk": "^1.4.0",
     "@staratlas/factory": "^0.5.3",
