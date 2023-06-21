@@ -1,29 +1,36 @@
 <script setup lang="ts">
-import { Connection, PublicKey } from "@solana/web3.js";
 import { useGlobalStore } from "../stores/GlobalStore";
-import { FindNftsByOwnerOutput, Metaplex } from "@metaplex-foundation/js";
+import { Metaplex } from "@metaplex-foundation/js";
 
-import { onMounted, ref, watchEffect } from "vue";
+import { onMounted, ref } from "vue";
+import { Connection, PublicKey } from "@solana/web3.js";
 
 const connection = new Connection(useGlobalStore().rpc.url);
-const mx = new Metaplex(connection);
+const mx = Metaplex.make(connection);
 
-const assets = ref<FindNftsByOwnerOutput>();
+const assets = ref();
 const mints = ref();
 const meta = ref<any[]>();
 
 const details = ref();
 
 onMounted(async () => {
-  let wallet_nfts = await mx.nfts().findAllByOwner({
-    owner: new PublicKey("38s5kQmKd4qSQKQcfLabSqbrxEbuhryUgQMEfb5TCwMt"),
-  });
+  let wallet_nfts = await mx
+    .nfts()
+    .findAllByOwner(
+      new PublicKey("38s5kQmKd4qSQKQcfLabSqbrxEbuhryUgQMEfb5TCwMt")
+    )
+    .run();
 
   assets.value = wallet_nfts;
 
-  mints.value = wallet_nfts.map((asset: any) => {
-    return asset.mintAddress;
-  });
+  details.value = await Promise.all(
+    assets.value.map((metadata: any) => mx.nfts().loadMetadata(metadata).run())
+  );
+  //
+  // mints.value = wallet_nfts.map((asset: any) => {
+  //   return asset.mintAddress;
+  // });
 
   // for (const asset of wallet_nfts as Metadata[]) {
   //   details.value.push(
@@ -39,17 +46,15 @@ onMounted(async () => {
   // }
   // meta.value = token_metada;
 });
-watchEffect(async () => {
-  if (!assets.value) {
-    return;
-  }
-
-  details.value = await Promise.all(
-    assets.value.map((metadata) =>
-      metadata.model === "metadata" ? mx.nfts().load({ metadata }) : "err"
-    )
-  );
-});
+// watchEffect(async () => {
+//   if (!assets.value) {
+//     return;
+//   }
+//
+//   details.value = await Promise.all(
+//     assets.value.map((metadata: any) => mx.nfts().loadMetadata(metadata))
+//   );
+// });
 </script>
 
 <template>
