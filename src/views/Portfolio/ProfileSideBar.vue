@@ -165,8 +165,8 @@ const score_total_atlas_value = computed(() => {
       <div class="grid grid-cols-2 gap-1">
         <div>Total:</div>
         <div
-            :class="useGlobalStore().is_dark ? 'border-gray-900' : ''"
-            class="flex flex-row gap-2 p-2 rounded-lg items-center border-2 p-card"
+
+            class="flex flex-row gap-2 p-2  p-inputtext"
         >
           <div class="flex flex-col space-y-1 text-sm">
             <p>&#8721</p>
@@ -193,8 +193,8 @@ const score_total_atlas_value = computed(() => {
       <div class="grid grid-cols-2 gap-1">
         <div>Total:</div>
         <div
-            :class="useGlobalStore().is_dark ? 'border-gray-900' : ''"
-            class="flex flex-row gap-2 p-2 rounded-lg items-center border-2 p-card"
+
+            class="flex flex-row gap-2 p-2  items-center p-inputtext"
         >
           <div class="flex flex-col space-y-1 items-center">
             <p>&#8721</p>
@@ -219,62 +219,83 @@ const score_total_atlas_value = computed(() => {
       <div class="grid grid-cols-2 gap-1">
         <p>Count:</p>
         <div
-            :class="useGlobalStore().is_dark ? 'border-gray-900' : ''"
-            class="flex flex-row gap-2 p-2 rounded-lg items-center border-2 p-card"
+            class="flex flex-col gap-2 p-2   p-inputtext"
         >
-          <div class="flex flex-col space-y-1 items-center">
-            <CurrencyIcon
-                :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
-                style="width: 20px"
-            />
-            <CurrencyIcon
-                :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
-                style="width: 20px"
-            />
-          </div>
-          <div class="flex flex-col w-full text-right text-sm">
-            <G_TradesTotalElement
-                :currency_mint="
+          <div>
+            <div class="flex flex-row w-full gap-2 items-center ">
+              <div>
+                <CurrencyIcon
+                    :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
+                    style="width: 20px"
+                />
+              </div>
+              <div class="border h-1rem"></div>
+              <G_TradesTotalElement
+                  :currency_mint="
                 CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint
               "
-                :wallet_address="useUserWalletStore().address?.toString()"
-                class=" "/>
+                  :wallet_address="useUserWalletStore().address?.toString()"
+                  class="flex w-full  justify-end "/>
+            </div>
 
-            <G_TradesTotalElement :currency_mint="
+
+            <div class="flex flex-row w-full gap-2 items-center ">
+              <div>
+                <CurrencyIcon
+                    :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
+                    style="width: 20px"
+                />
+              </div>
+              <div class="border  h-1rem"></div>
+              <G_TradesTotalElement :currency_mint="
                 CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint
               "
-                                  :wallet_address="useUserWalletStore().address?.toString()"/>
+                                    :wallet_address="useUserWalletStore().address?.toString()"
+                                    class="flex w-full  justify-end "/>
+            </div>
           </div>
         </div>
         <p>Volume:</p>
         <div
             :class="useGlobalStore().is_dark ? 'border-gray-900' : ''"
-            class="flex flex-row gap-2 p-2 rounded-lg items-center border-2 p-card"
+            class="flex flex-col gap-2 p-2   p-inputtext"
         >
-          <div class="flex flex-col space-y-1 items-center">
-            <CurrencyIcon
-                :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
-                style="width: 20px"
-            />
-            <CurrencyIcon
-                :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
-                style="width: 20px"
-            />
-          </div>
-          <div class="flex flex-col w-full text-right text-sm">
-            <G_TradesVolumeElement
-                :currency_mint="
+          <div>
+            <div class="flex flex-row w-full gap-2 items-center ">
+              <div>
+                <CurrencyIcon
+                    :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
+                    style="width: 20px"
+                />
+              </div>
+              <div class="border h-1rem"></div>
+              <G_TradesVolumeElement
+                  :currency_mint="
                 CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint
               "
-                :wallet_address="useUserWalletStore().address?.toString()"
-            ></G_TradesVolumeElement>
-            <G_TradesVolumeElement
-                :currency_mint="
+                  :wallet_address="useUserWalletStore().address?.toString()"
+                  class="flex w-full  justify-end "
+              ></G_TradesVolumeElement>
+            </div>
+            <div class="flex flex-row w-full gap-2 items-center ">
+              <div>
+                <CurrencyIcon
+                    :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
+                    style="width: 20px"
+                />
+              </div>
+              <div class="border h-1rem"></div>
+              <G_TradesVolumeElement
+                  :currency_mint="
                 CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint
               "
-                :wallet_address="useUserWalletStore().address?.toString()"
-            ></G_TradesVolumeElement>
+                  :wallet_address="useUserWalletStore().address?.toString()"
+                  class="flex w-full  justify-end "
+              ></G_TradesVolumeElement>
+            </div>
           </div>
+
+
         </div>
       </div>
     </Fieldset>
