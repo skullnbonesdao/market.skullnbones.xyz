@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { CURRENCIES } from "../../../static/currencies";
 import { calc_passed_time } from "../../../static/formatting/calc_passed_time";
 import PairImage from "../PairImage.vue";
@@ -6,10 +6,12 @@ import ProgressSpinner from "primevue/progressspinner";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import NoData from "../NoData.vue";
-import CurrencyIcon from "../../icon-helper/CurrencyIcon.vue";
 import { E_EXPLORER, EXPLORER } from "../../../static/explorer";
 import { calc_percentage_for_fee } from "../../../static/formatting/calc_percentage";
 import ExplorerIcon from "../../icon-helper/ExplorerIcon.vue";
+import { useGlobalStore } from "../../../stores/GlobalStore";
+import { format_address } from "../../../static/formatting/format_address";
+import SinglePriceTemplate from "../templates/SinglePriceTemplate.vue";
 
 const props = defineProps({
   search_string: {
@@ -27,10 +29,10 @@ defineEmits(["search_string"]);
 
 <template>
   <ApolloQuery
-    class="p-card"
+    :poll-interval="useGlobalStore().pollInterval"
     :query="search_string ?
       (gql: any) => gql`
-        query find_symbol_history($search_string: String!, $limit: Int!) {
+        query find_symbol_history($search_string: String!, $limit: Inft!) {
           trades(
             limit: $limit
             order_by: { block: desc }
@@ -81,6 +83,7 @@ defineEmits(["search_string"]);
       `
     "
     :variables="{ limit, search_string }"
+    class="p-card"
   >
     <template v-slot="{ result: { loading, error, data } }">
       <!-- Loading -->
@@ -98,10 +101,10 @@ defineEmits(["search_string"]);
         <NoData v-if="!data.trades.length" class="justify-center"></NoData>
         <DataTable
           v-else
-          :value="data.trades"
-          tableStyle="min-width: 50rem"
-          sort-field="timestamp"
           :sort-order="-1"
+          :value="data.trades"
+          sort-field="timestamp"
+          tableStyle="min-width: 50rem"
         >
           <Column header="Pair">
             <template #body="slotProps">
@@ -117,8 +120,8 @@ defineEmits(["search_string"]);
                   "
                 />
                 <p
-                  @click="$emit('search_string', slotProps.data.symbol)"
                   class="text-sm hover:animate-pulse hover:underline"
+                  @click="$emit('search_string', slotProps.data.symbol)"
                 >
                   {{ slotProps.data.symbol }}
                 </p>
@@ -126,7 +129,7 @@ defineEmits(["search_string"]);
             </template>
           </Column>
 
-          <Column header="Info" sortable sort-field="timestamp">
+          <Column header="Info" sort-field="timestamp" sortable>
             <template #body="slotProps">
               <div class="flex text-xs">
                 {{ new Date(slotProps.data.timestamp * 1000).toISOString() }}
@@ -155,19 +158,19 @@ defineEmits(["search_string"]);
                 </div>
                 <div class="flex flex-col">
                   <div
+                    class="hover:animate-pulse hover:underline"
                     @click="
                       $emit('search_string', slotProps.data.currency_mint)
                     "
-                    class="hover:animate-pulse hover:underline"
                   >
-                    {{ slotProps.data.currency_mint }}
+                    {{ format_address(slotProps.data.currency_mint) }}
                   </div>
 
                   <div
-                    @click="$emit('search_string', slotProps.data.asset_mint)"
                     class="hover:animate-pulse hover:underline"
+                    @click="$emit('search_string', slotProps.data.asset_mint)"
                   >
-                    {{ slotProps.data.asset_mint }}
+                    {{ format_address(slotProps.data.asset_mint) }}
                   </div>
                 </div>
               </div>
@@ -182,30 +185,30 @@ defineEmits(["search_string"]);
                 </div>
                 <div class="flex flex-col">
                   <div
-                    @click="
-                      $emit('search_string', slotProps.data.order_initializer)
-                    "
-                    class="hover:animate-pulse hover:underline"
                     :class="
                       slotProps.data.asset_receiving_wallet ===
                       slotProps.data.order_initializer
                         ? 'text-green-500'
                         : 'text-red-500'
                     "
+                    class="hover:animate-pulse hover:underline"
+                    @click="
+                      $emit('search_string', slotProps.data.order_initializer)
+                    "
                   >
-                    {{ slotProps.data.order_initializer }}
+                    {{ format_address(slotProps.data.order_initializer) }}
                   </div>
                   <div
-                    @click="$emit('search_string', slotProps.data.order_taker)"
-                    class="hover:animate-pulse hover:underline"
                     :class="
                       slotProps.data.asset_receiving_wallet ===
                       slotProps.data.order_taker
                         ? 'text-green-500'
                         : 'text-red-500'
                     "
+                    class="hover:animate-pulse hover:underline"
+                    @click="$emit('search_string', slotProps.data.order_taker)"
                   >
-                    {{ slotProps.data.order_taker }}
+                    {{ format_address(slotProps.data.order_taker) }}
                   </div>
                 </div>
               </div>
@@ -232,57 +235,51 @@ defineEmits(["search_string"]);
           </Column>
           <Column field="price.value" header="Price" sortable>
             <template #body="slotProps">
-              <div class="flex gap-2">
-                <CurrencyIcon
-                  style="height: 24px"
-                  :currency="
-                    CURRENCIES.find(
-                      (c) => c.mint === slotProps.data.currency_mint
-                    )
-                  "
-                />
-                <span>{{ slotProps.data.price }}</span>
-              </div>
+              <SinglePriceTemplate
+                :currency="
+                  CURRENCIES.find(
+                    (c) => c.mint === slotProps.data.currency_mint
+                  )
+                "
+                :price="slotProps.data.price"
+              />
             </template>
           </Column>
           <Column field="total.value" header="Total" sortable>
             <template #body="slotProps">
-              <div class="flex gap-2">
-                <CurrencyIcon
-                  style="height: 24px"
-                  :currency="
-                    CURRENCIES.find(
-                      (c) => c.mint === slotProps.data.currency_mint
-                    )
-                  "
-                />
-                <span> {{ slotProps.data.total_cost.toFixed(2) }}</span>
-              </div>
+              <SinglePriceTemplate
+                :currency="
+                  CURRENCIES.find(
+                    (c) => c.mint === slotProps.data.currency_mint
+                  )
+                "
+                :price="slotProps.data.total_cost.toFixed(2)"
+              />
             </template>
           </Column>
           <Column field="explorer" header="Explorer" style="min-width: 200px">
             <template #body="slotProps">
               <div class="flex flex-row justify-center items-center space-x-2">
                 <ExplorerIcon
-                  class="w-5"
                   :explorer="
                     EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)
                   "
                   :signature="slotProps.data.signature"
+                  class="w-5"
                 />
                 <ExplorerIcon
-                  class="w-5"
                   :explorer="
                     EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)
                   "
                   :signature="slotProps.data.signature"
+                  class="w-5"
                 />
                 <ExplorerIcon
-                  class="w-5"
+                  :address="slotProps.data.asset_mint"
                   :explorer="
                     EXPLORER.find((e) => e.type === E_EXPLORER.STARATLAS)
                   "
-                  :address="slotProps.data.asset_mint"
+                  class="w-5"
                 />
               </div>
             </template>
