@@ -1,16 +1,16 @@
-import { defineConfig } from "vite";
+import {defineConfig} from "vite";
 import vue from "@vitejs/plugin-vue";
 import UnoCSS from "unocss/vite";
 import * as path from "path";
 
-import Icons from "unplugin-icons/vite";
-// @ts-ignore
+import Icons from "unplugin-icons/vite"; // @ts-ignore
 import Components from "unplugin-vue-components/vite";
 import IconsResolver from "unplugin-icons/resolver";
-import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
-import nodePolyfills from "rollup-plugin-node-polyfills";
+import {NodeGlobalsPolyfillPlugin} from "@esbuild-plugins/node-globals-polyfill";
+import nodePolyfills from "rollup-plugin-node-polyfills"; // https://vitejs.dev/config/
 
 // https://vitejs.dev/config/
+// @ts-ignore
 // @ts-ignore
 // @ts-ignore
 // @ts-ignore
@@ -28,7 +28,7 @@ export default defineConfig({
   ],
   define: {
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
-    "process.env": process.env ?? {},
+    "process.env": {},
   },
   resolve: {
     alias: {
@@ -38,6 +38,7 @@ export default defineConfig({
       assert: "assert",
       crypto: "crypto-browserify",
       util: "util",
+      "near-api-js": "near-api-js/dist/near-api-js.js",
     },
   },
   build: {
@@ -48,6 +49,9 @@ export default defineConfig({
   },
   optimizeDeps: {
     esbuildOptions: {
+      define: {
+        global: "globalThis",
+      },
       plugins: [NodeGlobalsPolyfillPlugin({ buffer: true })],
       target: "es2020",
     },
