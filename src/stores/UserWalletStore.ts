@@ -260,17 +260,19 @@ export const useUserWalletStore = defineStore("userWalletStore", {
       const connection = new Connection(useGlobalStore().rpc.url);
       const meta = Metaplex.make(connection);
 
+      console.log("loading nfts");
       let nfts_no_json = await meta
         .nfts()
         .findAllByOwner(new PublicKey(this.address?.toString() ?? ""))
         .run();
 
+      console.log("awaiting metadata promises nfts");
       let nfts_json = await Promise.all(
         nfts_no_json.map((metadata: any) =>
           meta.nfts().loadMetadata(metadata).run()
         )
       );
-
+      console.log("loaded nfts");
       nfts_json.forEach((nft) =>
         this.nfts.push({
           publicKey: user_tokens_all.value.find(

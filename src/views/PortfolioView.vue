@@ -9,17 +9,29 @@
           type="text"
         />
         <Button
-          v-if="!useUserWalletStore().status.get()"
-          icon="pi pi-search"
-          @click="useUserWalletStore().update(text_user_wallet_input)"
-        />
-        <Button
-          v-else
-          disabled
-          icon="pi pi-spinner"
+          :disabled="
+            useUserWalletStore().status.get() ||
+            !useGlobalStore().status.is_initialized
+          "
+          :icon="
+            !useUserWalletStore().status.get() &&
+            useGlobalStore().status.is_initialized
+              ? 'pi pi-search'
+              : 'pi pi-spinner'
+          "
           @click="useUserWalletStore().update(text_user_wallet_input)"
         >
-          <i class="pi pi-spinner animate-spin"></i>
+          <i
+            v-if="
+              !useUserWalletStore().status.get() &&
+              useGlobalStore().status.is_initialized
+            "
+            class="pi pi-search"
+          ></i>
+          <i
+            v-if="useUserWalletStore().status.get()"
+            class="pi pi-spinner animate-spin"
+          ></i>
         </Button>
       </div>
     </div>
@@ -113,6 +125,7 @@ import PortfolioHistoryTable from "../components/elements/portfolio_elements/Por
 import ScoreElement from "../components/elements/score/ScoreElement.vue";
 import ProfileSideBar from "./Portfolio/ProfileSideBar.vue";
 import PortfolioHistoryChart from "../components/elements/portfolio_elements/PortfolioHistoryChart.vue";
+import { useGlobalStore } from "../stores/GlobalStore";
 
 const text_user_wallet_input = ref();
 
