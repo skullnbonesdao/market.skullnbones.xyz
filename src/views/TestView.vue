@@ -59,6 +59,6 @@ onMounted(async () => {
 
 <template>
   <div v-for="asset in details">
-    {{ asset }}
+    {{ asset?.json?.image }}
   </div>
 </template>

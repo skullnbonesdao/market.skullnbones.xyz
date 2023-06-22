@@ -14,7 +14,7 @@ const props = defineProps({
     :class="
       props.currency?.type === E_CURRENCIES.ATLAS
         ? ' border-black'
-        : 'border-transparent'
+        : ' border-transparent'
     "
     class="border-2 rounded-full"
     :src="props.currency?.image_path"

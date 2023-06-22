@@ -22,6 +22,7 @@
     "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
     "@iconify/json": "^2.2.75",
     "@metaplex-foundation/js": "0.13.3",
+    "@metaplex-foundation/mpl-token-metadata": "^2.12.0",
     "@solana/wallet-adapter-wallets": "^0.19.16",
     "@solana/web3.js": "^1.50.1",
     "@solflare-wallet/utl-aggregator": "^0.0.13",

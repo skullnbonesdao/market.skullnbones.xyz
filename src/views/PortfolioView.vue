@@ -35,6 +35,7 @@
             header="Accounts"
             v-if="useUserWalletStore().toggle_items.show_accounts"
             toggleable
+            collapsed
           >
             <template #header>
               <div class="flex flex-row w-full items-center pr-2 space-x-2">
@@ -55,26 +56,24 @@
               </div>
             </template>
             <div class="flex justify-around">
-              <NoData
-                class="flex justify-center"
-                v-if="!useUserWalletStore().tokens.length"
-              />
-              <PortfolioAccountsView v-else class="flex w-full" />
+              <PortfolioAccountsView class="flex w-full" />
             </div>
           </Panel>
           <Panel
             header="Score"
             v-if="useUserWalletStore().toggle_items.show_score"
             toggleable
+            collapsed
           >
             <div class="flex justify-around">
               <ScoreElement />
             </div>
           </Panel>
           <Panel
-            header="Trade"
+            header="Galactic-Marketplace "
             v-if="useUserWalletStore().toggle_items.show_history"
             toggleable
+            collapsed
           >
             <PortfolioHistoryChart
               class="w-full"
@@ -97,7 +96,7 @@ import { useWallet } from "solana-wallets-vue";
 import NoData from "../components/elements/NoData.vue";
 import { computed, onMounted, ref, watch } from "vue";
 import { PublicKey } from "@solana/web3.js";
-import PortfolioAccountsView from "../components/elements/portfolio_elements/PortfolioAccountsView.vue";
+import PortfolioAccountsView from "./Portfolio/PortfolioAccountsView.vue";
 import { useUserWalletStore } from "../stores/UserWalletStore";
 import PortfolioHistoryTable from "../components/elements/portfolio_elements/PortfolioHistoryTable.vue";
 import ScoreElement from "../components/elements/score/ScoreElement.vue";
