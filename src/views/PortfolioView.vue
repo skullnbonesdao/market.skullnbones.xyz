@@ -40,19 +40,14 @@
             <template #header>
               <div class="flex flex-row w-full items-center pr-2 space-x-2">
                 <p class="p-panel-title w-full">Accounts</p>
-                <ToggleButton
-                  v-model="useUserWalletStore().toggle_items.hide_zero_balances"
-                  onLabel="Hiding 0 balances"
-                  offLabel="Showing 0 balances"
-                  class="w-15rem whitespace-nowrap"
-                />
-                <ToggleButton
-                  disabled
-                  v-model="useUserWalletStore().toggle_items.only_sa_accounts"
-                  class="whitespace-nowrap"
-                  onLabel="All"
-                  offLabel="SA Only"
-                />
+
+                <div class="flex flex-row space-x-1">
+                  <p>{{ useUserWalletStore().sa_tokens.length }}</p>
+                  <p>/</p>
+                  <p>{{ useUserWalletStore().tokens.length }}</p>
+                  <p>/</p>
+                  <p>{{ useUserWalletStore().nfts.length }}</p>
+                </div>
               </div>
             </template>
             <div class="flex justify-around">
@@ -65,6 +60,15 @@
             toggleable
             collapsed
           >
+            <template #header>
+              <div class="flex flex-row w-full items-center pr-2 space-x-2">
+                <p class="p-panel-title w-full">Score</p>
+
+                <div class="flex flex-row space-x-1">
+                  <p>{{ useUserWalletStore().sa_score.length }}</p>
+                </div>
+              </div>
+            </template>
             <div class="flex justify-around">
               <ScoreElement />
             </div>
@@ -102,7 +106,6 @@ import PortfolioHistoryTable from "../components/elements/portfolio_elements/Por
 import ScoreElement from "../components/elements/score/ScoreElement.vue";
 import ProfileSideBar from "./Portfolio/ProfileSideBar.vue";
 import PortfolioHistoryChart from "../components/elements/portfolio_elements/PortfolioHistoryChart.vue";
-import ToggleButton from "primevue/togglebutton";
 
 const text_user_wallet_input = ref();
 
