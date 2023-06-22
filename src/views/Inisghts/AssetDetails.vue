@@ -1,17 +1,16 @@
-<script setup lang="ts">
-import { useInsightsStore } from "../../stores/InsightsStore";
+<script lang="ts" setup>
 import { onMounted, ref } from "vue";
 import { Metaplex } from "@metaplex-foundation/js";
-import { Connection, PublicKey } from "@solana/web3.js";
+import { Connection } from "@solana/web3.js";
 import { useGlobalStore } from "../../stores/GlobalStore";
 
 const data = ref();
 
 onMounted(async () => {
   const metaplex = Metaplex.make(new Connection(useGlobalStore().rpc.url));
-  const d = await metaplex.tokens().findMintByAddress({
-    address: new PublicKey(useInsightsStore().selected?.mint ?? ""),
-  });
+  // const d = await metaplex.tokens().findMintByAddress({
+  //   address: new PublicKey(useInsightsStore().selected?.mint ?? ""),
+  // });
 });
 </script>
 

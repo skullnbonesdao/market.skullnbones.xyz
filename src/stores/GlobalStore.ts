@@ -4,10 +4,8 @@ import { StarAtlasAPIItem } from "../static/StarAtlasAPIItem";
 import { useLocalStorage } from "@vueuse/core";
 import { CURRENCIES } from "../static/currencies";
 import { get_multi_price } from "../static/swagger/birdseye_api/birdseye_api";
-
-import { Nft, NftWithToken, Sft, SftWithToken } from "@metaplex-foundation/js";
+import { Nft } from "@metaplex-foundation/js";
 import { BirdsEyePricesResponse } from "../static/swagger/birdseye_api/birdsyste_pirces_response";
-import * as tokenlist from "../static/apis/TokenList/I_TokenList";
 
 export interface Status {
   is_initialized: boolean;
@@ -31,36 +29,6 @@ export const endpoints_list: RPCEndpoint[] = [
   //  { name: "solana-main", url: "https://api.mainnet-beta.solana.com/" },
   //  { name: "solana-serum", url: "https://solana-api.projectserum.com/" },
 ];
-
-export interface I_TokenData {
-  token_account: String;
-  token_mint: String;
-  account_info: any;
-  sa_api_data: StarAtlasAPIItem | undefined;
-  token_list_info: tokenlist.Token | undefined;
-  account_metadata: Sft | SftWithToken | Nft | NftWithToken | undefined;
-  json_metadata: any;
-}
-
-export interface TokenInfo {
-  address: String;
-  amount: number;
-  price: number;
-  usd_value: number;
-  meta?: SftWithToken;
-  image_url?: string;
-}
-
-export interface TableGroupedHistory {
-  key: string;
-  data: TableGroupedElement;
-  children: Array<TableGroupedHistoryChilds>;
-}
-
-export interface TableGroupedHistoryChilds {
-  key: string;
-  data: TableGroupedElement;
-}
 
 export interface TableGroupedElement {
   name: string;
@@ -211,7 +179,6 @@ export function _update_status(
   status: Status,
   is_loading: boolean,
   message: string,
-
   step?: number,
   step_total?: number
 ): Status {
