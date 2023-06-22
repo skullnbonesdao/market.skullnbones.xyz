@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import NoData from "../NoData.vue";
 import graphql2chartjs from "graphql2chartjs";
 import Chart from "primevue/chart";
@@ -94,6 +94,7 @@ function map_history_chart(data: any) {
 
 <template>
   <ApolloQuery
+    :poll-interval="useGlobalStore().pollInterval"
     :query="
       (gql:any) => gql`
         query wallet_history(
@@ -160,10 +161,10 @@ function map_history_chart(data: any) {
         </p>
 
         <Chart
-          type="line"
           :data="map_history_chart(data).data"
           :options="chart_options"
           class="h-30rem"
+          type="line"
         />
       </div>
     </template>
