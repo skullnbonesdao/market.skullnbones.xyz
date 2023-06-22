@@ -3,11 +3,12 @@
     <div class="p-card p-2 flex flex-col md:flex-row w-full gap-2">
       <div class="p-fluid flex w-full gap-2">
         <InputText
-          class="w-full"
-          type="text"
-          placeholder="Enter a wallet address"
           v-model="text_user_wallet_input"
-        /><Button
+          class="w-full"
+          placeholder="Enter a wallet address"
+          type="text"
+        />
+        <Button
           v-if="!useUserWalletStore().status.get()"
           icon="pi pi-search"
           @click="useUserWalletStore().update(text_user_wallet_input)"
@@ -31,14 +32,15 @@
         class="w-full"
       >
         <div v-if="!useUserWalletStore().address" class="p-card">
-          <NoData text="No Wallet searched!" class="flex justify-center" />
+          <NoData class="flex justify-center" text="No Wallet searched!" />
         </div>
         <div v-else class="flex flex-col space-y-2">
           <Panel
-            header="Accounts"
             v-if="useUserWalletStore().toggle_items.show_accounts"
-            toggleable
+            class="p-card"
             collapsed
+            header="Accounts"
+            toggleable
           >
             <template #header>
               <div class="flex flex-row w-full items-center pr-2 space-x-2">
@@ -58,10 +60,11 @@
             </div>
           </Panel>
           <Panel
-            header="Score"
             v-if="useUserWalletStore().toggle_items.show_score"
-            toggleable
+            class="p-card"
             collapsed
+            header="Score"
+            toggleable
           >
             <template #header>
               <div class="flex flex-row w-full items-center pr-2 space-x-2">
@@ -77,14 +80,15 @@
             </div>
           </Panel>
           <Panel
-            header="Galactic-Marketplace "
             v-if="useUserWalletStore().toggle_items.show_history"
-            toggleable
+            class="p-card"
             collapsed
+            header="Galactic-Marketplace "
+            toggleable
           >
             <PortfolioHistoryChart
-              class="w-full"
               :user_wallet="useUserWalletStore().address?.toString() ?? ''"
+              class="w-full"
             />
             <PortfolioHistoryTable
               :user_wallet="useUserWalletStore().address?.toString() ?? ''"
@@ -96,7 +100,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import InputText from "primevue/inputtext";
 import Panel from "primevue/panel";
 import { useWallet } from "solana-wallets-vue";
