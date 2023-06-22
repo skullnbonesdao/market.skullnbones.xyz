@@ -45,7 +45,7 @@
                   />
 
                   <CurrencyIcon
-                    class="w-6"
+                    style="width: 25px"
                     :currency="
                       CURRENCIES.find(
                         (c) =>

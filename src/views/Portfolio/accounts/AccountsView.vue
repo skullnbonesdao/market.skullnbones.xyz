@@ -57,7 +57,7 @@ const expandedRows = ref();
             {{ slotProps.data.market_price.usdc.toFixed(2) }}
           </p>
           <CurrencyIcon
-            class="w-6"
+            style="width: 25px"
             :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
           />
 
@@ -65,7 +65,7 @@ const expandedRows = ref();
             {{ slotProps.data.market_price.atlas.toFixed(2) }}
           </p>
           <CurrencyIcon
-            class="w-6"
+            style="width: 25px"
             :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
           />
         </div>
@@ -102,7 +102,7 @@ const expandedRows = ref();
             }}
           </p>
           <CurrencyIcon
-            class="w-6"
+            style="width: 25px"
             :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
           />
 
@@ -115,7 +115,7 @@ const expandedRows = ref();
             }}
           </p>
           <CurrencyIcon
-            class="w-6"
+            style="width: 25px"
             :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
           />
         </div>
