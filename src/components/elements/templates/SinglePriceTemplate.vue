@@ -1,19 +1,16 @@
 <template>
-  <div
-    :class="useGlobalStore().is_dark ? 'border-gray-900' : ''"
-    class="flex flex-row gap-2 p-2 rounded-lg items-center border-2 p-card"
-  >
-    <div class="flex flex-col space-y-1 items-center">
+  <div class="flex flex-row gap-2 p-2 p-inputtext">
+    <div class="flex flex-row w-full justify-end space-x-2">
+      <p class="flex text-sm">
+        {{ props.price }}
+      </p>
+      <div class="border-1"></div>
       <CurrencyIcon
         v-if="props.currency"
         :currency="props.currency"
+        class="flex"
         style="width: 20px"
       />
-    </div>
-    <div class="flex w-full">
-      <p class="flex w-full justify-end text-sm">
-        {{ props.price }}
-      </p>
     </div>
   </div>
 </template>
@@ -22,7 +19,6 @@
 import { PropType } from "vue";
 import { CURRENCIES, I_CURRENCY } from "../../../static/currencies";
 import CurrencyIcon from "../../icon-helper/CurrencyIcon.vue";
-import { useGlobalStore } from "../../../stores/GlobalStore";
 
 const props = defineProps({
   price: {

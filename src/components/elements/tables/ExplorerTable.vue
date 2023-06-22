@@ -152,10 +152,7 @@ const cities = ref([
 
           <Column header="Info" sort-field="timestamp" sortable>
             <template #body="slotProps">
-              <div
-                :class="useGlobalStore().is_dark ? 'border-gray-900' : ''"
-                class="flex flex-col p-2 rounded-lg border-2 p-card text-xs"
-              >
+              <div class="flex flex-col p-2 p-inputtext text-xs">
                 <div class="flex text-xs">
                   {{ new Date(slotProps.data.timestamp * 1000).toISOString() }}
                 </div>
@@ -177,30 +174,27 @@ const cities = ref([
           </Column>
           <Column field="mint" header="Mint">
             <template #body="slotProps">
-              <div
-                :class="useGlobalStore().is_dark ? 'border-gray-900' : ''"
-                class="flex flex-row gap-2 p-2 rounded-lg items-center border-2 p-card space-x-2 text-xs"
-              >
-                <div class="flex flex-col">
-                  <div>Token:</div>
-                  <div>Asset:</div>
+              <div class="flex flex-row gap-2 p-2 p-inputtext text-xs">
+                <div class="flex flex-col text-xs">
+                  <p>Token:</p>
+                  <p>Asset:</p>
                 </div>
-                <div class="flex flex-col">
-                  <div
+                <div class="flex flex-col text-xs">
+                  <p
                     class="hover:animate-pulse hover:underline"
                     @click="
                       $emit('search_string', slotProps.data.currency_mint)
                     "
                   >
                     {{ format_address(slotProps.data.currency_mint) }}
-                  </div>
+                  </p>
 
-                  <div
+                  <p
                     class="hover:animate-pulse hover:underline"
                     @click="$emit('search_string', slotProps.data.asset_mint)"
                   >
                     {{ format_address(slotProps.data.asset_mint) }}
-                  </div>
+                  </p>
                 </div>
               </div>
             </template>
@@ -209,13 +203,13 @@ const cities = ref([
             <template #body="slotProps">
               <div
                 :class="useGlobalStore().is_dark ? 'border-gray-900' : ''"
-                class="flex flex-row space-x-2 p-2 rounded-lg border-2 p-card text-xs"
+                class="flex flex-row space-x-2 p-2 p-inputtext"
               >
-                <div class="flex flex-col">
+                <div class="flex flex-col text-xs">
                   <div>Maker:</div>
                   <div>Taker:</div>
                 </div>
-                <div class="flex flex-col">
+                <div class="flex flex-col text-xs">
                   <div
                     :class="
                       slotProps.data.asset_receiving_wallet ===
@@ -248,9 +242,7 @@ const cities = ref([
           </Column>
           <Column field="market_fee" header="Fee" sortable>
             <template #body="slotProps">
-              <span
-                :class="useGlobalStore().is_dark ? 'border-gray-900' : ''"
-                class="p-2 rounded-lg border-2 p-card"
+              <span class="p-2 rounded-lg p-inputtext text-xs"
                 >{{
                   calc_percentage_for_fee(
                     slotProps.data.market_fee,
@@ -262,10 +254,7 @@ const cities = ref([
           </Column>
           <Column field="size" header="Size" sortable>
             <template #body="slotProps">
-              <div
-                :class="useGlobalStore().is_dark ? 'border-gray-900' : ''"
-                class="p-2 rounded-lg border-2 p-card"
-              >
+              <div class="p-2 rounded-lg p-inputtext">
                 <span>x{{ slotProps.data.asset_change }}</span>
               </div>
             </template>
