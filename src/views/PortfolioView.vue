@@ -28,10 +28,7 @@
             "
             class="pi pi-search"
           ></i>
-          <i
-            v-if="useUserWalletStore().status.get()"
-            class="pi pi-spinner animate-spin"
-          ></i>
+          <i v-else class="pi pi-spinner animate-spin"></i>
         </Button>
       </div>
     </div>
