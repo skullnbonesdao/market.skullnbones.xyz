@@ -57,7 +57,7 @@ export interface Toggables {
 export const useGlobalStore = defineStore("globalStore", {
   state: () => ({
     status: {} as Status,
-    pollInterval: 1000,
+    pollInterval: 10000,
     toggleables: useLocalStorage("toggables", {
       load_tokens: true,
       load_nfts: true,

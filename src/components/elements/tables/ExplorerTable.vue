@@ -255,7 +255,7 @@ const cities = ref([
           <Column field="size" header="Size" sortable>
             <template #body="slotProps">
               <div class="p-2 rounded-lg p-inputtext">
-                <span>x{{ slotProps.data.asset_change }}</span>
+                <span>{{ slotProps.data.asset_change }}</span>
               </div>
             </template>
           </Column>
