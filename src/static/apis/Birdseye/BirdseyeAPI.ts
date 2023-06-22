@@ -1,6 +1,6 @@
 import { I_MultiTokenPrice } from "./I_MultiTokenPrice";
 
-export async function get_multi_price(mints: string[] | undefined) {
+export async function get_multi_price_birdseye(mints: string[] | undefined) {
   let data: I_MultiTokenPrice | undefined;
 
   let url = "https://public-api.birdeye.so/public/multi_price?list_address=";

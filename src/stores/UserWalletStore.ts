@@ -27,6 +27,7 @@ import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
 import { TOKEN_PROGRAM_ID } from "solana-spl-current";
 import { Client, Token, UtlConfig } from "@solflare-wallet/utl-sdk";
 import { StarAtlasAPIItem } from "../static/StarAtlasAPIItem";
+import { get_multi_price_birdseye } from "../static/apis/Birdseye/BirdseyeAPI";
 
 export interface I_AccountData {}
 
@@ -199,7 +200,7 @@ export const useUserWalletStore = defineStore("userWalletStore", {
 
       //filter out Tokens
       this.status.status_inc();
-      for (const token1 of user_tokens_all.value
+      const filtered_tokens = user_tokens_all.value
         .filter((token) =>
           useGlobalStore().sa_api_data.some(
             (sa) => sa.mint != token.account.data.parsed.info.mint
@@ -207,7 +208,21 @@ export const useUserWalletStore = defineStore("userWalletStore", {
         )
         .filter(
           (token) => token.account.data.parsed.info.tokenAmount.decimals !== 0
-        )) {
+        );
+      const birdseye_prices = await get_multi_price_birdseye(
+        filtered_tokens.flatMap((t) => t.account.data.parsed.info.mint)
+      );
+      const atlas_price =
+        (await get_multi_price_birdseye([
+          CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ?? "",
+        ]).then(
+          (data) =>
+            data?.data[
+              CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ?? ""
+            ]?.value
+        )) ?? 0;
+
+      for (const token1 of filtered_tokens) {
         const token_mint =
           token_metadatas.find(
             (meta) => meta.address === token1.account.data.parsed.info.mint
@@ -220,8 +235,10 @@ export const useUserWalletStore = defineStore("userWalletStore", {
             (meta) => meta.address === token1.account.data.parsed.info.mint
           ),
           market_price: {
-            atlas: 0,
-            usdc: 0,
+            atlas:
+              (birdseye_prices?.data[token_mint]?.value ?? 0) / atlas_price ??
+              0,
+            usdc: birdseye_prices?.data[token_mint]?.value ?? 0,
           },
         });
       }

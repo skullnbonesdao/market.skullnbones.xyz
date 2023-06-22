@@ -23,10 +23,13 @@
       </div>
     </div>
     <div class="grid grid-cols-10 gap-1">
-      <div class="p-card col-span-2">
+      <div v-if="useUserWalletStore().address" class="p-card col-span-2">
         <ProfileSideBar />
       </div>
-      <div class="w-full col-span-8">
+      <div
+        :class="useUserWalletStore().address ? 'col-span-8' : 'col-span-10'"
+        class="w-full"
+      >
         <div v-if="!useUserWalletStore().address" class="p-card">
           <NoData text="No Wallet searched!" class="flex justify-center" />
         </div>

@@ -5,7 +5,6 @@ import {calc_passed_time} from "../../static/formatting/calc_passed_time";
 import Fieldset from "primevue/fieldset";
 import CurrencyIcon from "../../components/icon-helper/CurrencyIcon.vue";
 import {CURRENCIES, E_CURRENCIES} from "../../static/currencies";
-import ToggleButton from "primevue/togglebutton";
 import G_TradesVolumeElement from "../../components/graphql/G_TradesVolumeElement.vue";
 import G_TradesTotalElement from "../../components/graphql/G_TradesTotalElement.vue";
 import {computed} from "vue";
@@ -40,9 +39,8 @@ const score_total_atlas_value = computed(() => {
 </script>
 
 <template>
-
-    <div class="flex flex-col space-y-2 m-2">
-      <div v-if="useUserWalletStore().address" class="flex flex-col items-center space-y-1">
+    <div  class="flex flex-col space-y-2 m-2">
+      <div  class="flex flex-col items-center space-y-1">
         <Avatar
             v-if="useUserWalletStore().sa_profile?.avatarId"
           :image="
@@ -282,43 +280,41 @@ const score_total_atlas_value = computed(() => {
             ></G_TradesVolumeElement>
           </div>
         </div>
-
-
       </Fieldset>
 
-      <Fieldset>
-        <template #legend>
-          <div class="flex items-center">
-            <i-mdi-cog class="mr-2" />
-            <span class="font-bold text-lg">Options</span>
-          </div>
-        </template>
+<!--      <Fieldset>-->
+<!--        <template #legend>-->
+<!--          <div class="flex items-center">-->
+<!--            <i-mdi-cog class="mr-2" />-->
+<!--            <span class="font-bold text-lg">Options</span>-->
+<!--          </div>-->
+<!--        </template>-->
 
-        <div class="grid grid-cols-1 gap-2">
-            <ToggleButton
-                v-model="useUserWalletStore().toggle_items.show_accounts"
-                onLabel="Load Accounts"
-                offLabel="No Accounts"
-                onIcon="pi pi-check"
-                offIcon="pi pi-times"
-            />
+<!--        <div class="grid grid-cols-1 gap-2">-->
+<!--            <ToggleButton-->
+<!--                v-model="useUserWalletStore().toggle_items.show_accounts"-->
+<!--                onLabel="Load Accounts"-->
+<!--                offLabel="No Accounts"-->
+<!--                onIcon="pi pi-check"-->
+<!--                offIcon="pi pi-times"-->
+<!--            />-->
 
-            <ToggleButton
-                v-model="useUserWalletStore().toggle_items.show_score"
-                onLabel="Load Score"
-                offLabel="No Score"
-                onIcon="pi pi-check"
-                offIcon="pi pi-times"
-            />
-            <ToggleButton
-                v-model="useUserWalletStore().toggle_items.show_history"
-                onLabel="Load Trades"
-                offLabel="No Trades"
-                onIcon="pi pi-check"
-                offIcon="pi pi-times"
-            />
-        </div>
-      </Fieldset>
+<!--            <ToggleButton-->
+<!--                v-model="useUserWalletStore().toggle_items.show_score"-->
+<!--                onLabel="Load Score"-->
+<!--                offLabel="No Score"-->
+<!--                onIcon="pi pi-check"-->
+<!--                offIcon="pi pi-times"-->
+<!--            />-->
+<!--            <ToggleButton-->
+<!--                v-model="useUserWalletStore().toggle_items.show_history"-->
+<!--                onLabel="Load Trades"-->
+<!--                offLabel="No Trades"-->
+<!--                onIcon="pi pi-check"-->
+<!--                offIcon="pi pi-times"-->
+<!--            />-->
+<!--        </div>-->
+<!--      </Fieldset>-->
     </div>
 </template>
 
