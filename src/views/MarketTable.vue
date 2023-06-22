@@ -6,7 +6,7 @@ import Column from "primevue/column";
 import ColumnGroup from "primevue/columngroup";
 import Row from "primevue/row";
 import Avatar from "primevue/avatar";
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { ItemType } from "../static/StarAtlasAPIItem";
 import { useGlobalStore } from "../stores/GlobalStore";
 import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
@@ -60,13 +60,13 @@ watch(
   }
 );
 
-// onMounted(async () => {
-//   if (useStaratlasGmStore().status.is_initialized) {
-//     await useStaratlasGmStore().update_filtered_market_table_data(
-//       option_selected.value.value.toString()
-//     );
-//   }
-// });
+onMounted(async () => {
+  if (useStaratlasGmStore().status.is_initialized) {
+    await useStaratlasGmStore().update_filtered_market_table_data(
+      option_selected.value.value.toString()
+    );
+  }
+});
 </script>
 
 <template>

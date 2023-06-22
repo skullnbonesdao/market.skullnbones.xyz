@@ -9,9 +9,11 @@ import NoData from "../NoData.vue";
 import { E_EXPLORER, EXPLORER } from "../../../static/explorer";
 import { calc_percentage_for_fee } from "../../../static/formatting/calc_percentage";
 import ExplorerIcon from "../../icon-helper/ExplorerIcon.vue";
+import Dropdown from "primevue/dropdown";
 import { useGlobalStore } from "../../../stores/GlobalStore";
 import { format_address } from "../../../static/formatting/format_address";
 import SinglePriceTemplate from "../templates/SinglePriceTemplate.vue";
+import { ref } from "vue";
 
 const props = defineProps({
   search_string: {
@@ -25,6 +27,14 @@ const props = defineProps({
 });
 
 defineEmits(["search_string"]);
+
+const selectedCity = ref();
+const cities = ref([
+  { name: "1s", code: 1000 },
+  { name: "3s", code: 3000 },
+  { name: "10s", code: 10000 },
+  { name: "60s", code: 60000 },
+]);
 </script>
 
 <template>
@@ -32,7 +42,7 @@ defineEmits(["search_string"]);
     :poll-interval="useGlobalStore().pollInterval"
     :query="search_string ?
       (gql: any) => gql`
-        query find_symbol_history($search_string: String!, $limit: Inft!) {
+        query find_symbol_history($search_string: String!, $limit: Int!) {
           trades(
             limit: $limit
             order_by: { block: desc }
@@ -106,6 +116,17 @@ defineEmits(["search_string"]);
           sort-field="timestamp"
           tableStyle="min-width: 50rem"
         >
+          <template #header>
+            <div class="w-full flex justify-end">
+              <Dropdown
+                v-model="useGlobalStore().pollInterval"
+                :options="cities"
+                option-value="code"
+                optionLabel="name"
+                placeholder="Select a City"
+              />
+            </div>
+          </template>
           <Column header="Pair">
             <template #body="slotProps">
               <div class="flex flex-col items-center">
@@ -131,27 +152,35 @@ defineEmits(["search_string"]);
 
           <Column header="Info" sort-field="timestamp" sortable>
             <template #body="slotProps">
-              <div class="flex text-xs">
-                {{ new Date(slotProps.data.timestamp * 1000).toISOString() }}
-              </div>
-              <div class="text-purple-500 text-xs">
-                <p class="">
-                  Before: {{ calc_passed_time(slotProps.data.timestamp) }}
-                </p>
-              </div>
+              <div
+                :class="useGlobalStore().is_dark ? 'border-gray-900' : ''"
+                class="flex flex-col p-2 rounded-lg border-2 p-card text-xs"
+              >
+                <div class="flex text-xs">
+                  {{ new Date(slotProps.data.timestamp * 1000).toISOString() }}
+                </div>
+                <div class="text-purple-500 text-xs">
+                  <p class="">
+                    Before: {{ calc_passed_time(slotProps.data.timestamp) }}
+                  </p>
+                </div>
 
-              <div class="flex text-xs">
-                <p>
-                  {{ slotProps.data.signature.slice(0, 10) }}[...]{{
-                    slotProps.data.signature.slice(-10)
-                  }}
-                </p>
+                <div class="flex text-xs">
+                  <p>
+                    {{ slotProps.data.signature.slice(0, 10) }}[...]{{
+                      slotProps.data.signature.slice(-10)
+                    }}
+                  </p>
+                </div>
               </div>
             </template>
           </Column>
           <Column field="mint" header="Mint">
             <template #body="slotProps">
-              <div class="flex flex-row space-x-2 text-xs">
+              <div
+                :class="useGlobalStore().is_dark ? 'border-gray-900' : ''"
+                class="flex flex-row gap-2 p-2 rounded-lg items-center border-2 p-card space-x-2 text-xs"
+              >
                 <div class="flex flex-col">
                   <div>Token:</div>
                   <div>Asset:</div>
@@ -178,7 +207,10 @@ defineEmits(["search_string"]);
           </Column>
           <Column field="wallets" header="Wallets">
             <template #body="slotProps">
-              <div class="flex flex-row space-x-2 text-xs">
+              <div
+                :class="useGlobalStore().is_dark ? 'border-gray-900' : ''"
+                class="flex flex-row space-x-2 p-2 rounded-lg border-2 p-card text-xs"
+              >
                 <div class="flex flex-col">
                   <div>Maker:</div>
                   <div>Taker:</div>
@@ -217,6 +249,8 @@ defineEmits(["search_string"]);
           <Column field="market_fee" header="Fee" sortable>
             <template #body="slotProps">
               <span
+                :class="useGlobalStore().is_dark ? 'border-gray-900' : ''"
+                class="p-2 rounded-lg border-2 p-card"
                 >{{
                   calc_percentage_for_fee(
                     slotProps.data.market_fee,
@@ -228,7 +262,10 @@ defineEmits(["search_string"]);
           </Column>
           <Column field="size" header="Size" sortable>
             <template #body="slotProps">
-              <div class="flex gap-2">
+              <div
+                :class="useGlobalStore().is_dark ? 'border-gray-900' : ''"
+                class="p-2 rounded-lg border-2 p-card"
+              >
                 <span>x{{ slotProps.data.asset_change }}</span>
               </div>
             </template>
