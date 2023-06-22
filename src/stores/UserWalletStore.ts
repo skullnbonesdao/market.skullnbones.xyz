@@ -1,18 +1,15 @@
 import { defineStore } from "pinia";
-import { StarAtlasAPIItem } from "../static/StarAtlasAPIItem";
-import * as tokenlist from "../static/apis/TokenList/I_TokenList";
-import {
-  Metaplex,
-  Nft,
-  NftWithToken,
-  Sft,
-  SftWithToken,
-} from "@metaplex-foundation/js";
+
+import { Metaplex } from "@metaplex-foundation/js";
 import { I_SAG_Player } from "../static/apis/SA_Galaxy/I_SAG_Player";
-import { Connection, PublicKey } from "@solana/web3.js";
+import {
+  AccountInfo,
+  Connection,
+  ParsedAccountData,
+  PublicKey,
+  RpcResponseAndContext,
+} from "@solana/web3.js";
 import { useGlobalStore } from "./GlobalStore";
-import { TOKEN_LIST } from "../static/apis/TokenList/TokenList";
-import { TOKEN_PROGRAM_ID } from "solana-spl-current";
 import { get_player_profile } from "../static/apis/SA_Galaxy/SA_Galaxy";
 import { StatusHelper } from "./StatusHelper";
 import {
@@ -27,21 +24,12 @@ import {
 import { gql } from "graphql-tag";
 import { apolloClient } from "../static/graphql/SNBGraphQL";
 import { CURRENCIES, E_CURRENCIES } from "../static/currencies";
-import { get_multi_price } from "../static/apis/Birdseye/BirdseyeAPI";
+import { TOKEN_PROGRAM_ID } from "solana-spl-current";
+import { Client, Token, UtlConfig } from "@solflare-wallet/utl-sdk";
+import { StarAtlasAPIItem } from "../static/StarAtlasAPIItem";
+import { get_multi_price_birdseye } from "../static/apis/Birdseye/BirdseyeAPI";
 
-export interface I_TokenData {
-  token_account: String;
-  token_mint: String;
-  account_info: any;
-  market_price: {
-    atlas?: number;
-    usdc?: number;
-  };
-  sa_api_data: StarAtlasAPIItem | undefined;
-  token_list_info: tokenlist.Token | undefined;
-  account_metadata: Sft | SftWithToken | Nft | NftWithToken | undefined;
-  json_metadata: any;
-}
+export interface I_AccountData {}
 
 export interface I_Score_Data {
   mint: string;
@@ -74,6 +62,16 @@ export interface I_Score_Data {
   };
 }
 
+export interface I_Token {
+  publicKey?: PublicKey;
+  account?: AccountInfo<ParsedAccountData>;
+  metadata: Token | any | StarAtlasAPIItem;
+  market_price: {
+    atlas?: number;
+    usdc?: number;
+  };
+}
+
 export const useUserWalletStore = defineStore("userWalletStore", {
   state: () => ({
     toggle_items: {
@@ -88,7 +86,11 @@ export const useUserWalletStore = defineStore("userWalletStore", {
     address: {} as PublicKey | undefined,
     sol_balance: 0,
     sa_profile: {} as I_SAG_Player | undefined,
-    tokens: [] as Array<I_TokenData>,
+    accounts: [] as I_AccountData | undefined,
+
+    tokens: [] as Array<I_Token>,
+    nfts: [] as Array<I_Token>,
+    sa_tokens: [] as Array<I_Token>,
     sa_score: [] as Array<I_Score_Data>,
   }),
 
@@ -106,10 +108,10 @@ export const useUserWalletStore = defineStore("userWalletStore", {
       await this._load_sol_balance();
       this.status.status_set("Loading sa profile", 2, 4);
       await this._load_sa_profile();
+      this.status.status_set("Loading tokens", 4, 4);
+      if (this.toggle_items.show_accounts) await this._load_accounts();
       this.status.status_set("Loading score data", 3, 4);
       if (this.toggle_items.show_score) await this._load_score_data();
-      this.status.status_set("Loading tokens", 4, 4);
-      if (this.toggle_items.show_accounts) await this._load_tokens();
 
       this.status.done();
     },
@@ -120,126 +122,174 @@ export const useUserWalletStore = defineStore("userWalletStore", {
           new PublicKey(this.address?.toString() ?? "")
         )) * Math.pow(10, -9);
     },
-    async _load_tokens() {
+
+    async _load_accounts() {
+      this.status.status_set("Loading accounts...", 1, 10);
       this.tokens = [];
+      const connection = new Connection(useGlobalStore().rpc.url);
+
+      const user_tokens_all = await connection.getParsedTokenAccountsByOwner(
+        new PublicKey(this.address?.toString() ?? ""),
+        {
+          programId: new PublicKey(TOKEN_PROGRAM_ID),
+        }
+      );
+
+      console.log("user_tokens_all");
+      console.log(user_tokens_all.value);
+
+      this.status.status_inc();
+      const config = new UtlConfig({
+        /**
+         * 101 - mainnet, 102 - testnet, 103 - devnet
+         */
+        chainId: 101,
+        /**
+         * number of miliseconds to wait until falling back to CDN
+         */
+        timeout: 2000,
+        /**
+         * Solana web3 Connection
+         */
+        connection: new Connection(useGlobalStore().rpc.url),
+        /**
+         * Backend API url which is used to query tokens
+         */
+        apiUrl:
+          "https://raw.githubusercontent.com/step-finance/token-list-overrides/main/src/token-list.json",
+        /**
+         * CDN hosted static token list json which is used in case backend is down
+         */
+        cdnUrl:
+          "https://cdn.jsdelivr.net/gh/solflare-wallet/token-list/solana-tokenlist.json",
+      });
+
+      const utl = new Client(config);
+      const mints = user_tokens_all.value
+        ?.filter((token) => token.account.data.parsed.info.mint)
+        ?.flatMap(
+          (token) => new PublicKey(token.account.data.parsed.info.mint)
+        );
+      const token_metadatas = await utl.fetchMints(mints);
+
+      //filter out SA Assets
+      this.status.status_inc();
+      for (const token1 of user_tokens_all.value.filter((token) =>
+        useGlobalStore().sa_api_data.some(
+          (sa) => sa.mint === token.account.data.parsed.info.mint
+        )
+      )) {
+        this.sa_tokens.push({
+          publicKey: token1.pubkey,
+          account: token1.account,
+          metadata: useGlobalStore().sa_api_data.find(
+            (sa) => sa.mint === token1.account.data.parsed.info.mint
+          ),
+          market_price: {
+            atlas: await fetch_market_price_from_snb(
+              token1.account.data.parsed.info.mint.toString(),
+              CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ?? ""
+            ),
+            usdc: await fetch_market_price_from_snb(
+              token1.account.data.parsed.info.mint.toString(),
+              CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint ?? ""
+            ),
+          },
+        });
+      }
+
+      //filter out Tokens
+      this.status.status_inc();
+      const filtered_tokens = user_tokens_all.value
+        .filter((token) =>
+          useGlobalStore().sa_api_data.some(
+            (sa) => sa.mint != token.account.data.parsed.info.mint
+          )
+        )
+        .filter(
+          (token) => token.account.data.parsed.info.tokenAmount.decimals !== 0
+        );
+      const birdseye_prices = await get_multi_price_birdseye(
+        filtered_tokens.flatMap((t) => t.account.data.parsed.info.mint)
+      );
+      const atlas_price =
+        (await get_multi_price_birdseye([
+          CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ?? "",
+        ]).then(
+          (data) =>
+            data?.data[
+              CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ?? ""
+            ]?.value
+        )) ?? 0;
+
+      for (const token1 of filtered_tokens) {
+        const token_mint =
+          token_metadatas.find(
+            (meta) => meta.address === token1.account.data.parsed.info.mint
+          )?.address ?? "";
+
+        this.tokens.push({
+          publicKey: token1.pubkey,
+          account: token1.account,
+          metadata: token_metadatas.find(
+            (meta) => meta.address === token1.account.data.parsed.info.mint
+          ),
+          market_price: {
+            atlas:
+              (birdseye_prices?.data[token_mint]?.value ?? 0) / atlas_price ??
+              0,
+            usdc: birdseye_prices?.data[token_mint]?.value ?? 0,
+          },
+        });
+      }
+
+      //load NFTs
+      this.status.status_inc();
+      await this._load_nfts(user_tokens_all);
+
+      console.log("++ Done loading tokens ++");
+    },
+
+    async _load_nfts(
+      user_tokens_all: RpcResponseAndContext<
+        { pubkey: PublicKey; account: AccountInfo<ParsedAccountData> }[]
+      >
+    ) {
+      this.nfts = [];
 
       const connection = new Connection(useGlobalStore().rpc.url);
       const meta = Metaplex.make(connection);
 
-      const parsed_token_accounts =
-        await connection.getParsedTokenAccountsByOwner(
-          new PublicKey(this.address?.toString() ?? ""),
-          {
-            programId: new PublicKey(TOKEN_PROGRAM_ID),
-          }
-        );
+      let nfts_no_json = await meta
+        .nfts()
+        .findAllByOwner(new PublicKey(this.address?.toString() ?? ""))
+        .run();
 
-      let token_prices = await get_multi_price(
-        CURRENCIES.flatMap((c) => c.mint)
+      let nfts_json = await Promise.all(
+        nfts_no_json.map((metadata: any) =>
+          meta.nfts().loadMetadata(metadata).run()
+        )
       );
-      console.log(token_prices);
 
-      this.status.status_set(
-        "Loading token list",
-        0,
-        parsed_token_accounts.value.length
+      nfts_json.forEach((nft) =>
+        this.nfts.push({
+          publicKey: user_tokens_all.value.find(
+            (token) =>
+              token.account.data.parsed.info.mint === nft.mintAddress.toString()
+          )?.pubkey,
+          account: user_tokens_all.value.find(
+            (token) =>
+              token.account.data.parsed.info.mint === nft.mintAddress.toString()
+          )?.account,
+          metadata: nft,
+          market_price: {
+            atlas: 0,
+            usdc: 0,
+          },
+        })
       );
-      for (const token_account of parsed_token_accounts.value) {
-        let account_metadata: any = {};
-
-        await meta
-          .nfts()
-          .findByMint({
-            mintAddress: new PublicKey(
-              token_account.account.data.parsed?.info.mint
-            ),
-          })
-          .then((data) => {
-            account_metadata = data;
-          })
-          .catch((err) => {
-            console.log("Error fetching metaplex-data:" + err);
-          });
-
-        console.log(account_metadata);
-
-        let metadata = {};
-
-        //IF SA asset
-        if (account_metadata && account_metadata.uri) {
-          await fetch(account_metadata.uri)
-            .then((resp) => resp.json())
-            .then((json) => (metadata = json))
-            .catch((err) => console.log("Error fetching metadata-link" + err));
-
-          this.tokens.push({
-            token_account: token_account.pubkey.toString(),
-            token_mint: token_account.account.data.parsed.info.mint.toString(),
-            account_info: token_account.account,
-            account_metadata: account_metadata,
-            market_price: {
-              atlas: await fetch_market_price_from_snb(
-                token_account.account.data.parsed.info.mint.toString(),
-                CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint ??
-                  ""
-              ),
-              usdc: await fetch_market_price_from_snb(
-                token_account.account.data.parsed.info.mint.toString(),
-                CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)?.mint ?? ""
-              ),
-            },
-            token_list_info: TOKEN_LIST.tokens.find(
-              (t) => t.address === token_account.account.data.parsed?.info.mint
-            ),
-            sa_api_data: useGlobalStore().sa_api_data.find(
-              (api) =>
-                api.mint ===
-                token_account.account.data.parsed.info.mint.toString()
-            ),
-            json_metadata: metadata,
-          });
-        } else {
-          const usdc_price =
-            token_prices?.data[
-              token_account.account.data.parsed.info.mint.toString()
-            ]?.value;
-
-          let atlas_price = 0;
-          if (usdc_price) {
-            atlas_price =
-              token_account.account.data.parsed.info.mint.toString() !=
-              CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)?.mint
-                ? usdc_price /
-                  (token_prices?.data[
-                    CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
-                      ?.mint ?? ""
-                  ]?.value ?? 0)
-                : 1;
-          }
-
-          this.tokens.push({
-            token_account: token_account.pubkey.toString(),
-            token_mint: token_account.account.data.parsed.info.mint.toString(),
-            account_info: token_account.account,
-            account_metadata: account_metadata,
-            market_price: {
-              atlas: atlas_price,
-              usdc: usdc_price,
-            },
-            token_list_info: TOKEN_LIST.tokens.find(
-              (t) => t.address === token_account.account.data?.parsed?.info.mint
-            ),
-            sa_api_data: useGlobalStore().sa_api_data.find(
-              (api) =>
-                api.mint ===
-                token_account.account.data.parsed.info.mint.toString()
-            ),
-            json_metadata: metadata,
-          });
-        }
-        this.status.status_inc();
-      }
     },
+
     async _load_sa_profile() {
       this.sa_profile = await get_player_profile(
         this.address?.toString() ?? ""
@@ -479,11 +529,35 @@ async function fetch_market_price_from_snb(mint: string, currency: string) {
         },
       })
       .then((response) => {
-        return response.data.trades[0].price;
+        return response.data?.trades[0]?.price;
       })
       .catch((err) => {
         console.error(err);
         return 0;
       });
   return 0;
+}
+
+async function fetch_market_price_from_coingecko(mint: string | undefined) {
+  let price = 0;
+
+  if (mint)
+    await fetch(
+      "https://api.coingecko.com/api/v3/simple/token_price/solana?contract_addresses=" +
+        mint +
+        "&vs_currencies=usd",
+      {
+        headers: {
+          accept: "application/json",
+        },
+      }
+    )
+      .then((resp) => {
+        return resp.json();
+      })
+      .then((json) => {
+        if (Object.keys(json.data).length) price = json[mint]["usd"];
+      });
+
+  return price;
 }

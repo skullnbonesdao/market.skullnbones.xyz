@@ -5,16 +5,16 @@
         <Avatar
           class="flex mr-2"
           image="/logo.png"
-          size="large"
           shape="circle"
+          size="large"
         ></Avatar>
       </template>
 
       <template #end>
         <div class="flex flex-row space-x-2 items-center">
           <div
-            class="pr-2 flex space-x-1 uppercase bg-purple-100 text-purple-800 font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300"
             v-tooltip.bottom="'Current Transactions per second'"
+            class="pr-2 flex space-x-0.5 items-center uppercase bg-purple-100 text-purple-800 font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300"
           >
             <p class="text-sm">
               {{ useTPS().tps.toFixed(0) }}
@@ -32,7 +32,7 @@
   </nav>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import Avatar from "primevue/avatar";
 import { onMounted, ref } from "vue";
 import Menubar from "primevue/menubar";

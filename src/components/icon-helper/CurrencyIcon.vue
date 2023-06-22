@@ -10,14 +10,29 @@ const props = defineProps({
 </script>
 
 <template>
-  <img
-    :class="
-      props.currency?.type === E_CURRENCIES.ATLAS
-        ? ' border-black'
-        : 'border-transparent'
-    "
-    class="border-2 rounded-full"
-    :src="props.currency?.image_path"
-    alt="asset_image"
-  />
+  <div class="parent">
+    <img
+      class="rounded-full border-1"
+      :class="
+        props.currency?.type === E_CURRENCIES.ATLAS
+          ? ' border-black'
+          : ' border-none'
+      "
+      :src="props.currency?.image_path"
+      alt="asset_image"
+    />
+  </div>
 </template>
+
+<style scoped>
+.parent {
+  width: 100px;
+}
+img {
+  object-fit: contain;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+}
+</style>

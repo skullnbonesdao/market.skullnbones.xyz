@@ -9,7 +9,11 @@
         ></Avatar>
       </div>
 
-      <CurrencyIcon class="relative w-12" :currency="props.currency" />
+      <CurrencyIcon
+        style="width: 50px"
+        class="relative w-12"
+        :currency="props.currency"
+      />
     </div>
   </div>
 </template>

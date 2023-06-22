@@ -3,11 +3,12 @@
     <div class="p-card p-2 flex flex-col md:flex-row w-full gap-2">
       <div class="p-fluid flex w-full gap-2">
         <InputText
-          class="w-full"
-          type="text"
-          placeholder="Enter a wallet address"
           v-model="text_user_wallet_input"
-        /><Button
+          class="w-full"
+          placeholder="Enter a wallet address"
+          type="text"
+        />
+        <Button
           v-if="!useUserWalletStore().status.get()"
           icon="pi pi-search"
           @click="useUserWalletStore().update(text_user_wallet_input)"
@@ -23,62 +24,71 @@
       </div>
     </div>
     <div class="grid grid-cols-10 gap-1">
-      <div class="p-card col-span-2">
+      <div v-if="useUserWalletStore().address" class="p-card col-span-2">
         <ProfileSideBar />
       </div>
-      <div class="w-full col-span-8">
+      <div
+        :class="useUserWalletStore().address ? 'col-span-8' : 'col-span-10'"
+        class="w-full"
+      >
         <div v-if="!useUserWalletStore().address" class="p-card">
-          <NoData text="No Wallet searched!" class="flex justify-center" />
+          <NoData class="flex justify-center" text="No Wallet searched!" />
         </div>
         <div v-else class="flex flex-col space-y-2">
           <Panel
-            header="Accounts"
             v-if="useUserWalletStore().toggle_items.show_accounts"
+            class="p-card"
+            collapsed
+            header="Accounts"
             toggleable
           >
             <template #header>
               <div class="flex flex-row w-full items-center pr-2 space-x-2">
                 <p class="p-panel-title w-full">Accounts</p>
-                <ToggleButton
-                  v-model="useUserWalletStore().toggle_items.hide_zero_balances"
-                  onLabel="Hiding 0 balances"
-                  offLabel="Showing 0 balances"
-                  class="w-15rem whitespace-nowrap"
-                />
-                <ToggleButton
-                  disabled
-                  v-model="useUserWalletStore().toggle_items.only_sa_accounts"
-                  class="whitespace-nowrap"
-                  onLabel="All"
-                  offLabel="SA Only"
-                />
+
+                <div class="flex flex-row space-x-1">
+                  <p>{{ useUserWalletStore().sa_tokens.length }}</p>
+                  <p>/</p>
+                  <p>{{ useUserWalletStore().tokens.length }}</p>
+                  <p>/</p>
+                  <p>{{ useUserWalletStore().nfts.length }}</p>
+                </div>
               </div>
             </template>
             <div class="flex justify-around">
-              <NoData
-                class="flex justify-center"
-                v-if="!useUserWalletStore().tokens.length"
-              />
-              <PortfolioAccountsView v-else class="flex w-full" />
+              <PortfolioAccountsView class="flex w-full" />
             </div>
           </Panel>
           <Panel
-            header="Score"
             v-if="useUserWalletStore().toggle_items.show_score"
+            class="p-card"
+            collapsed
+            header="Score"
             toggleable
           >
+            <template #header>
+              <div class="flex flex-row w-full items-center pr-2 space-x-2">
+                <p class="p-panel-title w-full">Score</p>
+
+                <div class="flex flex-row space-x-1">
+                  <p>{{ useUserWalletStore().sa_score.length }}</p>
+                </div>
+              </div>
+            </template>
             <div class="flex justify-around">
               <ScoreElement />
             </div>
           </Panel>
           <Panel
-            header="Trade"
             v-if="useUserWalletStore().toggle_items.show_history"
+            class="p-card"
+            collapsed
+            header="Galactic-Marketplace "
             toggleable
           >
             <PortfolioHistoryChart
-              class="w-full"
               :user_wallet="useUserWalletStore().address?.toString() ?? ''"
+              class="w-full"
             />
             <PortfolioHistoryTable
               :user_wallet="useUserWalletStore().address?.toString() ?? ''"
@@ -90,20 +100,19 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import InputText from "primevue/inputtext";
 import Panel from "primevue/panel";
 import { useWallet } from "solana-wallets-vue";
 import NoData from "../components/elements/NoData.vue";
 import { computed, onMounted, ref, watch } from "vue";
 import { PublicKey } from "@solana/web3.js";
-import PortfolioAccountsView from "../components/elements/portfolio_elements/PortfolioAccountsView.vue";
+import PortfolioAccountsView from "./Portfolio/PortfolioAccountsView.vue";
 import { useUserWalletStore } from "../stores/UserWalletStore";
 import PortfolioHistoryTable from "../components/elements/portfolio_elements/PortfolioHistoryTable.vue";
 import ScoreElement from "../components/elements/score/ScoreElement.vue";
 import ProfileSideBar from "./Portfolio/ProfileSideBar.vue";
 import PortfolioHistoryChart from "../components/elements/portfolio_elements/PortfolioHistoryChart.vue";
-import ToggleButton from "primevue/togglebutton";
 
 const text_user_wallet_input = ref();
 

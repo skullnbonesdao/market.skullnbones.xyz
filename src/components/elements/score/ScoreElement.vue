@@ -7,14 +7,38 @@ import ProgressBar from "primevue/progressbar";
 import { useGlobalStore } from "../../../stores/GlobalStore";
 import NoData from "../NoData.vue";
 import { useUserWalletStore } from "../../../stores/UserWalletStore";
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 import ShipHarvestButton from "./ShipHarvestButton.vue";
 import ShipRefillButton from "./ShipRefillButton.vue";
 import Avatar from "primevue/avatar";
-import CurrencyIcon from "../../icon-helper/CurrencyIcon.vue";
-import { CURRENCIES, E_CURRENCIES } from "../../../static/currencies";
+import MultiPriceTemplate from "../templates/MultiPriceTemplate.vue";
+import ColumnGroup from "primevue/columngroup";
+import Row from "primevue/row";
 
 const expandedRows = ref([]);
+
+const totals = ref({
+  usdc: 0,
+  atlas: 0,
+});
+
+watchEffect(() => {
+  totals.value.usdc = useUserWalletStore()
+    .sa_score?.flatMap(
+      (a) =>
+        a.ship_staking_info.shipQuantityInEscrow.toNumber() *
+        (a.market_price?.usdc ?? 0)
+    )
+    ?.reduce((a: number, b: number) => a + b, 0);
+
+  totals.value.atlas = useUserWalletStore()
+    .sa_score?.flatMap(
+      (a) =>
+        a.ship_staking_info.shipQuantityInEscrow.toNumber() *
+        (a.market_price?.atlas ?? 0)
+    )
+    ?.reduce((a: number, b: number) => a + b, 0);
+});
 
 function calc_formatted_percentage(
   n: number,
@@ -69,53 +93,25 @@ function test() {}
 
       <Column field="market_price" header="Price">
         <template #body="slotProps">
-          <div class="grid grid-cols-2 gap-1 text-right">
-            <CurrencyIcon
-              class="w-6"
-              :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
-            />
-            <p>
-              {{ slotProps.data.market_price.usdc.toFixed(2) }}
-            </p>
-            <CurrencyIcon
-              class="w-6"
-              :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
-            />
-            <p>
-              {{ slotProps.data.market_price.atlas.toFixed(2) }}
-            </p>
-          </div>
+          <MultiPriceTemplate
+            :price_usdc="slotProps.data.market_price.usdc"
+            :price_atlas="slotProps.data.market_price.atlas"
+          />
         </template>
       </Column>
 
       <Column header="Value">
         <template #body="slotProps">
-          <div class="grid grid-cols-2 gap-1 text-right">
-            <CurrencyIcon
-              class="w-6"
-              :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
-            />
-            <p>
-              {{
-                (
-                  slotProps.data.market_price.usdc *
-                  slotProps.data.ship_staking_info.shipQuantityInEscrow.toNumber()
-                ).toFixed(2)
-              }}
-            </p>
-            <CurrencyIcon
-              class="w-6"
-              :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
-            />
-            <p>
-              {{
-                (
-                  slotProps.data.market_price.atlas *
-                  slotProps.data.ship_staking_info.shipQuantityInEscrow.toNumber()
-                ).toFixed(2)
-              }}
-            </p>
-          </div>
+          <MultiPriceTemplate
+            :price_usdc="
+              slotProps.data.market_price.usdc *
+              slotProps.data.ship_staking_info.shipQuantityInEscrow.toNumber()
+            "
+            :price_atlas="
+              slotProps.data.market_price.atlas *
+              slotProps.data.ship_staking_info.shipQuantityInEscrow.toNumber()
+            "
+          />
         </template>
       </Column>
 
@@ -224,6 +220,20 @@ function test() {}
           </TabView>
         </div>
       </template>
+
+      <ColumnGroup type="footer">
+        <Row>
+          <Column footer="Totals:" :colspan="5" footerStyle="text-align:left" />
+          <Column>
+            <template #footer>
+              <MultiPriceTemplate
+                :price_usdc="totals.usdc"
+                :price_atlas="totals.atlas"
+              />
+            </template>
+          </Column>
+        </Row>
+      </ColumnGroup>
     </DataTable>
 
     <NoData v-else class="flex justify-center" />
