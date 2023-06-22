@@ -107,10 +107,10 @@ export const useUserWalletStore = defineStore("userWalletStore", {
       await this._load_sol_balance();
       this.status.status_set("Loading sa profile", 2, 4);
       await this._load_sa_profile();
-      this.status.status_set("Loading score data", 3, 4);
-      if (this.toggle_items.show_score) await this._load_score_data();
       this.status.status_set("Loading tokens", 4, 4);
       if (this.toggle_items.show_accounts) await this._load_accounts();
+      this.status.status_set("Loading score data", 3, 4);
+      if (this.toggle_items.show_score) await this._load_score_data();
 
       this.status.done();
     },
@@ -199,7 +199,7 @@ export const useUserWalletStore = defineStore("userWalletStore", {
 
       //filter out Tokens
       this.status.status_inc();
-      user_tokens_all.value
+      for (const token1 of user_tokens_all.value
         .filter((token) =>
           useGlobalStore().sa_api_data.some(
             (sa) => sa.mint != token.account.data.parsed.info.mint
@@ -207,20 +207,24 @@ export const useUserWalletStore = defineStore("userWalletStore", {
         )
         .filter(
           (token) => token.account.data.parsed.info.tokenAmount.decimals !== 0
-        )
-        .forEach((token) => {
-          this.tokens.push({
-            publicKey: token.pubkey,
-            account: token.account,
-            metadata: token_metadatas.find(
-              (meta) => meta.address === token.account.data.parsed.info.mint
-            ),
-            market_price: {
-              atlas: 0,
-              usdc: 0,
-            },
-          });
+        )) {
+        const token_mint =
+          token_metadatas.find(
+            (meta) => meta.address === token1.account.data.parsed.info.mint
+          )?.address ?? "";
+
+        this.tokens.push({
+          publicKey: token1.pubkey,
+          account: token1.account,
+          metadata: token_metadatas.find(
+            (meta) => meta.address === token1.account.data.parsed.info.mint
+          ),
+          market_price: {
+            atlas: 0,
+            usdc: 0,
+          },
         });
+      }
 
       //load NFTs
       this.status.status_inc();
@@ -508,11 +512,35 @@ async function fetch_market_price_from_snb(mint: string, currency: string) {
         },
       })
       .then((response) => {
-        return response.data.trades[0].price;
+        return response.data?.trades[0]?.price;
       })
       .catch((err) => {
         console.error(err);
         return 0;
       });
   return 0;
+}
+
+async function fetch_market_price_from_coingecko(mint: string | undefined) {
+  let price = 0;
+
+  if (mint)
+    await fetch(
+      "https://api.coingecko.com/api/v3/simple/token_price/solana?contract_addresses=" +
+        mint +
+        "&vs_currencies=usd",
+      {
+        headers: {
+          accept: "application/json",
+        },
+      }
+    )
+      .then((resp) => {
+        return resp.json();
+      })
+      .then((json) => {
+        if (Object.keys(json.data).length) price = json[mint]["usd"];
+      });
+
+  return price;
 }

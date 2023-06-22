@@ -3,7 +3,7 @@ import { I_Token } from "../../../stores/UserWalletStore";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Avatar from "primevue/avatar";
-import { PropType, ref } from "vue";
+import { PropType, ref, watchEffect } from "vue";
 import { E_EXPLORER, EXPLORER } from "../../../static/explorer";
 import { useGlobalStore } from "../../../stores/GlobalStore";
 import TabView from "primevue/tabview";
@@ -11,23 +11,52 @@ import ExplorerIcon from "../../../components/icon-helper/ExplorerIcon.vue";
 import TabPanel from "primevue/tabpanel";
 import Image from "primevue/image";
 import BurnTokenButton from "../../../components/elements/solana_actions/buttons/BurnTokenButton.vue";
-import { CURRENCIES, E_CURRENCIES } from "../../../static/currencies";
-import CurrencyIcon from "../../../components/icon-helper/CurrencyIcon.vue";
+import MultiPriceTemplate from "../../../components/elements/templates/MultiPriceTemplate.vue";
+import ToggleButton from "primevue/togglebutton";
+import { format_address } from "../../../static/formatting/format_address";
 
 const props = defineProps({
-  account: [] as PropType<Array<I_Token>>,
+  account: {
+    type: [] as PropType<Array<I_Token>>,
+    default: [],
+  },
 });
 
 const expandedRows = ref();
+const hide_zero_quantity = ref(true);
+
+const accounts_filtered = ref();
+
+watchEffect(() => {
+  if (hide_zero_quantity.value)
+    accounts_filtered.value = props.account?.filter(
+      (a) => a.account?.data?.parsed?.info?.tokenAmount?.uiAmount != 0
+    );
+  else accounts_filtered.value = props.account;
+});
 </script>
 
 <template>
   <DataTable
     v-model:expandedRows="expandedRows"
-    :value="account"
+    :value="accounts_filtered"
     sortField="metadata.name"
     :sortOrder="-1"
   >
+    <template #header>
+      <div class="flex">
+        <div class="w-full"></div>
+        <ToggleButton
+          v-model="hide_zero_quantity"
+          onLabel="hide 0"
+          offLabel="show 0"
+          onIcon="pi pi-check"
+          offIcon="pi pi-times"
+          class="w-9rem"
+        />
+      </div>
+    </template>
+
     <Column expander style="width: 5rem" />
     <Column>
       <template #body="slotProps">
@@ -50,27 +79,6 @@ const expandedRows = ref();
     </Column>
     <Column field="metadata.symbol" :sortable="true" header="Symbol"></Column>
     <Column field="metadata.name" :sortable="true" header="Name"></Column>
-    <Column header="Price">
-      <template #body="slotProps">
-        <div class="grid grid-cols-2 gap-1 text-right">
-          <p>
-            {{ slotProps.data.market_price.usdc.toFixed(2) }}
-          </p>
-          <CurrencyIcon
-            style="width: 25px"
-            :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
-          />
-
-          <p>
-            {{ slotProps.data.market_price.atlas.toFixed(2) }}
-          </p>
-          <CurrencyIcon
-            style="width: 25px"
-            :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
-          />
-        </div>
-      </template>
-    </Column>
 
     <Column
       field="account.data.parsed.info.tokenAmount.uiAmount"
@@ -90,35 +98,27 @@ const expandedRows = ref();
       </template>
     </Column>
 
+    <Column header="Price">
+      <template #body="slotProps">
+        <MultiPriceTemplate
+          :price_usdc="slotProps.data.market_price.usdc"
+          :price_atlas="slotProps.data.market_price.atlas"
+        />
+      </template>
+    </Column>
+
     <Column header="Value">
       <template #body="slotProps">
-        <div class="grid grid-cols-2 gap-1 text-right">
-          <p>
-            {{
-              (
-                slotProps.data.market_price.usdc *
-                slotProps.data.account.data.parsed.info.tokenAmount.uiAmount
-              ).toFixed(2)
-            }}
-          </p>
-          <CurrencyIcon
-            style="width: 25px"
-            :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
-          />
-
-          <p>
-            {{
-              (
-                slotProps.data.market_price.atlas *
-                slotProps.data.account.data.parsed.info.tokenAmount.uiAmount
-              ).toFixed(2)
-            }}
-          </p>
-          <CurrencyIcon
-            style="width: 25px"
-            :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
-          />
-        </div>
+        <MultiPriceTemplate
+          :price_usdc="
+            slotProps.data.market_price.usdc *
+            slotProps.data.account.data.parsed.info.tokenAmount.uiAmount
+          "
+          :price_atlas="
+            slotProps.data.market_price.atlas *
+            slotProps.data.account.data.parsed.info.tokenAmount.uiAmount
+          "
+        />
       </template>
     </Column>
 
@@ -164,10 +164,11 @@ const expandedRows = ref();
                 <div class="grid grid-cols-3 items-center gap-2">
                   <p>Mint:</p>
                   <p class="w-40 text-xs">
-                    {{ slotProps.data.metadata.mint.substring(0, 5) }}[...]{{
-                      slotProps.data.metadata.mint.substring(
-                        slotProps.data.metadata.mint.length,
-                        slotProps.data.metadata.mint.length - 5
+                    {{
+                      format_address(
+                        slotProps.data.metadata.mint ??
+                          slotProps.data.metadata.address ??
+                          ""
                       )
                     }}
                   </p>
@@ -199,15 +200,7 @@ const expandedRows = ref();
                   <p>Account:</p>
                   <p class="w-40 text-xs">
                     {{
-                      slotProps.data?.publicKey.toString().substring(0, 5)
-                    }}[...]
-                    {{
-                      slotProps.data?.publicKey
-                        .toString()
-                        .substring(
-                          slotProps.data?.publicKey.toString().length,
-                          slotProps.data?.publicKey.toString().length - 5
-                        )
+                      format_address(slotProps.data.publicKey.toString() ?? "")
                     }}
                   </p>
                   <div class="flex flex-row space-x-1">

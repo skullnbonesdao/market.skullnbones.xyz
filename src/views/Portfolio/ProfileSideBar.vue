@@ -13,14 +13,14 @@ import {computed} from "vue";
 
 const accounts_total_usdc_value = computed(() => {
   return  useUserWalletStore().tokens
-      .map(token => (token.market_price.usdc ?? 0) * token.account_info.data.parsed.info.tokenAmount.uiAmount )
+      .map(token => (token.market_price.usdc ?? 0) * token.account?.data.parsed.info.tokenAmount.uiAmount )
       .reduce((a,b) => a+b, 0)
 })
 
 
 const accounts_total_atlas_value = computed(() => {
   return  useUserWalletStore().tokens
-      .map(token => (token.market_price.atlas ?? 0) * token.account_info.data.parsed.info.tokenAmount.uiAmount )
+      .map(token => (token.market_price.atlas ?? 0) * token.account?.data.parsed.info.tokenAmount.uiAmount )
       .reduce((a,b) => a+b, 0)
 })
 
@@ -247,13 +247,13 @@ const score_total_atlas_value = computed(() => {
           <div class="grid grid-cols-2 text-right 	">
             <div class="flex justify-end  -mr-1">
               <CurrencyIcon
-                  class="w-6"
+                  style="width: 25px"
                   :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
               />
             </div>
             <div class="flex justify-end -mr-1 ">
               <CurrencyIcon
-                  class="w-6"
+                  style="width: 25px"
                   :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)"
               />
             </div>
