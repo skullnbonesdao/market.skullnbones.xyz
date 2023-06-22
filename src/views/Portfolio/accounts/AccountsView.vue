@@ -10,10 +10,13 @@ import TabView from "primevue/tabview";
 import ExplorerIcon from "../../../components/icon-helper/ExplorerIcon.vue";
 import TabPanel from "primevue/tabpanel";
 import Image from "primevue/image";
+import ColumnGroup from "primevue/columngroup";
+import Row from "primevue/row";
 import BurnTokenButton from "../../../components/elements/solana_actions/buttons/BurnTokenButton.vue";
 import MultiPriceTemplate from "../../../components/elements/templates/MultiPriceTemplate.vue";
 import ToggleButton from "primevue/togglebutton";
 import { format_address } from "../../../static/formatting/format_address";
+import NoData from "../../../components/elements/NoData.vue";
 
 const props = defineProps({
   account: {
@@ -24,8 +27,11 @@ const props = defineProps({
 
 const expandedRows = ref();
 const hide_zero_quantity = ref(true);
-
 const accounts_filtered = ref();
+const totals = ref({
+  usdc: 0,
+  atlas: 0,
+});
 
 watchEffect(() => {
   if (hide_zero_quantity.value)
@@ -34,10 +40,29 @@ watchEffect(() => {
     );
   else accounts_filtered.value = props.account;
 });
+
+watchEffect(() => {
+  totals.value.usdc = accounts_filtered?.value
+    ?.flatMap(
+      (a: I_Token) =>
+        a.account?.data.parsed.info.tokenAmount.uiAmount *
+        (a.market_price?.usdc ?? 0)
+    )
+    ?.reduce((a: number, b: number) => a + b, 0);
+
+  totals.value.atlas = accounts_filtered?.value
+    ?.flatMap(
+      (a: I_Token) =>
+        a.account?.data.parsed.info.tokenAmount.uiAmount *
+        (a.market_price?.atlas ?? 0)
+    )
+    ?.reduce((a: number, b: number) => a + b, 0);
+});
 </script>
 
 <template>
   <DataTable
+    v-if="accounts_filtered.length"
     v-model:expandedRows="expandedRows"
     :value="accounts_filtered"
     sortField="metadata.name"
@@ -289,7 +314,22 @@ watchEffect(() => {
         </TabView>
       </div>
     </template>
+    <ColumnGroup type="footer">
+      <Row>
+        <Column footer="Totals:" :colspan="6" footerStyle="text-align:left" />
+        <Column>
+          <template #footer>
+            <MultiPriceTemplate
+              :price_usdc="totals.usdc"
+              :price_atlas="totals.atlas"
+            />
+          </template>
+        </Column>
+      </Row>
+    </ColumnGroup>
   </DataTable>
+
+  <NoData v-else class="flex justify-center" />
 </template>
 
 <style scoped></style>

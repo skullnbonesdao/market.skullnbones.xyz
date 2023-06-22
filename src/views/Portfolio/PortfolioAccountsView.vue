@@ -3,29 +3,31 @@ import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 import { useUserWalletStore } from "../../stores/UserWalletStore";
 import AccountsView from "./accounts/AccountsView.vue";
+import IconRocket from "~icons/material-symbols/rocket-launch";
+import IconToken from "~icons/material-symbols/generating-tokens";
+import IconNft from "~icons/ri/nft-fill";
 </script>
 
 <template>
   <TabView class="p-card w-full flex flex-col">
     <TabPanel>
       <template #header>
-        <i class="pi pi-calendar mr-2"></i>
         <span>StarAtlas</span>
+        <IconRocket class="ml-2" />
       </template>
       <AccountsView :account="useUserWalletStore().sa_tokens" />
     </TabPanel>
     <TabPanel>
       <template #header>
         <span>Tokens</span>
-        <i class="pi pi-user ml-2"></i>
+        <IconToken class="ml-2" />
       </template>
       <AccountsView :account="useUserWalletStore().tokens" />
     </TabPanel>
     <TabPanel>
       <template #header>
-        <i class="pi pi-search mr-2"></i>
         <span>NFTs</span>
-        <i class="pi pi-cog ml-2"></i>
+        <IconNft class="ml-2" />
       </template>
       <AccountsView :account="useUserWalletStore().nfts" />
     </TabPanel>
