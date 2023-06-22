@@ -39,10 +39,9 @@ import Menubar from "primevue/menubar";
 import { WalletMultiButton } from "solana-wallets-vue";
 import SwitchTheme from "../components/elements/buttons/SwitchTheme.vue";
 import { useTPS } from "../stores/TPS";
-import { endpoints_list, useGlobalStore } from "../stores/GlobalStore";
 
 onMounted(async () => {
-  useTPS().pollData(useGlobalStore().rpc.url ?? endpoints_list[2].url);
+  useTPS().pollData("https://solana-mainnet.rpc.extrnode.com");
 });
 
 const items = ref([

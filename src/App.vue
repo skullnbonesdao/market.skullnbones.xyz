@@ -16,7 +16,7 @@ onMounted(async () => {
   await useGlobalStore().init();
 
   //works better ignoring the start of the GN
-  useStaratlasGmStore().init();
+  await useStaratlasGmStore().init();
 });
 
 //useStaratlasGmStore().init();
@@ -24,8 +24,8 @@ onMounted(async () => {
 
 <template>
   <body
-    class="flex flex-col min-h-screen"
     :class="useGlobalStore().is_dark ? '' : 'bg-gray-200'"
+    class="flex flex-col min-h-screen"
   >
     <header class="sticky top-0 z-50">
       <HeaderNavigation />

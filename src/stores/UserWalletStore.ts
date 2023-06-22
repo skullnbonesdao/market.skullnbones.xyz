@@ -257,8 +257,9 @@ export const useUserWalletStore = defineStore("userWalletStore", {
     ) {
       this.nfts = [];
 
-      const connection = new Connection(useGlobalStore().rpc.url);
-      const meta = Metaplex.make(connection);
+      const meta = Metaplex.make(
+        new Connection("https://solana-mainnet.rpc.extrnode.com")
+      );
 
       console.log("loading nfts");
       let nfts_no_json = await meta
@@ -301,7 +302,7 @@ export const useUserWalletStore = defineStore("userWalletStore", {
       this.sa_score = [];
 
       const ships_in_score = await getAllFleetsForUserPublicKey(
-        new Connection(useGlobalStore().rpc.url),
+        new Connection("https://solana-mainnet.rpc.extrnode.com"),
         new PublicKey(this.address ?? ""),
         new PublicKey(SCORE_FLEET_PROGRAM_ID)
       );

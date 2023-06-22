@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { CURRENCIES } from "../../../static/currencies";
 import { calc_passed_time } from "../../../static/formatting/calc_passed_time";
 import PairImage from "../PairImage.vue";
@@ -6,10 +6,14 @@ import ProgressSpinner from "primevue/progressspinner";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import NoData from "../NoData.vue";
-import CurrencyIcon from "../../icon-helper/CurrencyIcon.vue";
 import { E_EXPLORER, EXPLORER } from "../../../static/explorer";
 import { calc_percentage_for_fee } from "../../../static/formatting/calc_percentage";
 import ExplorerIcon from "../../icon-helper/ExplorerIcon.vue";
+import Dropdown from "primevue/dropdown";
+import { useGlobalStore } from "../../../stores/GlobalStore";
+import { format_address } from "../../../static/formatting/format_address";
+import SinglePriceTemplate from "../templates/SinglePriceTemplate.vue";
+import { ref } from "vue";
 
 const props = defineProps({
   search_string: {
@@ -23,11 +27,19 @@ const props = defineProps({
 });
 
 defineEmits(["search_string"]);
+
+const selectedCity = ref();
+const cities = ref([
+  { name: "1s", code: 1000 },
+  { name: "3s", code: 3000 },
+  { name: "10s", code: 10000 },
+  { name: "60s", code: 60000 },
+]);
 </script>
 
 <template>
   <ApolloQuery
-    class="p-card"
+    :poll-interval="useGlobalStore().pollInterval"
     :query="search_string ?
       (gql: any) => gql`
         query find_symbol_history($search_string: String!, $limit: Int!) {
@@ -81,6 +93,7 @@ defineEmits(["search_string"]);
       `
     "
     :variables="{ limit, search_string }"
+    class="p-card"
   >
     <template v-slot="{ result: { loading, error, data } }">
       <!-- Loading -->
@@ -98,11 +111,22 @@ defineEmits(["search_string"]);
         <NoData v-if="!data.trades.length" class="justify-center"></NoData>
         <DataTable
           v-else
-          :value="data.trades"
-          tableStyle="min-width: 50rem"
-          sort-field="timestamp"
           :sort-order="-1"
+          :value="data.trades"
+          sort-field="timestamp"
+          tableStyle="min-width: 50rem"
         >
+          <template #header>
+            <div class="w-full flex justify-end">
+              <Dropdown
+                v-model="useGlobalStore().pollInterval"
+                :options="cities"
+                option-value="code"
+                optionLabel="name"
+                placeholder="Select a City"
+              />
+            </div>
+          </template>
           <Column header="Pair">
             <template #body="slotProps">
               <div class="flex flex-col items-center">
@@ -117,8 +141,8 @@ defineEmits(["search_string"]);
                   "
                 />
                 <p
-                  @click="$emit('search_string', slotProps.data.symbol)"
                   class="text-sm hover:animate-pulse hover:underline"
+                  @click="$emit('search_string', slotProps.data.symbol)"
                 >
                   {{ slotProps.data.symbol }}
                 </p>
@@ -126,86 +150,91 @@ defineEmits(["search_string"]);
             </template>
           </Column>
 
-          <Column header="Info" sortable sort-field="timestamp">
+          <Column header="Info" sort-field="timestamp" sortable>
             <template #body="slotProps">
-              <div class="flex text-xs">
-                {{ new Date(slotProps.data.timestamp * 1000).toISOString() }}
-              </div>
-              <div class="text-purple-500 text-xs">
-                <p class="">
-                  Before: {{ calc_passed_time(slotProps.data.timestamp) }}
-                </p>
-              </div>
+              <div class="flex flex-col p-2 p-inputtext text-xs">
+                <div class="flex text-xs">
+                  {{ new Date(slotProps.data.timestamp * 1000).toISOString() }}
+                </div>
+                <div class="text-purple-500 text-xs">
+                  <p class="">
+                    Before: {{ calc_passed_time(slotProps.data.timestamp) }}
+                  </p>
+                </div>
 
-              <div class="flex text-xs">
-                <p>
-                  {{ slotProps.data.signature.slice(0, 10) }}[...]{{
-                    slotProps.data.signature.slice(-10)
-                  }}
-                </p>
+                <div class="flex text-xs">
+                  <p>
+                    {{ slotProps.data.signature.slice(0, 10) }}[...]{{
+                      slotProps.data.signature.slice(-10)
+                    }}
+                  </p>
+                </div>
               </div>
             </template>
           </Column>
           <Column field="mint" header="Mint">
             <template #body="slotProps">
-              <div class="flex flex-row space-x-2 text-xs">
-                <div class="flex flex-col">
-                  <div>Token:</div>
-                  <div>Asset:</div>
+              <div class="flex flex-row gap-2 p-2 p-inputtext text-xs">
+                <div class="flex flex-col text-xs">
+                  <p>Token:</p>
+                  <p>Asset:</p>
                 </div>
-                <div class="flex flex-col">
-                  <div
+                <div class="flex flex-col text-xs">
+                  <p
+                    class="hover:animate-pulse hover:underline"
                     @click="
                       $emit('search_string', slotProps.data.currency_mint)
                     "
-                    class="hover:animate-pulse hover:underline"
                   >
-                    {{ slotProps.data.currency_mint }}
-                  </div>
+                    {{ format_address(slotProps.data.currency_mint) }}
+                  </p>
 
-                  <div
-                    @click="$emit('search_string', slotProps.data.asset_mint)"
+                  <p
                     class="hover:animate-pulse hover:underline"
+                    @click="$emit('search_string', slotProps.data.asset_mint)"
                   >
-                    {{ slotProps.data.asset_mint }}
-                  </div>
+                    {{ format_address(slotProps.data.asset_mint) }}
+                  </p>
                 </div>
               </div>
             </template>
           </Column>
           <Column field="wallets" header="Wallets">
             <template #body="slotProps">
-              <div class="flex flex-row space-x-2 text-xs">
-                <div class="flex flex-col">
+              <div
+                :class="useGlobalStore().is_dark ? 'border-gray-900' : ''"
+                class="flex flex-row space-x-2 p-2 p-inputtext"
+              >
+                <div class="flex flex-col text-xs">
                   <div>Maker:</div>
                   <div>Taker:</div>
                 </div>
-                <div class="flex flex-col">
+                <div class="flex flex-col text-xs">
                   <div
-                    @click="
-                      $emit('search_string', slotProps.data.order_initializer)
-                    "
-                    class="hover:animate-pulse hover:underline"
                     :class="
                       slotProps.data.asset_receiving_wallet ===
                       slotProps.data.order_initializer
                         ? 'text-green-500'
                         : 'text-red-500'
                     "
+                    class="hover:animate-pulse hover:underline"
+                    @click="
+                      $emit('search_string', slotProps.data.order_initializer)
+                    "
                   >
-                    {{ slotProps.data.order_initializer }}
+                    {{ format_address(slotProps.data.order_initializer) }}
                   </div>
                   <div
-                    @click="$emit('search_string', slotProps.data.order_taker)"
-                    class="hover:animate-pulse hover:underline"
                     :class="
                       slotProps.data.asset_receiving_wallet ===
                       slotProps.data.order_taker
                         ? 'text-green-500'
                         : 'text-red-500'
                     "
+                    class="hover:animate-pulse hover:underline"
+                    @click="$emit('search_string', slotProps.data.order_taker)"
                   >
-                    {{ slotProps.data.order_taker }}
+                    {{ format_address(slotProps.data.order_taker) }}
                   </div>
                 </div>
               </div>
@@ -213,7 +242,7 @@ defineEmits(["search_string"]);
           </Column>
           <Column field="market_fee" header="Fee" sortable>
             <template #body="slotProps">
-              <span
+              <span class="p-2 rounded-lg p-inputtext text-xs"
                 >{{
                   calc_percentage_for_fee(
                     slotProps.data.market_fee,
@@ -225,64 +254,58 @@ defineEmits(["search_string"]);
           </Column>
           <Column field="size" header="Size" sortable>
             <template #body="slotProps">
-              <div class="flex gap-2">
-                <span>x{{ slotProps.data.asset_change }}</span>
+              <div class="p-2 rounded-lg p-inputtext">
+                <span>{{ slotProps.data.asset_change }}</span>
               </div>
             </template>
           </Column>
           <Column field="price.value" header="Price" sortable>
             <template #body="slotProps">
-              <div class="flex gap-2">
-                <CurrencyIcon
-                  style="height: 24px"
-                  :currency="
-                    CURRENCIES.find(
-                      (c) => c.mint === slotProps.data.currency_mint
-                    )
-                  "
-                />
-                <span>{{ slotProps.data.price }}</span>
-              </div>
+              <SinglePriceTemplate
+                :currency="
+                  CURRENCIES.find(
+                    (c) => c.mint === slotProps.data.currency_mint
+                  )
+                "
+                :price="slotProps.data.price"
+              />
             </template>
           </Column>
           <Column field="total.value" header="Total" sortable>
             <template #body="slotProps">
-              <div class="flex gap-2">
-                <CurrencyIcon
-                  style="height: 24px"
-                  :currency="
-                    CURRENCIES.find(
-                      (c) => c.mint === slotProps.data.currency_mint
-                    )
-                  "
-                />
-                <span> {{ slotProps.data.total_cost.toFixed(2) }}</span>
-              </div>
+              <SinglePriceTemplate
+                :currency="
+                  CURRENCIES.find(
+                    (c) => c.mint === slotProps.data.currency_mint
+                  )
+                "
+                :price="slotProps.data.total_cost.toFixed(2)"
+              />
             </template>
           </Column>
           <Column field="explorer" header="Explorer" style="min-width: 200px">
             <template #body="slotProps">
               <div class="flex flex-row justify-center items-center space-x-2">
                 <ExplorerIcon
-                  class="w-5"
                   :explorer="
                     EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)
                   "
                   :signature="slotProps.data.signature"
+                  class="w-5"
                 />
                 <ExplorerIcon
-                  class="w-5"
                   :explorer="
                     EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)
                   "
                   :signature="slotProps.data.signature"
+                  class="w-5"
                 />
                 <ExplorerIcon
-                  class="w-5"
+                  :address="slotProps.data.asset_mint"
                   :explorer="
                     EXPLORER.find((e) => e.type === E_EXPLORER.STARATLAS)
                   "
-                  :address="slotProps.data.asset_mint"
+                  class="w-5"
                 />
               </div>
             </template>

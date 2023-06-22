@@ -3,6 +3,7 @@ import {
   getAllFleetsForUserPublicKey,
   getScoreVarsShipInfo,
   GmClientService,
+  GmOrderbookService,
   Order,
   OrderSide,
   ScoreVarsShipInfo,
@@ -13,7 +14,7 @@ import {
   GM_PROGRAM_ID,
   SCORE_FLEET_PROGRAM_ID,
 } from "../static/constants/StarAtlasConstants";
-import { E_CURRENCIES, I_CURRENCY } from "../static/currencies";
+import { CURRENCIES, E_CURRENCIES, I_CURRENCY } from "../static/currencies";
 import { ShipStakingInfo } from "@staratlas/factory/dist/score";
 import { StarAtlasAPIItem } from "../static/StarAtlasAPIItem";
 import { useUserWalletStore } from "./UserWalletStore";
@@ -63,10 +64,10 @@ export const useStaratlasGmStore = defineStore({
     status: {} as Status,
     score_table_data: [] as ScoreTableData[],
     market_table_data: [] as MarketTablData[],
-    // order_book_service: new GmOrderbookService(
-    //   new Connection(useGlobalStore().rpc.url),
-    //   new PublicKey(GM_PROGRAM_ID)
-    // ),
+    order_book_service: new GmOrderbookService(
+      new Connection("https://solana-mainnet.rpc.extrnode.com"),
+      new PublicKey(GM_PROGRAM_ID)
+    ),
     gmClientService: new GmClientService(),
 
     //old
@@ -95,11 +96,10 @@ export const useStaratlasGmStore = defineStore({
         step_total: 1,
       };
 
-      //await this.gmClientService.loadInitialOrders();
+      await this.order_book_service.initialize();
+      await this.order_book_service.loadInitialOrders();
       this.status = _update_status(this.status, false, "GM init done", 1, 1);
-      // this.order_book_service.initialize().then(() => {
-      //   this.status = _update_status(this.status, false, "GM init done", 1, 1);
-      // });
+      this.status.is_initialized = true;
     },
 
     getSumOrders(side: string, pair: PublicKey) {
@@ -163,134 +163,129 @@ export const useStaratlasGmStore = defineStore({
       );
     },
 
-    async update_score_data() {
+    async update_filtered_market_table_data(item_type: string) {
       this.status = _update_status(
         this.status,
         true,
-        "Loading score data",
+        "Updating filters on table",
         0,
         3
       );
-      await this._fetch_and_map_score_data();
+
+      if (!item_type) return;
+      this.market_table_data = [];
+
+      // const allOrders = await this.gmClientService.getAllOpenOrders(
+      //   new Connection(useGlobalStore().rpc.url),
+      //   new PublicKey(GM_PROGRAM_ID)
+      // );
+
+      // console.log(allOrders);
+
+      for (const filtered of useGlobalStore().sa_api_data.filter(
+        (api) =>
+          api.attributes.itemType.toLowerCase() === item_type.toLowerCase()
+      )) {
+        let orders = Array.from(
+          await useStaratlasGmStore()
+            .order_book_service.getAllOrdersByItemMint(filtered.mint)
+            .values()
+        );
+        // let orders = allOrders.filter(
+        //   (order) => order.currencyMint.toString() === filtered.mint
+        // );
+
+        this.status = _update_status(this.status, true, "Map USDC", 1, 3);
+
+        let orders_usdc: MarketValues = {
+          itemType: E_CURRENCIES.USDC,
+          buy_max: _get_order(
+            orders,
+            CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC) ??
+              CURRENCIES[0],
+            filtered.mint.toString(),
+            OrderSide.Buy,
+            1
+          ),
+          buy_min: _get_order(
+            orders,
+            CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC) ??
+              CURRENCIES[0],
+            filtered.mint.toString(),
+            OrderSide.Buy,
+            -1
+          ),
+          sell_max: _get_order(
+            orders,
+            CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC) ??
+              CURRENCIES[0],
+            filtered.mint.toString(),
+            OrderSide.Sell,
+            1
+          ),
+          sell_min: _get_order(
+            orders,
+            CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC) ??
+              CURRENCIES[0],
+            filtered.mint.toString(),
+            OrderSide.Sell,
+            -1
+          ),
+        };
+
+        this.status = _update_status(this.status, true, "Map ATLAS", 2, 3);
+
+        let orders_atlas: MarketValues = {
+          itemType: E_CURRENCIES.ATLAS,
+          buy_max: _get_order(
+            orders,
+            CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ??
+              CURRENCIES[0],
+            filtered.mint.toString(),
+            OrderSide.Buy,
+            1
+          ),
+          buy_min: _get_order(
+            orders,
+            CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ??
+              CURRENCIES[0],
+            filtered.mint.toString(),
+            OrderSide.Buy,
+            -1
+          ),
+          sell_max: _get_order(
+            orders,
+            CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ??
+              CURRENCIES[0],
+            filtered.mint.toString(),
+            OrderSide.Sell,
+            1
+          ),
+          sell_min: _get_order(
+            orders,
+            CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ??
+              CURRENCIES[0],
+            filtered.mint.toString(),
+            OrderSide.Sell,
+            -1
+          ),
+        };
+
+        this.status = _update_status(this.status, true, "Push data", 3, 3);
+
+        this.market_table_data.push({
+          api_data: filtered,
+          orders_usdc: orders_usdc,
+          orders_atlas: orders_atlas,
+        });
+      }
+
       this.status = _update_status(
         this.status,
         false,
-        "Updated score data",
-        3,
-        3
+        "Updated market table data"
       );
     },
-    // async update_filtered_market_table_data(item_type: string) {
-    //   this.status = _update_status(
-    //     this.status,
-    //     true,
-    //     "Updating filters on table",
-    //     0,
-    //     3
-    //   );
-    //
-    //   if (!item_type) return;
-    //   this.market_table_data = [];
-    //   for (const filtered of useGlobalStore().sa_api_data.filter(
-    //     (api) =>
-    //       api.attributes.itemType.toLowerCase() === item_type.toLowerCase()
-    //   )) {
-    //     let orders = Array.from(
-    //       await useStaratlasGmStore()
-    //         .gmClientService.getAllOrdersByItemMint(filtered.mint)
-    //         .values()
-    //     );
-    //
-    //     this.status = _update_status(this.status, true, "Map USDC", 1, 3);
-    //
-    //     let orders_usdc: MarketValues = {
-    //       itemType: E_CURRENCIES.USDC,
-    //       buy_max: _get_order(
-    //         orders,
-    //         CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC) ??
-    //           CURRENCIES[0],
-    //         filtered.mint.toString(),
-    //         OrderSide.Buy,
-    //         1
-    //       ),
-    //       buy_min: _get_order(
-    //         orders,
-    //         CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC) ??
-    //           CURRENCIES[0],
-    //         filtered.mint.toString(),
-    //         OrderSide.Buy,
-    //         -1
-    //       ),
-    //       sell_max: _get_order(
-    //         orders,
-    //         CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC) ??
-    //           CURRENCIES[0],
-    //         filtered.mint.toString(),
-    //         OrderSide.Sell,
-    //         1
-    //       ),
-    //       sell_min: _get_order(
-    //         orders,
-    //         CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC) ??
-    //           CURRENCIES[0],
-    //         filtered.mint.toString(),
-    //         OrderSide.Sell,
-    //         -1
-    //       ),
-    //     };
-    //
-    //     this.status = _update_status(this.status, true, "Map ATLAS", 2, 3);
-    //
-    //     let orders_atlas: MarketValues = {
-    //       itemType: E_CURRENCIES.ATLAS,
-    //       buy_max: _get_order(
-    //         orders,
-    //         CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ??
-    //           CURRENCIES[0],
-    //         filtered.mint.toString(),
-    //         OrderSide.Buy,
-    //         1
-    //       ),
-    //       buy_min: _get_order(
-    //         orders,
-    //         CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ??
-    //           CURRENCIES[0],
-    //         filtered.mint.toString(),
-    //         OrderSide.Buy,
-    //         -1
-    //       ),
-    //       sell_max: _get_order(
-    //         orders,
-    //         CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ??
-    //           CURRENCIES[0],
-    //         filtered.mint.toString(),
-    //         OrderSide.Sell,
-    //         1
-    //       ),
-    //       sell_min: _get_order(
-    //         orders,
-    //         CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS) ??
-    //           CURRENCIES[0],
-    //         filtered.mint.toString(),
-    //         OrderSide.Sell,
-    //         -1
-    //       ),
-    //     };
-    //
-    //     this.status = _update_status(this.status, true, "Push data", 3, 3);
-    //     this.market_table_data.push({
-    //       api_data: filtered,
-    //       orders_usdc: orders_usdc,
-    //       orders_atlas: orders_atlas,
-    //     });
-    //   }
-    //
-    //   this.status = _update_status(
-    //     this.status,
-    //     false,
-    //     "Updated market table data"
-    //   );
-    // },
 
     async _fetch_and_map_score_data() {
       this.status = _update_status(this.status, true, "Get User Fleet", 1, 3);

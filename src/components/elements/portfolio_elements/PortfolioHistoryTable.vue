@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { CURRENCIES } from "../../../static/currencies";
 import { calc_passed_time } from "../../../static/formatting/calc_passed_time";
 import PairImage from "../PairImage.vue";
@@ -12,6 +12,7 @@ import { calc_percentage_for_fee } from "../../../static/formatting/calc_percent
 import ExplorerIcon from "../../icon-helper/ExplorerIcon.vue";
 import download from "downloadjs";
 import { useUserWalletStore } from "../../../stores/UserWalletStore";
+import { useGlobalStore } from "../../../stores/GlobalStore";
 
 const props = defineProps({
   user_wallet: {
@@ -35,6 +36,7 @@ function export_json(table_data: {}) {
 
 <template>
   <ApolloQuery
+    :poll-interval="useGlobalStore().pollInterval"
     :query="
       (gql: any) => gql`
         query wallet_history($user_wallet: String!, $limit: Int!) {
@@ -83,8 +85,8 @@ function export_json(table_data: {}) {
         <DataTable
           v-else
           :value="data.trades"
-          scrollable
           scrollHeight="800px"
+          scrollable
           tableStyle="min-width: 50rem"
         >
           <template #footer>
@@ -143,18 +145,18 @@ function export_json(table_data: {}) {
             <template #body="slotProps">
               <div class="flex flex-row items-center space-x-2">
                 <ExplorerIcon
-                  class="w-5"
                   :explorer="
                     EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)
                   "
                   :signature="slotProps.data.signature"
+                  class="w-5"
                 />
                 <ExplorerIcon
-                  class="w-5"
                   :explorer="
                     EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)
                   "
                   :signature="slotProps.data.signature"
+                  class="w-5"
                 />
               </div>
             </template>
@@ -202,12 +204,12 @@ function export_json(table_data: {}) {
             <template #body="slotProps">
               <div class="flex gap-2">
                 <CurrencyIcon
-                  style="height: 24px"
                   :currency="
                     CURRENCIES.find(
                       (c) => c.mint === slotProps.data.currency_mint
                     )
                   "
+                  style="height: 24px"
                 />
                 <span>{{ slotProps.data.price }}</span>
               </div>
@@ -217,12 +219,12 @@ function export_json(table_data: {}) {
             <template #body="slotProps">
               <div class="flex gap-2">
                 <CurrencyIcon
-                  style="height: 24px"
                   :currency="
                     CURRENCIES.find(
                       (c) => c.mint === slotProps.data.currency_mint
                     )
                   "
+                  style="height: 24px"
                 />
                 <span>{{ slotProps.data.total_cost.toFixed(2) }}</span>
               </div>

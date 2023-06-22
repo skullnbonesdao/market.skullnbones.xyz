@@ -1,6 +1,6 @@
 {
   "name": "primevue-quickstart-create-vue-ts",
-  "version": "0.5.2-beta",
+  "version": "0.5.3-beta",
   "scripts": {
     "create_swagger_interfaces": "npx swagger-typescript-api -p ./api.skullnbones-swapper.json -o ./src/static/swagger/skullnbones_api -n skullnbones_api.ts",
     "dev": "vite --host",
@@ -8,7 +8,9 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "build-cross": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build",
-    "type-check": "vue-tsc --noEmit"
+    "type-check": "vue-tsc --noEmit",
+    "build-theme-light": "sass --update src/assets/themes/viva_edit/viva-light/theme.scss:public/theme_light.css",
+    "build-theme-dark": "sass --update src/assets/themes/viva_edit/viva-dark/theme.scss:public/theme_dark.css"
   },
   "dependencies": {
     "@vue/compiler-sfc": "^3.2.32",

@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
-    <link rel="icon" href="/logo.png">
+    <link href="/logo.png" rel="icon">
 
-    <link rel="stylesheet" href="/theme_dark.css" id="theme-link">
-    <link rel="stylesheet" href="/theme_light.css" id="theme-link">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link id="theme-link" href="/theme_light.css" rel="stylesheet">
+    <link id="theme-link2" href="/theme_dark.css" rel="stylesheet">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>RogueMarket</title>
-  </head>
-  <body>
-    <div id="app">
-        <script>
-                  // Global node polyfill.
-                     window.global = window;
+</head>
+<body>
+<div id="app">
+    <script>
+        // Global node polyfill.
+        window.global = window;
 
-            </script>
-      <script type="module" src="/src/main.ts"></script>
-        </div>
-  </body>
+    </script>
+    <script src="/src/main.ts" type="module"></script>
+</div>
+</body>
 </html>
