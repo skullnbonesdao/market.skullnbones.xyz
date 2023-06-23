@@ -1,13 +1,14 @@
 <template>
-  <div class="m-2 space-y-2">
-    <div class="p-card p-2 flex flex-col md:flex-row w-full gap-2">
+  <div class="space-y-2">
+    <div class="flex flex-col md:flex-row w-full gap-2">
       <div class="p-fluid flex w-full gap-2">
         <InputText
-          class="w-full"
-          type="text"
-          placeholder="Enter a wallet address"
           v-model="text_user_wallet_input"
-        /><Button
+          class="w-full"
+          placeholder="Enter a wallet address"
+          type="text"
+        />
+        <Button
           :disabled="!useGlobalStore().status.is_initialized"
           icon="pi pi-search"
           @click="update_wallet_prizes(text_user_wallet_input)"
@@ -15,8 +16,8 @@
       </div>
     </div>
     <NoData
-      class="p-card justify-center"
       v-if="!is_valid_publicKey(text_user_wallet_input)"
+      class="p-card justify-center"
       text="Invalid PublicKey!"
     ></NoData>
     <div v-else>
@@ -40,15 +41,15 @@
               <template #header>
                 <div class="flex w-full justify-end gap-2">
                   <Button
-                    text
                     icon="pi pi-plus"
                     label="Expand All"
+                    text
                     @click="expandAll"
                   />
                   <Button
-                    text
                     icon="pi pi-minus"
                     label="Collapse All"
+                    text
                     @click="collapseAll"
                   />
                 </div>
@@ -58,7 +59,6 @@
                 <template #body="slotProps">
                   <div class="flex flex-row items-center space-x-2">
                     <CurrencyIcon
-                      style="width: 32px"
                       v-if="
                         CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
                           ?.mint === slotProps.data?.elements?.at(0).mint
@@ -66,15 +66,16 @@
                       :currency="
                         CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
                       "
+                      style="width: 32px"
                     ></CurrencyIcon>
                     <Avatar
                       v-else
-                      shape="circle"
                       :image="
                         '/webp/' +
                         slotProps.data?.elements?.at(0).mint +
                         '.webp'
                       "
+                      shape="circle"
                     ></Avatar>
                     <p>{{ slotProps.data?.name }}</p>
                   </div>
@@ -108,10 +109,10 @@
                 <template #body="slotProps">
                   <div class="flex gap-2">
                     <CurrencyIcon
-                      style="height: 24px"
                       :currency="
                         CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
                       "
+                      style="height: 24px"
                     />
                     <span> {{ slotProps.data?.atlas_price }}</span>
                   </div>
@@ -121,10 +122,10 @@
                 <template #body="slotProps">
                   <div class="flex gap-2">
                     <CurrencyIcon
-                      style="height: 24px"
                       :currency="
                         CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
                       "
+                      style="height: 24px"
                     />
                     <span>
                       {{
@@ -146,16 +147,16 @@
                     Details for {{ slotProps.data.name }}
                   </h5>
                   <DataTable
+                    :sort-order="-1"
                     :value="slotProps.data.elements"
                     sort-field="createdAt"
-                    :sort-order="-1"
                   >
                     <Column field="name" header="Name">
                       <template #body="slotProps">
                         <div class="flex flex-row items-center space-x-2">
                           <Avatar
-                            shape="circle"
                             :image="'/webp/' + slotProps.data?.mint + '.webp'"
+                            shape="circle"
                           ></Avatar>
                           <p>{{ slotProps.data.name }}</p>
                         </div>
@@ -208,38 +209,38 @@
               <ColumnGroup type="footer">
                 <Row>
                   <Column
-                    footer="Sum:"
                     :colspan="3"
+                    footer="Sum:"
                     footerStyle="text-align:right"
                   />
 
                   <Column :footer="'x' + sum_drops.toString()" />
                   <Column :footer="sum_quantity.toString()" />
-                  <Column> </Column>
+                  <Column></Column>
                   <Column>
                     <template #footer>
                       <div class="flex flex-row space-x-2">
                         <CurrencyIcon
-                          style="width: 24px"
                           :currency="
                             CURRENCIES.find(
                               (c) => c.type === E_CURRENCIES.ATLAS
                             )
                           "
+                          style="width: 24px"
                         ></CurrencyIcon>
 
                         <p class="text-green-500">
                           {{ sum_value?.toFixed(2) }}
                         </p>
-                      </div></template
-                    >
+                      </div>
+                    </template>
                   </Column>
                 </Row>
                 <Row>
                   <Column
-                    footerStyle="text-align:right"
-                    :footer="'Net cost estimation*:'"
                     :colspan="3"
+                    :footer="'Net cost estimation*:'"
+                    footerStyle="text-align:right"
                   ></Column>
                   <Column>
                     <template #footer>
@@ -250,17 +251,17 @@
                         >
                           <span class="p-inputgroup-addon">
                             <CurrencyIcon
-                              style="height: 24px"
                               :currency="
                                 CURRENCIES.find(
                                   (c) => c.type === E_CURRENCIES.SOL
                                 )
                               "
+                              style="height: 24px"
                             ></CurrencyIcon>
                           </span>
                           <InputText
-                            type="number"
                             v-model="player_sol.inflow"
+                            type="number"
                           ></InputText>
                           <span class="p-inputgroup-addon flex-1">+IN</span>
                         </div>
@@ -270,17 +271,17 @@
                         >
                           <span class="p-inputgroup-addon">
                             <CurrencyIcon
-                              style="height: 24px"
                               :currency="
                                 CURRENCIES.find(
                                   (c) => c.type === E_CURRENCIES.SOL
                                 )
                               "
+                              style="height: 24px"
                             ></CurrencyIcon>
                           </span>
                           <InputText
-                            type="number"
                             v-model="player_sol.outflow"
+                            type="number"
                           ></InputText>
                           <span class="p-inputgroup-addon flex-1">-OUT</span>
                         </div>
@@ -290,16 +291,16 @@
                         >
                           <span class="p-inputgroup-addon">
                             <CurrencyIcon
-                              style="height: 24px"
                               :currency="
                                 CURRENCIES.find(
                                   (c) => c.type === E_CURRENCIES.SOL
                                 )
                               "
+                              style="height: 24px"
                             ></CurrencyIcon>
                           </span>
                           <InputText v-model="player_sol.current"></InputText>
-                          <span type="number" class="p-inputgroup-addon flex-1"
+                          <span class="p-inputgroup-addon flex-1" type="number"
                             >-IS</span
                           >
                         </div>
@@ -310,10 +311,10 @@
                     <template #footer>
                       <div class="flex flex-row space-x-2">
                         <CurrencyIcon
-                          style="height: 24px"
                           :currency="
                             CURRENCIES.find((c) => c.type === E_CURRENCIES.SOL)
                           "
+                          style="height: 24px"
                         ></CurrencyIcon>
                         <p>
                           {{ player_sol_sage_usage.toFixed(5) }}
@@ -327,12 +328,12 @@
                     <template #footer>
                       <div class="flex flex-row space-x-2">
                         <CurrencyIcon
-                          style="height: 24px"
                           :currency="
                             CURRENCIES.find(
                               (c) => c.type === E_CURRENCIES.ATLAS
                             )
                           "
+                          style="height: 24px"
                         ></CurrencyIcon>
                         <p>
                           {{
@@ -352,27 +353,27 @@
                           }}
                           (used/value)
                         </p>
-                      </div></template
-                    >
+                      </div>
+                    </template>
                   </Column>
 
                   <Column>
                     <template #footer>
                       <div class="flex flex-row space-x-2">
                         <CurrencyIcon
-                          style="height: 24px"
                           :currency="
                             CURRENCIES.find(
                               (c) => c.type === E_CURRENCIES.ATLAS
                             )
                           "
+                          style="height: 24px"
                         ></CurrencyIcon>
                         <p>
                           {{ roi_net_value }}
                           (NET*)
                         </p>
-                      </div></template
-                    >
+                      </div>
+                    </template>
                   </Column>
                 </Row>
               </ColumnGroup>
@@ -397,7 +398,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import Panel from "primevue/panel";
 import Button from "primevue/button";
 import NoData from "../components/elements/NoData.vue";

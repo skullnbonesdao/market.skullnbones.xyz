@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { PublicKey } from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
 import { StarAtlasAPIItem } from "../static/StarAtlasAPIItem";
 import { useLocalStorage } from "@vueuse/core";
 import { CURRENCIES } from "../static/currencies";
@@ -66,6 +66,7 @@ export const useGlobalStore = defineStore("globalStore", {
     }) as unknown as Toggables,
     is_dark: useLocalStorage("is_dark", false),
     rpc: useLocalStorage("rpc_local_store", endpoints_list[0]),
+    connection: new Connection(endpoints_list[0].url),
     currencyPrice: {} as BirdsEyePricesResponse,
     symbol: {
       name: "FOODATLAS",
@@ -80,6 +81,7 @@ export const useGlobalStore = defineStore("globalStore", {
       this.is_dark = !this.is_dark;
     },
     async init() {
+      this.connection = new Connection(useGlobalStore().rpc.url);
       await this.sa_api_update();
       await this._currency_update();
       this.status.is_initialized = true;

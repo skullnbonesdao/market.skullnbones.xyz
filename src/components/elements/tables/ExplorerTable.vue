@@ -118,13 +118,19 @@ const cities = ref([
         >
           <template #header>
             <div class="w-full flex justify-end">
-              <Dropdown
-                v-model="useGlobalStore().pollInterval"
-                :options="cities"
-                option-value="code"
-                optionLabel="name"
-                placeholder="Select a City"
-              />
+              <div class="w-full"></div>
+              <div class="p-inputgroup flex-1">
+                <div class="p-inputgroup-addon">
+                  <i-ic-twotone-update></i-ic-twotone-update>
+                </div>
+                <Dropdown
+                  v-model="useGlobalStore().pollInterval"
+                  :options="cities"
+                  option-value="code"
+                  optionLabel="name"
+                  placeholder="Select a City"
+                />
+              </div>
             </div>
           </template>
           <Column header="Pair">
@@ -242,19 +248,23 @@ const cities = ref([
           </Column>
           <Column field="market_fee" header="Fee" sortable>
             <template #body="slotProps">
-              <span class="p-2 rounded-lg p-inputtext text-xs"
-                >{{
-                  calc_percentage_for_fee(
-                    slotProps.data.market_fee,
-                    slotProps.data.total_cost
-                  ).toFixed(1)
-                }}%</span
-              >
+              <div class="p-inputgroup">
+                <span
+                  class="p-2 rounded-lg p-component p-inputwrapper p-inputwrapper-filled p-inputtext"
+                  >{{
+                    calc_percentage_for_fee(
+                      slotProps.data.market_fee,
+                      slotProps.data.total_cost
+                    ).toFixed(1)
+                  }}</span
+                >
+                <span class="p-inputgroup-addon">% </span>
+              </div>
             </template>
           </Column>
           <Column field="size" header="Size" sortable>
             <template #body="slotProps">
-              <div class="p-2 rounded-lg p-inputtext">
+              <div class="p-2 rounded-lg p-inputtext text-right">
                 <span>{{ slotProps.data.asset_change }}</span>
               </div>
             </template>
@@ -285,7 +295,9 @@ const cities = ref([
           </Column>
           <Column field="explorer" header="Explorer" style="min-width: 200px">
             <template #body="slotProps">
-              <div class="flex flex-row justify-center items-center space-x-2">
+              <div
+                class="flex flex-row justify-center items-center space-x-2 p-inputtext"
+              >
                 <ExplorerIcon
                   :explorer="
                     EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)

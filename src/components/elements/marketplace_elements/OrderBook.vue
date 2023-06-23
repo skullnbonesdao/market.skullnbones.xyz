@@ -1,53 +1,65 @@
 <template>
-  <div class="flex flex-col text-sm lg:text-base" style="min-width: 450px">
+  <div class="flex flex-col text-sm">
     <ProgressSpinner
       v-if="!buy_orders.length || !sell_orders.length"
       class="flex justify-center"
     />
-
     <div v-else>
-      <div class="grid grid-cols-2">
-        <order-book-header></order-book-header>
-        <order-book-header :reverse_order="true"></order-book-header>
-        <div>
+      <div
+        id="head"
+        class="flex flex-row w-full border-b-2 border-black font-bold"
+      >
+        <div class="flex w-full justify-start">BUY</div>
+        <div class="flex w-full justify-center">
+          {{ spread.toFixed(5) }}
+        </div>
+        <div class="flex w-full justify-end">SELL</div>
+      </div>
+      <div class="grid 2xl:grid-cols-2">
+        <div
+          id="col_sell"
+          class="flex flex-col 2xl:border-r-1 2xl:border-black"
+          style="min-width: 220px"
+        >
+          <!--          <order-book-header></order-book-header>-->
           <div v-for="orderBlock in buy_orders">
             <order-book-row
-              class=""
+              :max_size="Math.max(...buy_orders.map((o) => o.size))"
               :order="orderBlock"
               side="buy"
-              :max_size="Math.max(...buy_orders.map((o) => o.size))"
             />
           </div>
         </div>
-        <div>
+        <div
+          id="col_buy"
+          class="flex flex-col 2xl:border-l-1 2xl:border-black"
+          style="min-width: 220px"
+        >
+          <!--          <order-book-header :reverse_order="true"></order-book-header>-->
           <div v-for="orderBlock in sell_orders">
             <order-book-row
-              class=""
-              :order="orderBlock"
-              side="sell"
               :max_size="Math.max(...sell_orders.map((o) => o.size))"
+              :order="orderBlock"
               :reverse_order="true"
+              class=""
+              side="sell"
             />
           </div>
         </div>
       </div>
     </div>
-    <div class="flex items-center justify-center h-14"></div>
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, watchEffect } from "vue";
+<script lang="ts" setup>
+import { computed, ref, watch } from "vue";
 import { useGlobalStore } from "../../../stores/GlobalStore";
-import OrderBookHeader from "./OrderBookHeader.vue";
 import OrderBookRow from "./OrderBookRow.vue";
 import {
   OrderBookOrderMap,
   useStaratlasGmStore,
 } from "../../../stores/StaratlasGmStore";
 import ProgressSpinner from "primevue/progressspinner";
-import { GM_PROGRAM_ID } from "../../../static/constants/StarAtlasConstants";
-import { Connection, PublicKey } from "@solana/web3.js";
 import { OrderSide } from "@staratlas/factory";
 
 const is_loading = ref(true);
@@ -56,14 +68,24 @@ const selectedCurrency = ref();
 
 const buy_orders = ref<OrderBookOrderMap[]>([]);
 const sell_orders = ref<OrderBookOrderMap[]>([]);
-watchEffect(async () => {
-  let orders =
-    await useStaratlasGmStore().gmClientService.getOpenOrdersForAsset(
-      new Connection(useGlobalStore().rpc.url),
-      useGlobalStore().symbol.mint_asset,
-      new PublicKey(GM_PROGRAM_ID)
-    );
 
+watch(
+  () => useGlobalStore().symbol.mint_pair,
+  () => {
+    buy_orders.value = [];
+    sell_orders.value = [];
+  }
+);
+
+function update_order_book() {
+  if (!useStaratlasGmStore().status.is_initialized) return;
+  let orders = Array.from(
+    useStaratlasGmStore()
+      .order_book_service.getAllOrdersByItemMint(
+        useGlobalStore().symbol.mint_asset.toString()
+      )
+      .values()
+  );
   buy_orders.value = orders
     .filter(
       (order) =>
@@ -77,7 +99,7 @@ watchEffect(async () => {
         owners: [order.owner],
       };
     })
-    .sort((a, b) => a.size - b.price)
+    .sort((a, b) => a.price - b.price)
     .reverse() as [];
 
   sell_orders.value = orders
@@ -93,49 +115,14 @@ watchEffect(async () => {
         owners: [order.owner],
       };
     })
+    .sort((a, b) => a.price - b.price) as [];
+}
 
-    .sort((a, b) => a.size - b.price) as [];
+const update_handle = setInterval(function () {
+  update_order_book();
+}, 5000);
+
+const spread = computed(() => {
+  return buy_orders.value[0].price - sell_orders.value[0].price;
 });
-
-// const buy_order = computed(() => {
-//   let orderbook_map: OrderBookOrderMap[] = [];
-//
-//   useStaratlasGmStore()
-//     .gmClientService.getOpenOrdersForAsset(
-//       useGlobalStore().symbol.mint_pair.toString(),
-//       useGlobalStore().symbol.mint_asset.toString()
-//     )
-//     .forEach((order) => {
-//       orderbook_map.push({
-//         price: order.uiPrice,
-//         size: order.orderQtyRemaining,
-//         owners: [order.owner],
-//       });
-//     });
-//
-//   orderbook_map.sort((a, b) => a.price - b.price).reverse();
-//
-//   return orderbook_map;
-// });
-
-// const sell_order = computed(() => {
-//   let orderbook_map: OrderBookOrderMap[] = [];
-//
-//   useStaratlasGmStore()
-//     .gmClientService.getSellOrdersByCurrencyAndItem(
-//       useGlobalStore().symbol.mint_pair.toString(),
-//       useGlobalStore().symbol.mint_asset.toString()
-//     )
-//     .forEach((order) => {
-//       orderbook_map.push({
-//         price: order.uiPrice,
-//         size: order.orderQtyRemaining,
-//         owners: [order.owner],
-//       });
-//     });
-//
-//   orderbook_map.sort((a, b) => a.price - b.price);
-//
-//   return orderbook_map;
-// });
 </script>

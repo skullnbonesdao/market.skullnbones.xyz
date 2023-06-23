@@ -7,7 +7,7 @@
         @search_clicked="show_search = true"
       />
 
-      <div class="p-card w-full" v-else>
+      <div v-else class="p-card w-full">
         <SearchHelperExplorer
           @toSearch="
             (value) => {
@@ -23,7 +23,7 @@
         <TradingViewChart class="p-card" />
         <OpenOrders class="p-card" />
       </div>
-      <div class="flex flex-col space-y-2">
+      <div class="flex basis-1/3 flex-col space-y-2">
         <MarketplaceQuickLinks class="p-card p-2" />
         <OrderSettter class="p-card p-2" />
         <OrderBook class="p-card p-2" />
@@ -32,7 +32,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref } from "vue";
 import AssetInfo from "../components/elements/AssetInfo.vue";
 import SearchHelperExplorer from "../components/elements/SearchHelperExplorer.vue";
