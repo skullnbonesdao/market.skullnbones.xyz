@@ -16,18 +16,25 @@
         <div class="flex w-full justify-end">SELL</div>
       </div>
       <div class="grid 2xl:grid-cols-2">
-        <div id="col_sell" class="flex flex-col" style="min-width: 220px">
+        <div
+          id="col_sell"
+          class="flex flex-col 2xl:border-r-1 2xl:border-black"
+          style="min-width: 220px"
+        >
           <!--          <order-book-header></order-book-header>-->
           <div v-for="orderBlock in buy_orders">
             <order-book-row
               :max_size="Math.max(...buy_orders.map((o) => o.size))"
               :order="orderBlock"
-              class=""
               side="buy"
             />
           </div>
         </div>
-        <div id="col_buy" class="flex flex-col" style="min-width: 220px">
+        <div
+          id="col_buy"
+          class="flex flex-col 2xl:border-l-1 2xl:border-black"
+          style="min-width: 220px"
+        >
           <!--          <order-book-header :reverse_order="true"></order-book-header>-->
           <div v-for="orderBlock in sell_orders">
             <order-book-row

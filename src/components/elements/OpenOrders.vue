@@ -8,7 +8,7 @@
       <WalletMultiButton dark />
     </div>
 
-    <ProgressSpinner v-else-if="is_loading" class="flex justify-center" />
+    <ProgressSpinner v-else-if="!open_orders" class="flex justify-center" />
 
     <DataTable
       v-else
@@ -54,7 +54,16 @@
           <p>x{{ slotProps.data.orderOriginationQty }}</p>
         </template>
       </Column>
-      <Column header="">
+      <Column>
+        <template #header>
+          <div class="flex flex-row w-full">
+            <div class="w-full"></div>
+            <ProgressSpinner
+              v-if="is_loading"
+              style="width: 20px; height: 20px"
+            />
+          </div>
+        </template>
         <template #body="slotProps">
           <div class="flex w-full flex-row justify-end space-x-2">
             <Button
@@ -80,7 +89,6 @@
 
 <script lang="ts" setup>
 import { GmClientService, Order } from "@staratlas/factory";
-import Toast from "primevue/toast";
 import Button from "primevue/button";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
@@ -88,37 +96,31 @@ import { useGlobalStore } from "../../stores/GlobalStore";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { useWallet, WalletMultiButton } from "solana-wallets-vue";
 import { GM_PROGRAM_ID } from "../../static/constants/StarAtlasConstants";
-import { onMounted, ref, watch } from "vue";
+import { ref } from "vue";
 import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
 import PairImage from "./PairImage.vue";
 import { CURRENCIES } from "../../static/currencies";
 import { useToast } from "primevue/usetoast";
 import ProgressSpinner from "primevue/progressspinner";
+import { useStaratlasGmStore } from "../../stores/StaratlasGmStore";
 
 const open_orders = ref<Order[]>();
 const toast = useToast();
 
 const is_loading = ref(true);
 
-watch(
-  () => useWallet().publicKey.value,
-  async () => {
-    await fetch_orders();
-  }
-);
-
-onMounted(async () => {
+setInterval(async function () {
   await fetch_orders();
-});
+}, 5000);
 
 async function fetch_orders() {
+  if (!useWallet().publicKey.value) return;
+  if (!useStaratlasGmStore().status.is_initialized) return;
+
   if (useWallet().publicKey.value) {
     is_loading.value = true;
-    let gm_client = new GmClientService();
-    open_orders.value = await gm_client.getOpenOrdersForPlayer(
-      new Connection(useGlobalStore().rpc.url),
-      useWallet().publicKey.value ?? new PublicKey(""),
-      new PublicKey(GM_PROGRAM_ID)
+    open_orders.value = await useStaratlasGmStore().getOpenOrdersForPlayer(
+      useWallet().publicKey.value ?? new PublicKey("")
     );
 
     is_loading.value = false;
