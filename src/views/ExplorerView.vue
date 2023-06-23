@@ -1,13 +1,13 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import ExplorerTable from "../components/elements/tables/ExplorerTable.vue";
 import InputText from "primevue/inputtext";
 import { ref } from "vue";
 import Dropdown from "primevue/dropdown";
 
 const limits = ref([
-  { name: "limit: 10", value: 10 },
-  { name: "limit: 100", value: 100 },
-  { name: "limit: 1k", value: 1000 },
+  { name: "10", value: 10 },
+  { name: "100", value: 100 },
+  { name: "1k", value: 1000 },
 ]);
 
 const search_input = ref("");
@@ -25,24 +25,28 @@ const selected_limit = ref(limits.value[1]);
           placeholder="Type: Symbol (ex. PX4USDC)"
         ></InputText>
       </span>
-
-      <Dropdown
-        v-model="selected_limit"
-        :options="limits"
-        optionLabel="name"
-        placeholder="limit:100"
-        class="md:w-14rem"
-      />
+      <div class="p-inputgroup flex-1">
+        <span class="p-inputgroup-addon">
+          <i-ic-outline-format-list-numbered />
+        </span>
+        <Dropdown
+          v-model="selected_limit"
+          :options="limits"
+          class="md:w-14rem"
+          optionLabel="name"
+          placeholder="100"
+        />
+      </div>
     </div>
 
     <ExplorerTable
+      :limit="selected_limit.value"
+      :search_string="search_input"
       @search_string="
         (value) => {
           search_input = value;
         }
       "
-      :search_string="search_input"
-      :limit="selected_limit.value"
     ></ExplorerTable>
   </div>
 </template>

@@ -118,13 +118,19 @@ const cities = ref([
         >
           <template #header>
             <div class="w-full flex justify-end">
-              <Dropdown
-                v-model="useGlobalStore().pollInterval"
-                :options="cities"
-                option-value="code"
-                optionLabel="name"
-                placeholder="Select a City"
-              />
+              <div class="w-full"></div>
+              <div class="p-inputgroup flex-1">
+                <div class="p-inputgroup-addon">
+                  <i-ic-twotone-update></i-ic-twotone-update>
+                </div>
+                <Dropdown
+                  v-model="useGlobalStore().pollInterval"
+                  :options="cities"
+                  option-value="code"
+                  optionLabel="name"
+                  placeholder="Select a City"
+                />
+              </div>
             </div>
           </template>
           <Column header="Pair">
@@ -258,7 +264,7 @@ const cities = ref([
           </Column>
           <Column field="size" header="Size" sortable>
             <template #body="slotProps">
-              <div class="p-2 rounded-lg p-inputtext">
+              <div class="p-2 rounded-lg p-inputtext text-right">
                 <span>{{ slotProps.data.asset_change }}</span>
               </div>
             </template>
