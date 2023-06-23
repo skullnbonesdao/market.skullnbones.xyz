@@ -125,6 +125,7 @@ export const useUserWalletStore = defineStore("userWalletStore", {
 
     async _load_accounts() {
       this.status.status_set("Loading accounts...", 1, 10);
+      this.sa_tokens = [];
       this.tokens = [];
       const connection = new Connection(useGlobalStore().rpc.url);
 
