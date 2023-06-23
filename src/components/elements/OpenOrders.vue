@@ -2,8 +2,8 @@
   <div class="flex items-center">
     <Toast />
     <div
-      class="flex m-2 w-full justify-center"
       v-if="!useWallet().publicKey.value"
+      class="flex m-2 w-full justify-center"
     >
       <WalletMultiButton dark />
     </div>
@@ -12,19 +12,19 @@
 
     <DataTable
       v-else
-      resizableColumns
-      columnResizeMode="fit"
-      style="width: 100%"
       :value="open_orders"
+      columnResizeMode="fit"
+      resizableColumns
+      style="width: 100%"
     >
       <Column field="orderMint" header="Info">
         <template #body="slotProps">
           <div class="flex">
             <PairImage
+              :asset_image_url="'webp/' + slotProps.data.orderMint + '.webp'"
               :currency="
                 CURRENCIES.find((c) => c.mint === slotProps.data.currencyMint)
               "
-              :asset_image_url="'webp/' + slotProps.data.orderMint + '.webp'"
             />
           </div>
         </template>
@@ -41,10 +41,10 @@
               }}
             </p>
             <CurrencyIcon
-              style="height: 24px"
               :currency="
                 CURRENCIES.find((c) => c.mint === slotProps.data.currencyMint)
               "
+              style="height: 24px"
             />
           </div>
         </template>
@@ -59,15 +59,15 @@
           <div class="flex w-full flex-row justify-end space-x-2">
             <Button
               v-tooltip.bottom="'Edit order'"
-              @click="show()"
               class="p-button-info"
+              @click="show()"
             >
               <i class="pi pi-pencil"></i
             ></Button>
             <Button
-              @click="cancel_order(slotProps.data.id.toString()).then(() => {})"
               v-tooltip.bottom="'Close order'"
               class="p-button-warning"
+              @click="cancel_order(slotProps.data.id.toString()).then(() => {})"
             >
               <i class="pi pi-ban"></i
             ></Button>
@@ -78,7 +78,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { GmClientService, Order } from "@staratlas/factory";
 import Toast from "primevue/toast";
 import Button from "primevue/button";
@@ -114,9 +114,7 @@ onMounted(async () => {
 async function fetch_orders() {
   if (useWallet().publicKey.value) {
     is_loading.value = true;
-
     let gm_client = new GmClientService();
-
     open_orders.value = await gm_client.getOpenOrdersForPlayer(
       new Connection(useGlobalStore().rpc.url),
       useWallet().publicKey.value ?? new PublicKey(""),
@@ -153,6 +151,7 @@ async function cancel_order(order_address: string) {
       console.log(err);
     });
 }
+
 const show = () => {
   toast.add({
     severity: "warn",

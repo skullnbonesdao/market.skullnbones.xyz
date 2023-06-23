@@ -65,7 +65,7 @@ export const useStaratlasGmStore = defineStore({
     score_table_data: [] as ScoreTableData[],
     market_table_data: [] as MarketTablData[],
     order_book_service: new GmOrderbookService(
-      new Connection("https://solana-mainnet.rpc.extrnode.com"),
+      useGlobalStore().connection as Connection,
       new PublicKey(GM_PROGRAM_ID)
     ),
     gmClientService: new GmClientService(),
@@ -96,10 +96,15 @@ export const useStaratlasGmStore = defineStore({
         step_total: 1,
       };
 
-      await this.order_book_service.initialize();
-      await this.order_book_service.loadInitialOrders();
       this.status = _update_status(this.status, false, "GM init done", 1, 1);
       this.status.is_initialized = true;
+      await useStaratlasGmStore().order_book_service.loadInitialOrders();
+
+      setInterval(async function () {
+        console.log("update orderbooks");
+        //        await useStaratlasGmStore().order_book_service.initialize();
+        await useStaratlasGmStore().order_book_service.loadInitialOrders();
+      }, 10000);
     },
 
     getSumOrders(side: string, pair: PublicKey) {
