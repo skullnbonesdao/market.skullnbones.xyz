@@ -66,7 +66,7 @@ export const useGlobalStore = defineStore("globalStore", {
     }) as unknown as Toggables,
     is_dark: useLocalStorage("is_dark", false),
     rpc: useLocalStorage("rpc_local_store", endpoints_list[0]),
-    connection: {} as Connection,
+    connection: new Connection(endpoints_list[0].url),
     currencyPrice: {} as BirdsEyePricesResponse,
     symbol: {
       name: "FOODATLAS",

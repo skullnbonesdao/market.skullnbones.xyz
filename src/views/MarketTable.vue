@@ -297,7 +297,9 @@ onMounted(async () => {
         </Column>
         <Column>
           <template #body="slotProps">
-            <div class="flex flex-row justify-center items-center space-x-2">
+            <div
+              class="flex flex-row justify-center items-center space-x-2 p-inputtext"
+            >
               <ExplorerIcon
                 :address="slotProps.data.api_data.mint.toString()"
                 :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)"
