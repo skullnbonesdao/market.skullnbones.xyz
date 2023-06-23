@@ -12,21 +12,21 @@
         <div>
           <div v-for="orderBlock in buy_orders">
             <order-book-row
-              class=""
-              :order="orderBlock"
-              side="buy"
               :max_size="Math.max(...buy_orders.map((o) => o.size))"
+              :order="orderBlock"
+              class=""
+              side="buy"
             />
           </div>
         </div>
         <div>
           <div v-for="orderBlock in sell_orders">
             <order-book-row
-              class=""
-              :order="orderBlock"
-              side="sell"
               :max_size="Math.max(...sell_orders.map((o) => o.size))"
+              :order="orderBlock"
               :reverse_order="true"
+              class=""
+              side="sell"
             />
           </div>
         </div>
@@ -36,7 +36,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref, watchEffect } from "vue";
 import { useGlobalStore } from "../../../stores/GlobalStore";
 import OrderBookHeader from "./OrderBookHeader.vue";
