@@ -4,40 +4,49 @@
       v-if="!buy_orders.length || !sell_orders.length"
       class="flex justify-center"
     />
-    <div v-else class="grid 2xl:grid-cols-2">
-      <div id="col_sell" class="flex flex-col" style="min-width: 220px">
-        <order-book-header></order-book-header>
-        <div v-for="orderBlock in buy_orders">
-          <order-book-row
-            :max_size="Math.max(...buy_orders.map((o) => o.size))"
-            :order="orderBlock"
-            class=""
-            side="buy"
-          />
+    <div v-else>
+      <div
+        id="head"
+        class="flex flex-row w-full border-b-2 border-black font-bold"
+      >
+        <div class="flex w-full justify-start">BUY</div>
+        <div class="flex w-full justify-center">
+          {{ spread.toFixed(5) }}
         </div>
+        <div class="flex w-full justify-end">SELL</div>
       </div>
-      <div id="col_buy" class="flex flex-col" style="min-width: 220px">
-        <order-book-header :reverse_order="true"></order-book-header>
-        <div v-for="orderBlock in sell_orders">
-          <order-book-row
-            :max_size="Math.max(...sell_orders.map((o) => o.size))"
-            :order="orderBlock"
-            :reverse_order="true"
-            class=""
-            side="sell"
-          />
+      <div class="grid 2xl:grid-cols-2">
+        <div id="col_sell" class="flex flex-col" style="min-width: 220px">
+          <!--          <order-book-header></order-book-header>-->
+          <div v-for="orderBlock in buy_orders">
+            <order-book-row
+              :max_size="Math.max(...buy_orders.map((o) => o.size))"
+              :order="orderBlock"
+              class=""
+              side="buy"
+            />
+          </div>
+        </div>
+        <div id="col_buy" class="flex flex-col" style="min-width: 220px">
+          <!--          <order-book-header :reverse_order="true"></order-book-header>-->
+          <div v-for="orderBlock in sell_orders">
+            <order-book-row
+              :max_size="Math.max(...sell_orders.map((o) => o.size))"
+              :order="orderBlock"
+              :reverse_order="true"
+              class=""
+              side="sell"
+            />
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="flex items-center justify-center h-14"></div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, watchEffect } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import { useGlobalStore } from "../../../stores/GlobalStore";
-import OrderBookHeader from "./OrderBookHeader.vue";
 import OrderBookRow from "./OrderBookRow.vue";
 import {
   OrderBookOrderMap,
@@ -92,6 +101,10 @@ watchEffect(async () => {
       };
     })
     .sort((a, b) => a.price - b.price) as [];
+});
+
+const spread = computed(() => {
+  return buy_orders.value[0].price - sell_orders.value[0].price;
 });
 
 // const buy_order = computed(() => {
