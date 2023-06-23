@@ -13,7 +13,7 @@
           <div
             class="max-w-2xl mb-4 text-4xl tracking-tight leading-none md:text-5xl xl:text-6xl text-gray-100 dark:text-gray-300 animate-fade-in-down animate-count-1 animate-duration-2s fw100"
           >
-            trading experience
+            <image src="/images/sa-powered_by_the_people.png"></image>
           </div>
 
           <!--          <p
@@ -25,7 +25,7 @@
         <div
           class="hidden lg:mt-0 lg:col-span-5 lg:flex animate-pulse animate-duration-5s shadow-2xl"
         >
-          <img src="/images/rouge_market_background_1.webp" alt="mockup" />
+          <img alt="mockup" src="/images/rouge_market_background_1.webp" />
         </div>
       </div>
     </section>
