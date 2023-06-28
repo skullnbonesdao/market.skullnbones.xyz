@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { gql } from "graphql-tag";
 import { ref } from "vue";
+import { useGlobalStore } from "../../stores/GlobalStore";
 
 const props = defineProps({
   symbol: {
@@ -32,7 +33,11 @@ const TRADE_QUERY = gql`
 </script>
 
 <template>
-  <ApolloQuery :query="TRADE_QUERY" :variables="{ symbol: symbol_local }">
+  <ApolloQuery
+    :poll-interval="useGlobalStore().pollInterval"
+    :query="TRADE_QUERY"
+    :variables="{ symbol: symbol_local }"
+  >
     <template v-slot="{ result: { loading, error, data } }">
       <div v-if="loading" class="loading apollo">Loading...</div>
 
