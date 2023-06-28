@@ -49,7 +49,7 @@ const TRADE_QUERY = gql`
         {{
           decimals
             ? data?.trades[0]?.price?.toFixed(decimals) ?? 0.0
-            : data?.trades[0]?.price
+            : data?.trades[0]?.price ?? 0.0
         }}
       </div>
 

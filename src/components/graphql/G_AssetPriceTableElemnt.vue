@@ -11,6 +11,9 @@ const props = defineProps({
     default: "FOOD",
     required: true,
   },
+  decimals: {
+    type: Number,
+  },
 });
 </script>
 
@@ -34,8 +37,8 @@ const props = defineProps({
       <div class="border h-1rem"></div>
     </div>
     <div class="flex flex-col w-24 text-right">
-      <G_CurrentMarketPrice :decimals="2" :symbol="symbol + 'USDC'" />
-      <G_CurrentMarketPrice :decimals="2" :symbol="symbol + 'ATLAS'" />
+      <G_CurrentMarketPrice :decimals="decimals" :symbol="symbol + 'USDC'" />
+      <G_CurrentMarketPrice :decimals="decimals" :symbol="symbol + 'ATLAS'" />
     </div>
     <div class="flex flex-col w-24 float-right">
       <G_Market24hChange :symbol="symbol + 'USDC'" />
