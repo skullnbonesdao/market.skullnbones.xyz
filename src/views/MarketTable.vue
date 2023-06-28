@@ -16,15 +16,18 @@ import InputText from "primevue/inputtext";
 import PercentageVwapTemplate from "../components/elements/templates/PercentageTemplate.vue";
 import PriceTemplate from "../components/elements/templates/PriceTemplate.vue";
 import VwapTemplate from "../components/elements/templates/VwapTemplate.vue";
-
+import ToggleButton from "primevue/togglebutton";
 import { E_EXPLORER, EXPLORER } from "../static/explorer";
 import ExplorerIcon from "../components/icon-helper/ExplorerIcon.vue";
+import G_AssetPriceTableElemnt from "../components/graphql/G_AssetPriceTableElemnt.vue";
 
 const is_loading = ref(true);
 
 interface OptionType {
   value: string;
 }
+
+const show_vwap = ref(true);
 
 const table_filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -110,16 +113,26 @@ onMounted(async () => {
         tableStyle="min-width: 50rem"
       >
         <template #header>
-          <div class="flex">
+          <div class="flex gap-2">
             <div class="flex w-full"></div>
-            <span class="p-input-icon-left">
-              <i class="pi pi-search" />
-              <InputText
-                v-model="table_filters['global'].value"
-                placeholder="Search (name)"
-                v
-              />
-            </span>
+            <ToggleButton
+              v-model="show_vwap"
+              class="w-9rem"
+              offIcon="pi pi-times"
+              offLabel="VWAP"
+              onIcon="pi pi-check"
+              onLabel="VWAP"
+            />
+            <div>
+              <span class="p-input-icon-left">
+                <i class="pi pi-search" />
+                <InputText
+                  v-model="table_filters['global'].value"
+                  placeholder="Search (name)"
+                  v
+                />
+              </span>
+            </div>
           </div>
         </template>
 
@@ -134,12 +147,14 @@ onMounted(async () => {
             />
 
             <Column
+              v-if="show_vwap"
               :colspan="1"
               :rowspan="3"
               field="api_data.tradeSettings.vwap"
               header="VWAP"
               sortable
             />
+            <Column :colspan="1" :rowspan="3" header="Pirce" sortable />
             <Column :colspan="4" header="BUY" />
             <Column :colspan="4" header="SELL" />
 
@@ -190,10 +205,19 @@ onMounted(async () => {
         </Column>
 
         <Column field="api_data.name"></Column>
-        <Column>
+
+        <Column v-if="show_vwap">
           <template #body="slotProps">
             <VwapTemplate
               :vwap="slotProps.data.api_data.tradeSettings?.vwap?.toFixed(2)"
+            />
+          </template>
+        </Column>
+
+        <Column>
+          <template #body="slotProps">
+            <G_AssetPriceTableElemnt
+              :symbol="slotProps.data.api_data.symbol.toString()"
             />
           </template>
         </Column>
