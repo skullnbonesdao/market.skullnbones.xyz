@@ -28,6 +28,7 @@ interface OptionType {
 }
 
 const show_vwap = ref(true);
+const two_decimal_places = ref(true);
 
 const table_filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -122,6 +123,12 @@ onMounted(async () => {
               offLabel="VWAP"
               onIcon="pi pi-check"
               onLabel="VWAP"
+            />
+            <ToggleButton
+              v-model="two_decimal_places"
+              class="w-9rem"
+              offLabel="ALL DP"
+              onLabel="2 DP"
             />
             <div>
               <span class="p-input-icon-left">
@@ -224,6 +231,7 @@ onMounted(async () => {
         <Column>
           <template #body="slotProps">
             <G_AssetPriceTableElemnt
+              :decimals="two_decimal_places ? 2 : undefined"
               :symbol="slotProps.data.api_data.symbol.toString()"
             />
           </template>
