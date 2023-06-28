@@ -32,12 +32,18 @@
         </Button>
       </div>
     </div>
-    <div class="grid grid-cols-10 gap-1">
-      <div v-if="useUserWalletStore().address" class="p-card col-span-2">
-        <ProfileSideBar />
-      </div>
+    <div class="grid grid-cols-1 md:grid-cols-10 gap-1">
+      <ProfileSideBar
+        v-if="useUserWalletStore().address"
+        class="p-card col-span-2 w-full"
+      />
+
       <div
-        :class="useUserWalletStore().address ? 'col-span-8' : 'col-span-10'"
+        :class="
+          useUserWalletStore().address
+            ? 'grid-cols-1 md:col-span-8'
+            : 'grid-cols-1 md:col-span-10'
+        "
         class="w-full"
       >
         <div v-if="!useUserWalletStore().address" class="p-card">
