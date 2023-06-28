@@ -11,12 +11,12 @@
       </template>
 
       <template #end>
-        <div class="flex flex-row space-x-2 items-center">
+        <div class="pl-2 flex flex-row space-x-2 items-center">
           <div
-            v-tooltip.bottom="'Current Transactions per second'"
-            class="pr-2 flex space-x-0.5 items-center uppercase bg-purple-100 text-purple-800 font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300"
+            v-tooltip.bottom="'Solana: Current Transactions per second'"
+            class="pr-2 grid md:grid-cols-2 items-center uppercase bg-purple-100 text-purple-800 font-medium px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300"
           >
-            <p class="text-sm">
+            <p class="text-xs md:text-sm">
               {{ useTPS().tps.toFixed(0) }}
             </p>
             <p class="text-xs">
@@ -25,6 +25,7 @@
           </div>
 
           <WalletMultiButton dark />
+
           <SwitchTheme />
         </div>
       </template>

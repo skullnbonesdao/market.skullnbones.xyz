@@ -87,7 +87,7 @@ onMounted(async () => {
           <Dropdown
             v-model="option_selected"
             :options="options_values"
-            class="md:w-14rem"
+            class="w-full"
             optionLabel="value"
             placeholder="Select a item type"
           />
@@ -114,32 +114,33 @@ onMounted(async () => {
         tableStyle="min-width: 50rem"
       >
         <template #header>
-          <div class="flex gap-2">
-            <div class="flex w-full"></div>
-            <ToggleButton
-              v-model="show_vwap"
-              class="w-9rem"
-              offIcon="pi pi-times"
-              offLabel="VWAP"
-              onIcon="pi pi-check"
-              onLabel="VWAP"
-            />
-            <ToggleButton
-              v-model="two_decimal_places"
-              class="w-9rem"
-              offLabel="ALL DP"
-              onLabel="2 DP"
-            />
-            <div>
-              <span class="p-input-icon-left">
-                <i class="pi pi-search" />
-                <InputText
-                  v-model="table_filters['global'].value"
-                  placeholder="Search (name)"
-                  v
-                />
-              </span>
+          <div class="grid md:grid-cols-2 gap-2 flex-col">
+            <div class="grid md:grid-cols-2 gap-2">
+              <ToggleButton
+                v-model="show_vwap"
+                class="w-9rem"
+                offIcon="pi pi-times"
+                offLabel="VWAP"
+                onIcon="pi pi-check"
+                onLabel="VWAP"
+              />
+              <ToggleButton
+                v-model="two_decimal_places"
+                class="w-9rem"
+                offLabel="ALL DP"
+                onLabel="2 DP"
+              />
             </div>
+
+            <span class="p-input-icon-left">
+              <i class="pi pi-search" />
+              <InputText
+                v-model="table_filters['global'].value"
+                class="w-full"
+                placeholder="Search (name)"
+                v
+              />
+            </span>
           </div>
         </template>
 
