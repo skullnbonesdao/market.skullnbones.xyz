@@ -1,12 +1,21 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { gql } from "graphql-tag";
+import { ref } from "vue";
 
-defineProps({
+const props = defineProps({
   symbol: {
     type: String,
     default: "FOODATLAS",
+    required: true,
+  },
+  decimals: {
+    type: Number,
   },
 });
+
+const symbol_local = ref("FOODATLAS");
+
+symbol_local.value = props.symbol;
 
 const TRADE_QUERY = gql`
   query get_last_or_first($symbol: String!) {
@@ -23,13 +32,24 @@ const TRADE_QUERY = gql`
 </script>
 
 <template>
-  <ApolloQuery :query="TRADE_QUERY" :variables="{ symbol }">
+  <ApolloQuery :query="TRADE_QUERY" :variables="{ symbol: symbol_local }">
     <template v-slot="{ result: { loading, error, data } }">
-      <!-- Loading -->
-      <div v-if="data" class="loading apollo">
-        {{ data.trades[0].price ?? "0" }}
+      <div v-if="loading" class="loading apollo">Loading...</div>
+
+      <!-- Error -->
+      <div v-else-if="error" class="error apollo">-</div>
+
+      <!-- Result -->
+      <div v-else-if="data" class="result apollo">
+        {{
+          decimals
+            ? data?.trades[0]?.price?.toFixed(decimals) ?? 0.0
+            : data?.trades[0]?.price
+        }}
       </div>
-      <div v-else>-</div>
+
+      <!-- No result -->
+      <div v-else class="no-result apollo">-</div>
     </template>
   </ApolloQuery>
 </template>

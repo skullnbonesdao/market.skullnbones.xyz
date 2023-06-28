@@ -119,9 +119,10 @@ async function fetch_orders() {
 
   if (useWallet().publicKey.value) {
     is_loading.value = true;
-    open_orders.value = await useStaratlasGmStore().getOpenOrdersForPlayer(
-      useWallet().publicKey.value ?? new PublicKey("")
-    );
+    open_orders.value =
+      useStaratlasGmStore().order_book_service.getAllOrdersForUserAddress(
+        useWallet().publicKey.value?.toString() ?? ""
+      );
 
     is_loading.value = false;
   }

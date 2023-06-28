@@ -17,8 +17,7 @@ import { ref } from "vue";
 
 const props = defineProps({
   search_string: {
-    type: String,
-    default: "PX4",
+    type: String || undefined,
   },
   limit: {
     type: Number,
@@ -26,7 +25,7 @@ const props = defineProps({
   },
 });
 
-defineEmits(["search_string"]);
+// defineEmits(["search_string"]);
 
 const selectedCity = ref();
 const cities = ref([
