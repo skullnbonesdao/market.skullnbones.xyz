@@ -204,7 +204,14 @@ onMounted(async () => {
           </template>
         </Column>
 
-        <Column field="api_data.name"></Column>
+        <Column field="api_data.name">
+          <template #body="slotProps">
+            <div class="flex flex-col">
+              <p>{{ slotProps.data.api_data.name }}</p>
+              <p>{{ slotProps.data.api_data.symbol }}</p>
+            </div>
+          </template>
+        </Column>
 
         <Column v-if="show_vwap">
           <template #body="slotProps">

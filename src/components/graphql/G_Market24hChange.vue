@@ -61,8 +61,8 @@ const price_24h = computed(() => {
 
 const percentage_change = computed(() => {
   return (
-    ((price_now.value?.trades[0].price - price_24h.value?.trades[0].price) /
-      price_24h.value?.trades[0].price) *
+    ((price_now.value?.trades[0]?.price - price_24h.value?.trades[0]?.price) /
+      price_24h.value?.trades[0]?.price) *
     100
   );
 });

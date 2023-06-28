@@ -10,7 +10,7 @@ const limits = ref([
   { name: "1k", value: 1000 },
 ]);
 
-const search_input = ref("");
+const search_input = ref();
 const selected_limit = ref(limits.value[1]);
 </script>
 
