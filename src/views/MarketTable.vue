@@ -114,21 +114,24 @@ onMounted(async () => {
         tableStyle="min-width: 50rem"
       >
         <template #header>
-          <div class="flex gap-2 flex-col">
-            <ToggleButton
-              v-model="show_vwap"
-              class="w-9rem"
-              offIcon="pi pi-times"
-              offLabel="VWAP"
-              onIcon="pi pi-check"
-              onLabel="VWAP"
-            />
-            <ToggleButton
-              v-model="two_decimal_places"
-              class="w-9rem"
-              offLabel="ALL DP"
-              onLabel="2 DP"
-            />
+          <div class="grid md:grid-cols-2 gap-2 flex-col">
+            <div class="grid md:grid-cols-2 gap-2">
+              <ToggleButton
+                v-model="show_vwap"
+                class="w-9rem"
+                offIcon="pi pi-times"
+                offLabel="VWAP"
+                onIcon="pi pi-check"
+                onLabel="VWAP"
+              />
+              <ToggleButton
+                v-model="two_decimal_places"
+                class="w-9rem"
+                offLabel="ALL DP"
+                onLabel="2 DP"
+              />
+            </div>
+
             <span class="p-input-icon-left">
               <i class="pi pi-search" />
               <InputText
