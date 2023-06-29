@@ -30,6 +30,13 @@ interface OptionType {
 const show_vwap = ref(true);
 const two_decimal_places = ref(true);
 
+const selectedTimeframe = ref(1);
+const timeframes = ref([
+  { name: "% change 24h", code: 1 },
+  { name: "% change 1M", code: 28 },
+  { name: "% change 1Y", code: 356 },
+]);
+
 const table_filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   "api_data.name": { value: null, matchMode: FilterMatchMode.IN },
@@ -127,7 +134,7 @@ onMounted(async () => {
               <ToggleButton
                 v-model="two_decimal_places"
                 class="w-9rem"
-                offLabel="ALL DP"
+                offLabel="8 DP"
                 onLabel="2 DP"
               />
             </div>
@@ -162,7 +169,19 @@ onMounted(async () => {
               header="VWAP"
               sortable
             />
-            <Column :colspan="1" :rowspan="3" header="Pirce" sortable />
+            <Column :colspan="1" :rowspan="3">
+              <template #header>
+                <div class="flex flex-row gap-2 items-center">
+                  <p>Price</p>
+                  <Dropdown
+                    v-model="selectedTimeframe"
+                    :options="timeframes"
+                    option-label="name"
+                    option-value="code"
+                  />
+                </div>
+              </template>
+            </Column>
             <Column :colspan="4" header="BUY" />
             <Column :colspan="4" header="SELL" />
 
@@ -232,8 +251,9 @@ onMounted(async () => {
         <Column>
           <template #body="slotProps">
             <G_AssetPriceTableElemnt
-              :decimals="two_decimal_places ? 2 : undefined"
+              :decimals="two_decimal_places ? 2 : 8"
               :symbol="slotProps.data.api_data.symbol.toString()"
+              :timeframe_days="selectedTimeframe"
             />
           </template>
         </Column>
