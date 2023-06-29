@@ -48,7 +48,7 @@ const TRADE_QUERY = gql`
       <div v-else-if="data" class="result apollo">
         {{
           decimals
-            ? data?.trades[0]?.price?.toFixed(decimals) ?? 0.0
+            ? data?.trades[0]?.price?.toFixed(decimals) ?? "-"
             : data?.trades[0]?.price ?? 0.0
         }}
       </div>
