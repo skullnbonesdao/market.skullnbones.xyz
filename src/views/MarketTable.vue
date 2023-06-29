@@ -32,10 +32,9 @@ const two_decimal_places = ref(true);
 
 const selectedTimeframe = ref(1);
 const timeframes = ref([
-  { name: "24h", code: 1 },
-  { name: "1W", code: 7 },
-  { name: "1M", code: 28 },
-  { name: "1Y", code: 356 },
+  { name: "% change 24h", code: 1 },
+  { name: "% change 1M", code: 28 },
+  { name: "% change 1Y", code: 356 },
 ]);
 
 const table_filters = ref({
