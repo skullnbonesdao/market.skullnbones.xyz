@@ -71,7 +71,6 @@ selected_option.value = useGlobalStore().rpc.name;
 watch(
   () => selected_option.value,
   () => {
-    console.log("dsdd");
     useGlobalStore().update_connection(selected_option.value.name);
   }
 );

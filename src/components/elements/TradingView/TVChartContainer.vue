@@ -12,12 +12,19 @@ const tvWidget = ref(null);
 const chartContainer = ref(null);
 const globalStore = useGlobalStore();
 
+const props = defineProps({
+  symbol: {
+    type: String,
+    required: true,
+  },
+});
+
 onMounted(() => {
   createTVChart();
 });
 
 watch(
-  () => globalStore.symbol.name,
+  () => props.symbol,
   async () => {
     createTVChart();
   }
@@ -42,7 +49,9 @@ function createTVChart() {
   const container = chartContainer.value;
   const chart_theme = globalStore.is_dark ? "dark" : "light";
   const widgetOptions = {
-    symbol: globalStore.symbol.name, //assetSelected,
+    //symbol: globalStore.symbol.name, //assetSelected,
+    symbol: props.symbol,
+
     debug: false,
     // BEWARE: no trailing slash is expected in feed URL
     /*  default: 'http://localhost:3000',*/

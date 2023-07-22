@@ -20,7 +20,10 @@
     </div>
     <div class="flex flex-col md:flex-row gap-2">
       <div class="flex w-full flex-col space-y-2">
-        <TradingViewChart class="p-card" />
+        <TradingViewChart
+          :symbol="useGlobalStore().symbol.name"
+          class="p-card"
+        />
         <OpenOrders class="p-card" />
       </div>
       <div class="flex basis-1/3 flex-col space-y-2">
@@ -33,7 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import AssetInfo from "../components/elements/AssetInfo.vue";
 import SearchHelperExplorer from "../components/elements/SearchHelperExplorer.vue";
 import TradingViewChart from "../components/elements/TradingView/TradingViewChart.vue";
@@ -50,6 +53,11 @@ const toast = useToast();
 
 const show_order_setter = ref<boolean>();
 show_order_setter.value = true;
+
+watch(
+  () => useGlobalStore().symbol.name,
+  () => {}
+);
 
 function update_from_search(symbol: any) {
   useGlobalStore().update_symbol(

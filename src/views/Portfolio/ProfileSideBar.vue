@@ -85,7 +85,7 @@ const score_total_atlas_value = computed(() => {
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-2 w-full">
+  <div class="flex flex-col  gap-2 w-full px-3">
     <div class="flex w-full flex-col items-center space-y-1">
       <Avatar
           v-if="useUserWalletStore().sa_profile?.avatarId"
@@ -328,6 +328,7 @@ const score_total_atlas_value = computed(() => {
         </div>
       </div>
     </Fieldset>
+
   </div>
 </template>
 
