@@ -32,7 +32,7 @@
         </Button>
       </div>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-10 gap-1">
+    <div class="grid grid-cols-1 xl:grid-cols-10 gap-1">
       <ProfileSideBar
         v-if="useUserWalletStore().address"
         class="p-card col-span-2 w-full"
