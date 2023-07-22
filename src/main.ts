@@ -70,7 +70,6 @@ const routes = [
   { path: "/sageprizes", component: SagePrizes },
   { path: "/insights", component: InsightView },
   { path: "/about", component: AboutView },
-
   { path: "/test", component: TestView },
 ];
 

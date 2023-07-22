@@ -1,14 +1,15 @@
 <template>
   <div class="space-y-2">
-    <div class="flex w-full">
+    <div class="flex w-full h-18">
       <AssetInfo
         v-if="!show_search"
         class="p-card w-full p-2"
         @search_clicked="show_search = true"
       />
 
-      <div v-else class="p-card w-full">
+      <div v-else class="p-card w-full h-18">
         <SearchHelperExplorer
+          class="w-full h-full p-2"
           @toSearch="
             (value) => {
               show_search = false;

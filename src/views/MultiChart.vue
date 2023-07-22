@@ -33,9 +33,9 @@ let selectedSymbols = ref<SymbolsSearch[]>([
 </script>
 
 <template>
-  <div class="flex flex-row p-card p-2 m-1 gap-2">
-    <div class="p-inputgroup flex-1">
-      <span class="p-inputgroup-addon"> Cols </span>
+  <div class="flex flex-col xl:flex-row p-card p-2 m-1 gap-2">
+    <div class="p-inputgroup w-full">
+      <span class="p-inputgroup-addon">Symbols</span>
       <MultiSelect
         v-model="selectedSymbols"
         :maxSelectedLabels="3"
@@ -56,8 +56,8 @@ let selectedSymbols = ref<SymbolsSearch[]>([
       />
       <Button icon="pi pi-trash" @click="selectedSymbols = []" />
     </div>
-    <div class="p-inputgroup flex-1">
-      <span class="p-inputgroup-addon"> Cols </span>
+    <div class="p-inputgroup basis-1/5">
+      <span class="p-inputgroup-addon">Columns</span>
       <InputNumber
         v-model="cols"
         :max="100"

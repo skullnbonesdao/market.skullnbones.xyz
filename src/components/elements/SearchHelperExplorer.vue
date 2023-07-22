@@ -1,16 +1,16 @@
 <template>
-  <div class="p-fluid flex flex-row items-center space-x-2">
+  <div class="p-fluid flex flex-row space-x-2">
     <AutoComplete
-      class="flex w-full"
       v-model="search_user_selected"
       :suggestions="filtered_search"
-      @complete="search"
-      @itemSelect="$emit('toSearch', search_user_selected)"
-      optionLabel="label"
-      optionGroupLabel="label"
+      class="flex w-full"
       optionGroupChildren="items"
+      optionGroupLabel="label"
+      optionLabel="label"
       placeholder="Hint: type 'symbol-name'"
       scrollHeight="500px"
+      @complete="search"
+      @itemSelect="$emit('toSearch', search_user_selected)"
     >
       <template #optiongroup="slotProps">
         <div class="flex align-items-center country-item">
@@ -31,7 +31,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useGlobalStore } from "../../stores/GlobalStore";
 import AutoComplete from "primevue/autocomplete";
 import { ref, watch } from "vue";
