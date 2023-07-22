@@ -49,6 +49,7 @@ import TestView from "./views/TestView.vue";
 import VueApexCharts from "vue3-apexcharts";
 import JsonViewer from "vue-json-viewer";
 import InsightView from "./views/InsightView.vue";
+import MultiChart from "./views/MultiChart.vue";
 
 const walletOptions = {
   wallets: [
@@ -63,6 +64,7 @@ const routes = [
   { path: "/", component: HomeView },
   { path: "/market", component: MarketView },
   { path: "/market_table", component: MarketTable },
+  { path: "/multi_chart", component: MultiChart },
   { path: "/explorer", component: ExplorerView },
   { path: "/portfolio", component: PortfolioView },
   { path: "/sageprizes", component: SagePrizes },

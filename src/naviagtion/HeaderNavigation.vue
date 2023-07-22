@@ -63,6 +63,10 @@ const items = ref([
         label: "Table",
         to: "market_table",
       },
+      {
+        label: "MultiChart",
+        to: "multi_chart",
+      },
     ],
   },
   {
