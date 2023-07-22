@@ -2,7 +2,7 @@
   <div class="flex flex-row w-full">
     <div class="flex flex-col w-full sm:pr-3 sm:flex-row">
       <div class="flex flex-col md:flex-row items-center gap-5 w-full">
-        <div class="flex">
+        <div class="flex items-center">
           <PairImage
             :asset_image_url="
               '/webp/' + useGlobalStore().symbol.mint_asset.toString() + '.webp'
@@ -15,7 +15,7 @@
             class=""
           />
           <div class="w-full">
-            <h3>
+            <h3 class="w-24">
               {{
                 useGlobalStore().sa_api_data.find(
                   (asset) =>
@@ -29,52 +29,56 @@
             </p>
           </div>
         </div>
-        <div class="w-full"></div>
-        <div class="grid md:grid-cols-2 md:gap-4">
-          <div class="grid">
-            <AssetItemTypeBadge
-              :asset_class="
-                useGlobalStore().sa_api_data.find(
-                  (a) =>
-                    a.mint === useGlobalStore().symbol.mint_asset.toString()
-                )?.attributes?.itemType
+        <div class="h-full border-r-2"></div>
+
+        <div class="flex flex-row w-full">
+          <AssetItemTypeBadge
+            :asset_class="
+              useGlobalStore().sa_api_data.find(
+                (a) => a.mint === useGlobalStore().symbol.mint_asset.toString()
+              )?.attributes?.itemType
+            "
+          />
+          <AssetTextBadge
+            :text="
+              useGlobalStore().sa_api_data.find(
+                (a) => a.mint === useGlobalStore().symbol.mint_asset.toString()
+              )?.attributes?.spec
+            "
+          />
+          <AssetRarityBadge
+            :asset_class="
+              useGlobalStore().sa_api_data.find(
+                (a) => a.mint === useGlobalStore().symbol.mint_asset.toString()
+              )?.attributes?.rarity
+            "
+          />
+        </div>
+
+        <div class="h-full border-r-2"></div>
+        <div class="flex flex-row gap-2 items-baseline">
+          <div class="flex flex-row gap-2 p-inputtext">
+            <G_CurrentMarketPrice :symbol="useGlobalStore().symbol.name" />
+            <div class="border-1"></div>
+            <CurrencyIcon
+              :currency="
+                CURRENCIES.find(
+                  (c) => useGlobalStore().symbol.mint_pair.toString() === c.mint
+                )
               "
-            />
-            <AssetRarityBadge
-              :asset_class="
-                useGlobalStore().sa_api_data.find(
-                  (a) =>
-                    a.mint === useGlobalStore().symbol.mint_asset.toString()
-                )?.attributes?.rarity
-              "
-            />
-            <AssetTextBadge
-              :text="
-                useGlobalStore().sa_api_data.find(
-                  (a) =>
-                    a.mint === useGlobalStore().symbol.mint_asset.toString()
-                )?.attributes?.spec
-              "
+              style="width: 24px"
             />
           </div>
-          <div class="flex flex-col items-baseline">
-            <div class="flex flex-row gap-1 pr-5">
-              <G_CurrentMarketPrice :symbol="useGlobalStore().symbol.name" />
-              <CurrencyIcon
-                :currency="
-                  CURRENCIES.find(
-                    (c) =>
-                      useGlobalStore().symbol.mint_pair.toString() === c.mint
-                  )
-                "
-                style="width: 20px"
-              />
-            </div>
-            <div class="flex items-center sm:float-right">
-              <G_Market24hChange :symbol="useGlobalStore().symbol.name" />
-            </div>
+          <div class="flex flex-row gap-2 p-inputtext">
+            <G_Market24hChange
+              :symbol="useGlobalStore().symbol.name"
+              class="text-xs"
+            />
+            <div class="border-1"></div>
+            <p class="text-xs">24h</p>
           </div>
         </div>
+        <div class="h-full border-r-2"></div>
       </div>
     </div>
 
@@ -93,12 +97,12 @@ import { useGlobalStore } from "../../stores/GlobalStore";
 
 import CurrencyIcon from "../icon-helper/CurrencyIcon.vue";
 import { CURRENCIES } from "../../static/currencies";
-import AssetRarityBadge from "./badges/AssetRarityBadge.vue";
-import AssetTextBadge from "./badges/AssetTextBadge.vue";
-import AssetItemTypeBadge from "./badges/AssetItemTypeBadge.vue";
 import PairImage from "./PairImage.vue";
 import G_CurrentMarketPrice from "../graphql/G_CurrentMarketPrice.vue";
 import G_Market24hChange from "../graphql/G_Market24hChange.vue";
+import AssetRarityBadge from "./badges/AssetRarityBadge.vue";
+import AssetItemTypeBadge from "./badges/AssetItemTypeBadge.vue";
+import AssetTextBadge from "./badges/AssetTextBadge.vue";
 
 defineEmits(["search_clicked"]);
 </script>

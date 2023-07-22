@@ -10,7 +10,6 @@ import TVChartContainer from "./TVChartContainer.vue";
 const props = defineProps({
   symbol: {
     type: String,
-    default: "AMMOATLAS",
     required: true,
   },
 });
