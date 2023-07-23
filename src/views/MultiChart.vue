@@ -61,8 +61,8 @@ let selectedSymbols = ref<SymbolsSearch[]>([
       <span class="p-inputgroup-addon">Columns</span>
       <InputNumber
         v-model="chart_cols"
-        :max="100"
-        :min="0"
+        :max="3"
+        :min="1"
         inputId="minmax-buttons"
         mode="decimal"
         showButtons
@@ -72,6 +72,7 @@ let selectedSymbols = ref<SymbolsSearch[]>([
       <span class="p-inputgroup-addon">Height</span>
       <InputNumber
         v-model="chart_height"
+        :min="1"
         inputId="minmax-buttons"
         mode="decimal"
         showButtons
@@ -80,13 +81,14 @@ let selectedSymbols = ref<SymbolsSearch[]>([
     </div>
   </div>
 
-  <div :class="'grid-cols-' + chart_cols" class="grid gap-2">
-    <TradingViewChart
-      v-for="symbol in selectedSymbols"
-      :height_px="chart_height"
-      :symbol="symbol.symbol"
-      class="col-span-1 p-card"
-    />
+  <div :class="'grid gap-1  grid-cols-' + chart_cols">
+    <div v-for="symbol in selectedSymbols">
+      <TradingViewChart
+        :height_px="chart_height"
+        :symbol="symbol.symbol"
+        class=""
+      />
+    </div>
   </div>
 </template>
 
