@@ -1,6 +1,9 @@
 <template>
   <div class="app">
-    <t-v-chart-container :symbol="props.symbol ?? 'AMMOATLAS'" />
+    <t-v-chart-container
+      :style="'height: ' + height_px + 'px'"
+      :symbol="props.symbol ?? 'AMMOATLAS'"
+    />
   </div>
 </template>
 
@@ -8,6 +11,10 @@
 import TVChartContainer from "./TVChartContainer.vue";
 
 const props = defineProps({
+  height_px: {
+    type: Number,
+    default: 500,
+  },
   symbol: {
     type: String,
     required: true,
