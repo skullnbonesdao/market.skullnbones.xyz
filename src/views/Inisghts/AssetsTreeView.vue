@@ -38,15 +38,21 @@ const nodes = computed(() => {
 
   return parent_nodes;
 });
-useInsightsStore().selected = useGlobalStore().sa_api_data.find(
-  (asset) => asset.mint === "foodQJAztMzX1DKpLaiounNe2BDMds5RNuPC6jsNrDG"
+
+watch(
+  () => useGlobalStore().status.is_initialized,
+  () => {
+    useInsightsStore().selected = useGlobalStore().sa_api_data.find(
+      (asset) => asset.mint === "267DbhCypYzvTqv72ZG5UKHeFu56qXFsuoz3rw832eC5"
+    );
+  }
 );
 
 watch(
   () => selectedKey.value,
   () => {
     useInsightsStore().selected = useGlobalStore().sa_api_data.find(
-      (asset) => asset.mint === "foodQJAztMzX1DKpLaiounNe2BDMds5RNuPC6jsNrDG"
+      (asset) => asset.mint === Object.keys(selectedKey.value)[0]
     );
   }
 );

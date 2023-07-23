@@ -9,15 +9,22 @@ import Column from "primevue/column";
 <template>
   <Accordion :activeIndex="0">
     <AccordionTab header="Attributes">
-      <div
-        v-for="key in Object.keys(useInsightsStore().selected?.attributes)"
-        class="grid grid-cols-2 gap-2"
+      <DataTable
+        :value="
+          Object.keys(useInsightsStore().selected?.attributes).flatMap(
+            (obj) => {
+              return {
+                key: obj.toString(),
+                value: useInsightsStore().selected?.attributes?.[obj],
+              };
+            }
+          )
+        "
+        tableStyle="min-width: 50rem"
       >
-        <div class="p-card p-2 mb-2 text-center uppercase">{{ key }}</div>
-        <div class="p-card p-2 mb-2 text-center uppercase">
-          {{ useInsightsStore().selected?.attributes[key] }}
-        </div>
-      </div>
+        <Column :sortable="true" field="key" header="Info" />
+        <Column :sortable="true" field="value" header="Value" />
+      </DataTable>
     </AccordionTab>
     <AccordionTab header="Collection">
       <div
