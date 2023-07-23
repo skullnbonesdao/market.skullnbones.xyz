@@ -4,14 +4,15 @@ import TradingViewChart from "../components/elements/TradingView/TradingViewChar
 import InputNumber from "primevue/inputnumber";
 import MultiSelect from "primevue/multiselect";
 import { useGlobalStore } from "../stores/GlobalStore";
+import { useLocalStorage } from "@vueuse/core";
 
 interface SymbolsSearch {
   name: string;
   symbol: string;
 }
 
-let cols = ref(2);
-
+let chart_cols = ref(useLocalStorage("chart_cols", 2));
+let chart_height = ref(useLocalStorage("chart_height", 400));
 let selectedSymbols = ref<SymbolsSearch[]>([
   {
     name: "Food [FOODATLAS]",
@@ -38,7 +39,7 @@ let selectedSymbols = ref<SymbolsSearch[]>([
       <span class="p-inputgroup-addon">Symbols</span>
       <MultiSelect
         v-model="selectedSymbols"
-        :maxSelectedLabels="3"
+        :maxSelectedLabels="6"
         :options="
           useGlobalStore().sa_api_data.flatMap((asset) => {
             return [{
@@ -59,22 +60,35 @@ let selectedSymbols = ref<SymbolsSearch[]>([
     <div class="p-inputgroup basis-1/5">
       <span class="p-inputgroup-addon">Columns</span>
       <InputNumber
-        v-model="cols"
-        :max="100"
-        :min="0"
+        v-model="chart_cols"
+        :max="3"
+        :min="1"
         inputId="minmax-buttons"
         mode="decimal"
         showButtons
       />
     </div>
+    <div class="p-inputgroup basis-1/5">
+      <span class="p-inputgroup-addon">Height</span>
+      <InputNumber
+        v-model="chart_height"
+        :min="1"
+        inputId="minmax-buttons"
+        mode="decimal"
+        showButtons
+        suffix="px"
+      />
+    </div>
   </div>
 
-  <div :class="'grid-cols-' + cols" class="grid gap-2">
-    <TradingViewChart
-      v-for="symbol in selectedSymbols"
-      :symbol="symbol.symbol"
-      class="col-span-1 p-card"
-    />
+  <div :class="'grid gap-1  grid-cols-' + chart_cols">
+    <div v-for="symbol in selectedSymbols">
+      <TradingViewChart
+        :height_px="chart_height"
+        :symbol="symbol.symbol"
+        class=""
+      />
+    </div>
   </div>
 </template>
 
