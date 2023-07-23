@@ -50,9 +50,8 @@ import Column from "primevue/column";
       >
         <Column
           v-for="keys in Object.keys(
-            useInsightsStore().selected?.slots?.[key][0]
+            (useInsightsStore().selected?.slots?.[key])[0]
           )"
-          v-if="useInsightsStore().selected?.slots?.[key][0]"
           :field="keys"
           :header="keys.toUpperCase()"
           :sortable="true"

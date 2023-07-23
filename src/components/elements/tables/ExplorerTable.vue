@@ -112,6 +112,7 @@ const cities = ref([
           v-else
           :sort-order="-1"
           :value="data.trades"
+          class="p-datatable-sm"
           sort-field="timestamp"
           tableStyle="min-width: 50rem"
         >
