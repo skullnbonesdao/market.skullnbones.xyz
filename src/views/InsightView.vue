@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import AssetsTreeView from "./Inisghts/AssetsTreeView.vue";
 import AssetDetails from "./Inisghts/AssetDetails.vue";
 </script>

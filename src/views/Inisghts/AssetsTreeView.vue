@@ -1,11 +1,11 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed, ref, watch } from "vue";
 import Tree from "primevue/tree";
 import { ItemType } from "../../static/StarAtlasAPIItem";
 import { useGlobalStore } from "../../stores/GlobalStore";
 import { useInsightsStore } from "../../stores/InsightsStore";
 
-const selectedKey = ref({});
+const selectedKey = ref();
 
 const nodes = computed(() => {
   let parent_nodes: any[] = [];
@@ -38,12 +38,15 @@ const nodes = computed(() => {
 
   return parent_nodes;
 });
+useInsightsStore().selected = useGlobalStore().sa_api_data.find(
+  (asset) => asset.mint === "foodQJAztMzX1DKpLaiounNe2BDMds5RNuPC6jsNrDG"
+);
 
 watch(
   () => selectedKey.value,
   () => {
     useInsightsStore().selected = useGlobalStore().sa_api_data.find(
-      (asset) => asset.mint === Object.keys(selectedKey.value)[0]
+      (asset) => asset.mint === "foodQJAztMzX1DKpLaiounNe2BDMds5RNuPC6jsNrDG"
     );
   }
 );
@@ -51,15 +54,15 @@ watch(
 
 <template>
   <div class="flex flex-col p-card p-1 space-y-2">
-    <Tree :value="nodes" class="w-full md:w-30rem"></Tree>
+    <!--    <Tree :value="nodes" class="w-full md:w-30rem"></Tree>-->
 
     <Tree
       v-model:selectionKeys="selectedKey"
-      selectionMode="single"
-      :value="nodes"
       :filter="true"
-      filterMode="lenient"
+      :value="nodes"
       class="w-full md:w-30rem"
+      filterMode="lenient"
+      selectionMode="single"
     ></Tree>
   </div>
 </template>
