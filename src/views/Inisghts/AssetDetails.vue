@@ -8,10 +8,10 @@ import { E_EXPLORER, EXPLORER } from "../../static/explorer";
 import ExplorerIcon from "../../components/icon-helper/ExplorerIcon.vue";
 import AssetDetailsAPIDataInfo from "./AssetDetails/AssetDetailsAPIDataInfo.vue";
 import AssetDetailsAPIJson from "./AssetDetails/AssetDetailsAPIJson.vue";
-import AssetDetailsGalleria from "./AssetDetails/AssetDetailsGalleria.vue";
 import AccordionTab from "primevue/accordiontab";
 import Accordion from "primevue/accordion";
 import Avatar from "primevue/avatar";
+import AssetDetailsGalleria from "./AssetDetails/AssetDetailsGalleria.vue";
 
 const data = ref();
 
@@ -39,28 +39,86 @@ onMounted(async () => {
             />
           </div>
 
-          <div class="flex flex-row gap-2">
-            <ExplorerIcon
-              :address="useInsightsStore().selected?.mint"
-              :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)"
-              class="w-9"
-            />
-            <ExplorerIcon
-              :address="useInsightsStore().selected?.mint"
-              :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)"
-              class="w-9"
-            />
-            <ExplorerIcon
-              :address="useInsightsStore().selected?.mint"
-              :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.STARATLAS)"
-              class="w-9"
-            />
+          <!--          <div class="flex flex-row gap-2">-->
+          <!--            <ExplorerIcon-->
+          <!--              :address="useInsightsStore().selected?.mint"-->
+          <!--              :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)"-->
+          <!--              class="w-9"-->
+          <!--            />-->
+          <!--            <ExplorerIcon-->
+          <!--              :address="useInsightsStore().selected?.mint"-->
+          <!--              :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)"-->
+          <!--              class="w-9"-->
+          <!--            />-->
+          <!--            <ExplorerIcon-->
+          <!--              :address="useInsightsStore().selected?.mint"-->
+          <!--              :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.STARATLAS)"-->
+          <!--              class="w-9"-->
+          <!--            />-->
+          <!--          </div>-->
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <div class="p-inputgroup flex-1">
+            <span class="p-inputgroup-addon w-24">
+              <p>Symbol</p>
+            </span>
+            <p class="p-inputtext p-component p-inputwrapper">
+              {{ useInsightsStore().selected?.symbol }}
+            </p>
+          </div>
+
+          <div class="p-inputgroup flex-1">
+            <span class="p-inputgroup-addon w-24">
+              <p>Mint</p>
+            </span>
+            <p class="p-inputtext p-component p-inputwrapper">
+              {{ useInsightsStore().selected?.mint }}
+            </p>
+            <Button>
+              <ExplorerIcon
+                :address="useInsightsStore().selected?.mint"
+                :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)"
+                class="w-6"
+              />
+            </Button>
+            <Button>
+              <ExplorerIcon
+                :address="useInsightsStore().selected?.mint"
+                :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)"
+                class="w-6"
+              />
+            </Button>
+            <Button>
+              <ExplorerIcon
+                :address="useInsightsStore().selected?.mint"
+                :explorer="
+                  EXPLORER.find((e) => e.type === E_EXPLORER.STARATLAS)
+                "
+                class="w-6"
+              />
+            </Button>
+          </div>
+
+          <div class="p-inputgroup flex-1">
+            <span class="p-inputgroup-addon w-24">
+              <p>Created</p>
+            </span>
+            <p class="p-inputtext p-component p-inputwrapper">
+              {{ useInsightsStore().selected?.createdAt }}
+            </p>
           </div>
         </div>
 
         <Accordion>
           <AccordionTab header="Description">
             <p>{{ useInsightsStore().selected?.description }}</p>
+          </AccordionTab>
+        </Accordion>
+
+        <Accordion>
+          <AccordionTab header="Galleria">
+            <AssetDetailsGalleria />
           </AccordionTab>
         </Accordion>
       </div>
@@ -71,9 +129,7 @@ onMounted(async () => {
       <AssetDetailsAPIJson />
     </div>
 
-    <div id="footer">
-      <AssetDetailsGalleria />
-    </div>
+    <div id="footer"></div>
   </div>
 </template>
 
