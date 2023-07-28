@@ -27,6 +27,7 @@
               <InputNumber
                 v-model="input.price"
                 :class="input.price <= 0 ? ' p-invalid' : ''"
+                :max-fraction-digits="8"
                 :minFractionDigits="2"
                 placeholder="0.0"
               />
@@ -123,18 +124,18 @@ onMounted(async () => {
 async function submitOrder() {
   is_disabled.value = true;
 
-  let connection = new Connection("https://solana-mainnet.rpc.extrnode.com");
+  let connection = new Connection(import.meta.env.VITE_SNB_RPC_QUICKNODE); //useGlobalStore().connection as Connection; //new Connection(globalStore.rpc.url);
 
   let gmClient = new GmClientService();
   const price = await gmClient.getBnPriceForCurrency(
-    new Connection("https://solana-mainnet.rpc.extrnode.com"),
+    connection,
     input.value.price,
     new PublicKey(useGlobalStore().symbol.mint_pair),
     new PublicKey(GM_PROGRAM_ID)
   );
 
   const tx = await gmClient.getInitializeOrderTransaction(
-    new Connection("https://solana-mainnet.rpc.extrnode.com"),
+    connection,
     new PublicKey(useWallet().publicKey.value?.toString() ?? ""),
     new PublicKey(useGlobalStore().symbol.mint_asset),
     new PublicKey(useGlobalStore().symbol.mint_pair),
@@ -146,13 +147,9 @@ async function submitOrder() {
 
   let tx_signature: any;
   await useWallet()
-    .sendTransaction(
-      tx.transaction,
-      new Connection("https://solana-mainnet.rpc.extrnode.com"),
-      {
-        signers: tx.signers,
-      }
-    )
+    .sendTransaction(tx.transaction, connection, {
+      signers: tx.signers,
+    })
     .then((tx) => (tx_signature = tx))
     .catch((err) => {
       console.log(err);

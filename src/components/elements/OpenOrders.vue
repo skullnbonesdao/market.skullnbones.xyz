@@ -92,7 +92,6 @@ import { GmClientService, Order } from "@staratlas/factory";
 import Button from "primevue/button";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
-import { useGlobalStore } from "../../stores/GlobalStore";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { useWallet, WalletMultiButton } from "solana-wallets-vue";
 import { GM_PROGRAM_ID } from "../../static/constants/StarAtlasConstants";
@@ -129,7 +128,7 @@ async function fetch_orders() {
 }
 
 async function cancel_order(order_address: string) {
-  let connection = new Connection(useGlobalStore().rpc.url);
+  let connection = new Connection(import.meta.env.VITE_SNB_RPC_QUICKNODE); //Connection(useGlobalStore().rpc.url);
   let gmClient = new GmClientService();
 
   console.log(order_address);
