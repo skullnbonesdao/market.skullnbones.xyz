@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { I_Token } from "../../../stores/UserWalletStore";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
@@ -64,20 +64,21 @@ watchEffect(() => {
   <DataTable
     v-if="accounts_filtered.length"
     v-model:expandedRows="expandedRows"
-    :value="accounts_filtered"
-    sortField="metadata.name"
     :sortOrder="-1"
+    :value="accounts_filtered"
+    class="p-datatable-sm"
+    sortField="metadata.name"
   >
     <template #header>
       <div class="flex">
         <div class="w-full"></div>
         <ToggleButton
           v-model="hide_zero_quantity"
-          onLabel="hide 0"
+          class="w-9rem"
+          offIcon="pi pi-times"
           offLabel="show 0"
           onIcon="pi pi-check"
-          offIcon="pi pi-times"
-          class="w-9rem"
+          onLabel="hide 0"
         />
       </div>
     </template>
@@ -102,8 +103,8 @@ watchEffect(() => {
         ></Avatar>
       </template>
     </Column>
-    <Column field="metadata.symbol" :sortable="true" header="Symbol"></Column>
-    <Column field="metadata.name" :sortable="true" header="Name"></Column>
+    <Column :sortable="true" field="metadata.symbol" header="Symbol"></Column>
+    <Column :sortable="true" field="metadata.name" header="Name"></Column>
 
     <Column
       field="account.data.parsed.info.tokenAmount.uiAmount"
@@ -126,8 +127,8 @@ watchEffect(() => {
     <Column header="Price">
       <template #body="slotProps">
         <MultiPriceTemplate
-          :price_usdc="slotProps.data.market_price.usdc"
           :price_atlas="slotProps.data.market_price.atlas"
+          :price_usdc="slotProps.data.market_price.usdc"
         />
       </template>
     </Column>
@@ -135,12 +136,12 @@ watchEffect(() => {
     <Column header="Value">
       <template #body="slotProps">
         <MultiPriceTemplate
-          :price_usdc="
-            slotProps.data.market_price.usdc *
-            slotProps.data.account.data.parsed.info.tokenAmount.uiAmount
-          "
           :price_atlas="
             slotProps.data.market_price.atlas *
+            slotProps.data.account.data.parsed.info.tokenAmount.uiAmount
+          "
+          :price_usdc="
+            slotProps.data.market_price.usdc *
             slotProps.data.account.data.parsed.info.tokenAmount.uiAmount
           "
         />
@@ -155,26 +156,26 @@ watchEffect(() => {
               <Image
                 v-if="slotProps.data.metadata?.json?.image"
                 :src="slotProps.data.metadata?.json?.image"
-                class="basis-1/5"
                 alt="Image"
-                width="150"
+                class="basis-1/5"
                 preview
+                width="150"
               />
               <Image
                 v-else-if="slotProps.data.metadata?.image"
                 :src="slotProps.data.metadata?.image"
-                class="basis-1/5"
                 alt="Image"
-                width="150"
+                class="basis-1/5"
                 preview
+                width="150"
               />
               <Image
                 v-else-if="slotProps.data.metadata?.image"
                 :src="slotProps.data.metadata?.image"
-                class="basis-1/5"
                 alt="Image"
-                width="150"
+                class="basis-1/5"
                 preview
+                width="150"
               />
 
               <div class="grid grid-cols-1">
@@ -199,25 +200,25 @@ watchEffect(() => {
                   </p>
                   <div class="flex flex-row space-x-1">
                     <ExplorerIcon
-                      class="w-5"
+                      :address="slotProps.data.token_mint"
                       :explorer="
                         EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)
                       "
-                      :address="slotProps.data.token_mint"
+                      class="w-5"
                     />
                     <ExplorerIcon
-                      class="w-5"
+                      :address="slotProps.data.token_mint"
                       :explorer="
                         EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)
                       "
-                      :address="slotProps.data.token_mint"
+                      class="w-5"
                     />
                     <ExplorerIcon
-                      class="w-5"
+                      :address="slotProps.data.token_mint"
                       :explorer="
                         EXPLORER.find((e) => e.type === E_EXPLORER.STARATLAS)
                       "
-                      :address="slotProps.data.token_mint"
+                      class="w-5"
                     />
                   </div>
                 </div>
@@ -230,18 +231,18 @@ watchEffect(() => {
                   </p>
                   <div class="flex flex-row space-x-1">
                     <ExplorerIcon
-                      class="w-5"
+                      :address="slotProps.data.token_account"
                       :explorer="
                         EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)
                       "
-                      :address="slotProps.data.token_account"
+                      class="w-5"
                     />
                     <ExplorerIcon
-                      class="w-5"
+                      :address="slotProps.data.token_account"
                       :explorer="
                         EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)
                       "
-                      :address="slotProps.data.token_account"
+                      class="w-5"
                     />
                   </div>
                 </div>
@@ -259,13 +260,13 @@ watchEffect(() => {
               <div class="flex w-full justify-end items-center">
                 <div class="flex-row space-x-2">
                   <BurnTokenButton
-                    :mint_send_token="slotProps.data.metadata.mint"
                     :max_amount_token="
                       parseFloat(
                         slotProps.data.account.data.parsed.info.tokenAmount
                           .uiAmountString
                       )
                     "
+                    :mint_send_token="slotProps.data.metadata.mint"
                     :token_decimals="
                       slotProps.data.account.data.parsed.info.tokenAmount
                         .decimals
@@ -273,23 +274,23 @@ watchEffect(() => {
                   />
 
                   <CloseTokenAccountButton
-                    :mint_send_token="slotProps.data.metadata.mint"
                     :max_amount_token="
                       parseFloat(
                         slotProps.data.account.data.parsed.info.tokenAmount
                           .uiAmountString
                       )
                     "
+                    :mint_send_token="slotProps.data.metadata.mint"
                   />
 
                   <SendTokenModal
-                    :mint_send_token="slotProps.data.metadata.mint"
                     :max_amount_token="
                       parseFloat(
                         slotProps.data.account.data.parsed.info.tokenAmount
                           .uiAmountString
                       )
                     "
+                    :mint_send_token="slotProps.data.metadata.mint"
                   />
                 </div>
               </div>
@@ -297,18 +298,18 @@ watchEffect(() => {
           </TabPanel>
           <TabPanel header="Account">
             <json-viewer
-              expand-depth="5"
-              theme="my-awesome-json-theme"
               :class="useGlobalStore().is_dark ? 'bg-gray-300' : ''"
               :value="slotProps.data.account"
+              expand-depth="5"
+              theme="my-awesome-json-theme"
             ></json-viewer>
           </TabPanel>
           <TabPanel header="Metadata">
             <json-viewer
-              expand-depth="5"
-              theme="my-awesome-json-theme"
               :class="useGlobalStore().is_dark ? 'bg-gray-300' : ''"
               :value="slotProps.data.metadata"
+              expand-depth="5"
+              theme="my-awesome-json-theme"
             ></json-viewer>
           </TabPanel>
         </TabView>
@@ -316,12 +317,12 @@ watchEffect(() => {
     </template>
     <ColumnGroup type="footer">
       <Row>
-        <Column footer="Totals:" :colspan="6" footerStyle="text-align:left" />
+        <Column :colspan="6" footer="Totals:" footerStyle="text-align:left" />
         <Column>
           <template #footer>
             <MultiPriceTemplate
-              :price_usdc="totals.usdc"
               :price_atlas="totals.atlas"
+              :price_usdc="totals.usdc"
             />
           </template>
         </Column>

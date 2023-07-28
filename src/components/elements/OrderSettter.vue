@@ -5,17 +5,17 @@
       <div class="mx-auto">
         <div class="flex flex-row space-x-2">
           <button
-            @click="currentTab(1)"
-            v-bind:class="tab === 1 ? 'bg-green-500' : 'border-2'"
             class="w-full block font-medium leading-tight uppercase px-6 py-3 hoverable"
+            v-bind:class="tab === 1 ? 'bg-green-500' : 'border-2'"
+            @click="currentTab(1)"
           >
             Buy
           </button>
 
           <button
-            @click="currentTab(2)"
-            v-bind:class="tab === 2 ? 'bg-red-500' : 'border-2'"
             class="w-full block font-medium leading-tight uppercase px-6 py-3 hoverable"
+            v-bind:class="tab === 2 ? 'bg-red-500' : 'border-2'"
+            @click="currentTab(2)"
           >
             Sell
           </button>
@@ -25,20 +25,21 @@
             <div class="p-inputgroup flex-1">
               <span class="w-15 p-inputgroup-addon uppercase">Price</span>
               <InputNumber
-                :class="input.price <= 0 ? ' p-invalid' : ''"
-                placeholder="0.0"
-                :minFractionDigits="2"
                 v-model="input.price"
+                :class="input.price <= 0 ? ' p-invalid' : ''"
+                :max-fraction-digits="8"
+                :minFractionDigits="2"
+                placeholder="0.0"
               />
               <div class="flex p-inputgroup-addon">
                 <Avatar
-                  size="normal"
-                  shape="circle"
                   :image="
                     '/webp/' +
                     useGlobalStore().symbol.mint_asset.toString() +
                     '.webp'
                   "
+                  shape="circle"
+                  size="normal"
                 >
                   <CurrencyIcon
                     :currency="
@@ -55,29 +56,29 @@
             <div class="p-inputgroup flex-1">
               <span class="w-15 p-inputgroup-addon uppercase">Size</span>
               <InputNumber
+                v-model="input.size"
                 :class="input.size <= 0 ? ' p-invalid' : ''"
                 placeholder="0.0"
-                v-model="input.size"
               />
               <div class="p-inputgroup-addon">
                 <Avatar
-                  size="normal"
-                  shape="circle"
                   :image="
                     '/webp/' +
                     useGlobalStore().symbol.mint_asset.toString() +
                     '.webp'
                   "
+                  shape="circle"
+                  size="normal"
                 ></Avatar>
               </div>
             </div>
           </div>
         </div>
         <button
-          @click.prevent="submitOrder().then(() => {})"
           id="order-submit-btn"
           :class="tab === 1 ? 'bg-green-500' : 'bg-red-500'"
           class="nav-link w-full block font-medium leading-tight uppercase px-6 py-3 hoverable"
+          @click.prevent="submitOrder().then(() => {})"
         >
           {{ tab === 1 ? "Buy" : "Sell" }}
         </button>
@@ -92,7 +93,6 @@ import { useWallet } from "solana-wallets-vue";
 import { useGlobalStore } from "../../stores/GlobalStore";
 import InputNumber from "primevue/inputnumber";
 import BlockUI from "primevue/blockui";
-import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { GmClientService, OrderSide } from "@staratlas/factory";
@@ -124,7 +124,7 @@ onMounted(async () => {
 async function submitOrder() {
   is_disabled.value = true;
 
-  let connection = new Connection(globalStore.rpc.url);
+  let connection = new Connection(import.meta.env.VITE_SNB_RPC_QUICKNODE); //useGlobalStore().connection as Connection; //new Connection(globalStore.rpc.url);
 
   let gmClient = new GmClientService();
   const price = await gmClient.getBnPriceForCurrency(

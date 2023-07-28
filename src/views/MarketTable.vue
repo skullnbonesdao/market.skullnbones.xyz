@@ -116,6 +116,7 @@ onMounted(async () => {
         :globalFilterFields="['api_data.name']"
         :sortOrder="1"
         :value="useStaratlasGmStore().market_table_data"
+        class="p-datatable-sm"
         scrollable
         sortField="api_data.tradeSettings.vwap"
         tableStyle="min-width: 50rem"
