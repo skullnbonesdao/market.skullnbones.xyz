@@ -33,6 +33,7 @@ jobs:
           VITE_SNB_RPC_ALCHEMY_1: ${{ secrets.VITE_SNB_RPC_ALCHEMY_1 }}
           VITE_SNB_RPC_ALCHEMY_2: ${{ secrets.VITE_SNB_RPC_ALCHEMY_2 }}
           VITE_SNB_RPC_ALCHEMY_3: ${{ secrets.VITE_SNB_RPC_ALCHEMY_3 }}
+          VITE_SNB_RPC_QUICKNODE: ${{ secrets.VITE_SNB_RPC_QUICKNODE }}
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
