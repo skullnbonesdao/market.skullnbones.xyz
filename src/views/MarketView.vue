@@ -102,8 +102,8 @@ if (
 )
   useGlobalStore().update_symbol(
     symbol.value,
-    route.params.asset,
-    route.params.mint
+    route.params.asset.toString(),
+    route.params.mint.toString()
   );
 
 watch(
