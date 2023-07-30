@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import AssetInfo from "../components/elements/AssetInfo.vue";
 import SearchHelperExplorer from "../components/elements/SearchHelperExplorer.vue";
 import { useGlobalStore } from "../stores/GlobalStore";
@@ -68,7 +68,6 @@ import ChartJSAssetHistory from "./Market/ChartJSAssetHistory.vue";
 import TradingViewChart from "../components/elements/TradingView/TradingViewChart.vue";
 import { useRoute, useRouter } from "vue-router";
 import { CURRENCIES } from "../static/currencies";
-import { is_valid_publicKey } from "../static/formatting/is_valid_public_key";
 
 const show_search = ref<boolean>();
 show_search.value = false;
@@ -87,38 +86,13 @@ watch(
   () => {}
 );
 
-const symbol = computed(() => {
-  return (
-    (useGlobalStore().sa_api_data.find(
-      (asset) => asset.mint === route.params.asset
-    )?.symbol ?? "") +
-    CURRENCIES.find((c) => c.mint === route.params.pair)?.name
-  );
-});
-
-if (
-  is_valid_publicKey(route.params.asset as any) &&
-  is_valid_publicKey(route.params.pair as any)
-)
-  useGlobalStore().update_symbol(
-    symbol.value,
-    route.params.asset as any,
-    route.params.mint as any
-  );
+useGlobalStore().update_symbol(route.params.symbol as string);
 
 watch(
   () => useGlobalStore().status.is_initialized,
   () => {
-    if (
-      is_valid_publicKey(route.params.asset as any) &&
-      is_valid_publicKey(route.params.pair as any) &&
-      useGlobalStore().status.is_initialized
-    )
-      useGlobalStore().update_symbol(
-        symbol.value,
-        route.params.asset as any,
-        route.params.mint as any
-      );
+    if (useGlobalStore().status.is_initialized)
+      useGlobalStore().update_symbol(route.params.symbol as string);
   }
 );
 
@@ -146,12 +120,7 @@ async function update_from_search(symbol: any) {
   );
 
   route.params.asset = useGlobalStore().symbol.mint_asset.toString();
-  await router.push(
-    "/market/" +
-      useGlobalStore().symbol.mint_asset.toString() +
-      "/" +
-      useGlobalStore().symbol.mint_pair.toString()
-  );
+  await router.push("/market/" + useGlobalStore().symbol.name);
 }
 </script>
 
