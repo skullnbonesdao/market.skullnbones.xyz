@@ -107,6 +107,22 @@ if (
   );
 
 watch(
+  () => useGlobalStore().status.is_initialized,
+  () => {
+    if (
+      is_valid_publicKey(route.params.asset as any) &&
+      is_valid_publicKey(route.params.pair as any) &&
+      useGlobalStore().status.is_initialized
+    )
+      useGlobalStore().update_symbol(
+        symbol.value,
+        route.params.asset as any,
+        route.params.mint as any
+      );
+  }
+);
+
+watch(
   () => useRouter()?.currentRoute?.value.params,
   () => {
     console.log("params changed");
