@@ -40,6 +40,7 @@ import Menubar from "primevue/menubar";
 import { WalletMultiButton } from "solana-wallets-vue";
 import SwitchTheme from "../components/elements/buttons/SwitchTheme.vue";
 import { useTPS } from "../stores/TPS";
+import { useGlobalStore } from "../stores/GlobalStore";
 
 onMounted(async () => {
   useTPS().pollData("https://solana-mainnet.rpc.extrnode.com");
@@ -57,7 +58,11 @@ const items = ref([
     items: [
       {
         label: "TradingUI",
-        to: "market",
+        to:
+          "market/" +
+          useGlobalStore().symbol.mint_asset +
+          "/" +
+          useGlobalStore().symbol.mint_pair,
       },
       {
         label: "Table",
