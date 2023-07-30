@@ -19,7 +19,6 @@ import VwapTemplate from "../components/elements/templates/VwapTemplate.vue";
 import ToggleButton from "primevue/togglebutton";
 import { E_EXPLORER, EXPLORER } from "../static/explorer";
 import ExplorerIcon from "../components/icon-helper/ExplorerIcon.vue";
-import G_AssetPriceTableElemnt from "../components/graphql/G_AssetPriceTableElemnt.vue";
 
 const is_loading = ref(true);
 
@@ -251,11 +250,11 @@ onMounted(async () => {
 
         <Column>
           <template #body="slotProps">
-            <G_AssetPriceTableElemnt
-              :decimals="two_decimal_places ? 2 : 8"
-              :symbol="slotProps.data.api_data.symbol.toString()"
-              :timeframe_days="selectedTimeframe"
-            />
+            <!--            <G_AssetPriceTableElemnt-->
+            <!--              :decimals="two_decimal_places ? 2 : 8"-->
+            <!--              :symbol="slotProps.data.api_data.symbol.toString()"-->
+            <!--              :timeframe_days="selectedTimeframe"-->
+            <!--            />-->
           </template>
         </Column>
 
