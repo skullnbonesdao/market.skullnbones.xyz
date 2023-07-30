@@ -86,12 +86,13 @@ watch(
   () => {}
 );
 
-useGlobalStore().update_symbol(route.params.symbol as string);
+if (route.params.symbol.length)
+  useGlobalStore().update_symbol(route.params.symbol as string);
 
 watch(
   () => useGlobalStore().status.is_initialized,
   () => {
-    if (useGlobalStore().status.is_initialized)
+    if (useGlobalStore().status.is_initialized && route.params.symbol.length)
       useGlobalStore().update_symbol(route.params.symbol as string);
   }
 );
