@@ -58,11 +58,7 @@ const items = ref([
     items: [
       {
         label: "TradingUI",
-        to:
-          "/market/" +
-          useGlobalStore().symbol.mint_asset +
-          "/" +
-          useGlobalStore().symbol.mint_pair,
+        to: "/market/" + useGlobalStore().symbol.name,
       },
       {
         label: "Table",
