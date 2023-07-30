@@ -169,19 +169,19 @@ onMounted(async () => {
               header="VWAP"
               sortable
             />
-            <Column :colspan="1" :rowspan="3">
-              <template #header>
-                <div class="flex flex-row gap-2 items-center">
-                  <p>Price</p>
-                  <Dropdown
-                    v-model="selectedTimeframe"
-                    :options="timeframes"
-                    option-label="name"
-                    option-value="code"
-                  />
-                </div>
-              </template>
-            </Column>
+            <!--            <Column :colspan="1" :rowspan="3">-->
+            <!--              <template #header>-->
+            <!--                <div class="flex flex-row gap-2 items-center">-->
+            <!--                  <p>Price</p>-->
+            <!--                  <Dropdown-->
+            <!--                    v-model="selectedTimeframe"-->
+            <!--                    :options="timeframes"-->
+            <!--                    option-label="name"-->
+            <!--                    option-value="code"-->
+            <!--                  />-->
+            <!--                </div>-->
+            <!--              </template>-->
+            <!--            </Column>-->
             <Column :colspan="4" header="BUY" />
             <Column :colspan="4" header="SELL" />
 
