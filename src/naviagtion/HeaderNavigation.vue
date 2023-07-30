@@ -59,18 +59,18 @@ const items = ref([
       {
         label: "TradingUI",
         to:
-          "market/" +
+          "/market/" +
           useGlobalStore().symbol.mint_asset +
           "/" +
           useGlobalStore().symbol.mint_pair,
       },
       {
         label: "Table",
-        to: "market_table",
+        to: "/market_table",
       },
       {
         label: "MultiChart",
-        to: "multi_chart",
+        to: "/multi_chart",
       },
     ],
   },
