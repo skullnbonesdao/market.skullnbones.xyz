@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import AssetInfo from "../components/elements/AssetInfo.vue";
 import SearchHelperExplorer from "../components/elements/SearchHelperExplorer.vue";
 import { useGlobalStore } from "../stores/GlobalStore";
@@ -66,6 +66,9 @@ import OrderBook from "../components/elements/marketplace_elements/OrderBook.vue
 import MarketplaceQuickLinks from "../components/elements/marketplace_elements/MarketplaceQuickLinks.vue";
 import ChartJSAssetHistory from "./Market/ChartJSAssetHistory.vue";
 import TradingViewChart from "../components/elements/TradingView/TradingViewChart.vue";
+import { useRoute, useRouter } from "vue-router";
+import { CURRENCIES } from "../static/currencies";
+import { is_valid_publicKey } from "../static/formatting/is_valid_public_key";
 
 const show_search = ref<boolean>();
 show_search.value = false;
@@ -76,16 +79,62 @@ show_order_setter.value = true;
 
 const show_tv_chart = ref(false);
 
+const route = useRoute();
+const router = useRouter();
+
 watch(
   () => useGlobalStore().symbol.name,
   () => {}
 );
 
-function update_from_search(symbol: any) {
+const symbol = computed(() => {
+  return (
+    (useGlobalStore().sa_api_data.find(
+      (asset) => asset.mint === route.params.asset
+    )?.symbol ?? "") +
+    CURRENCIES.find((c) => c.mint === route.params.pair)?.name
+  );
+});
+
+if (
+  is_valid_publicKey(route.params.asset as any) &&
+  is_valid_publicKey(route.params.pair as any)
+)
+  useGlobalStore().update_symbol(
+    symbol.value,
+    route.params.asset,
+    route.params.mint
+  );
+
+watch(
+  () => useRouter()?.currentRoute?.value.params,
+  () => {
+    console.log("params changed");
+    let symbol =
+      (useGlobalStore().sa_api_data.find(
+        (asset) => asset.mint === useRouter()?.currentRoute?.value.params.asset
+      )?.symbol ?? "_") +
+      CURRENCIES.find(
+        (c) => c.mint === useRouter()?.currentRoute?.value.params.pair
+      )?.name;
+
+    useGlobalStore().update_symbol(symbol);
+  }
+);
+
+async function update_from_search(symbol: any) {
   useGlobalStore().update_symbol(
     symbol.value,
     symbol.mint_asset,
     symbol.mint_currency
+  );
+
+  route.params.asset = useGlobalStore().symbol.mint_asset.toString();
+  await router.push(
+    "/market/" +
+      useGlobalStore().symbol.mint_asset.toString() +
+      "/" +
+      useGlobalStore().symbol.mint_pair.toString()
   );
 }
 </script>

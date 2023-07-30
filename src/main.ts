@@ -62,7 +62,7 @@ const walletOptions = {
 
 const routes = [
   { path: "/", component: HomeView },
-  { path: "/market", component: MarketView },
+  { path: "/market/:asset/:pair", component: MarketView },
   { path: "/market_table", component: MarketTable },
   { path: "/multi_chart", component: MultiChart },
   { path: "/explorer", component: ExplorerView },
