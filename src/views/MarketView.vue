@@ -67,7 +67,6 @@ import MarketplaceQuickLinks from "../components/elements/marketplace_elements/M
 import ChartJSAssetHistory from "./Market/ChartJSAssetHistory.vue";
 import TradingViewChart from "../components/elements/TradingView/TradingViewChart.vue";
 import { useRoute, useRouter } from "vue-router";
-import { CURRENCIES } from "../static/currencies";
 
 const show_search = ref<boolean>();
 show_search.value = false;
@@ -81,35 +80,21 @@ const show_tv_chart = ref(false);
 const route = useRoute();
 const router = useRouter();
 
-watch(
-  () => useGlobalStore().symbol.name,
-  () => {}
-);
-
-if (route.params.symbol.length)
-  useGlobalStore().update_symbol(route.params.symbol as string);
+useGlobalStore().update_symbol(route.params.symbol[0]);
 
 watch(
   () => useGlobalStore().status.is_initialized,
   () => {
-    if (useGlobalStore().status.is_initialized && route.params.symbol.length)
-      useGlobalStore().update_symbol(route.params.symbol as string);
+    if (useGlobalStore().status.is_initialized)
+      useGlobalStore().update_symbol(route.params.symbol[0]);
   }
 );
 
 watch(
-  () => useRouter()?.currentRoute?.value.params,
+  () => route.params.symbol,
   () => {
     console.log("params changed");
-    let symbol =
-      (useGlobalStore().sa_api_data.find(
-        (asset) => asset.mint === useRouter()?.currentRoute?.value.params.asset
-      )?.symbol ?? "_") +
-      CURRENCIES.find(
-        (c) => c.mint === useRouter()?.currentRoute?.value.params.pair
-      )?.name;
-
-    useGlobalStore().update_symbol(symbol);
+    useGlobalStore().update_symbol(route.params.symbol[0]);
   }
 );
 
