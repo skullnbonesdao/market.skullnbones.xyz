@@ -80,8 +80,6 @@ const show_tv_chart = ref(false);
 const route = useRoute();
 const router = useRouter();
 
-useGlobalStore().update_symbol(route.params.symbol[0]);
-
 watch(
   () => useGlobalStore().status.is_initialized,
   () => {
@@ -94,7 +92,8 @@ watch(
   () => route.params.symbol,
   () => {
     console.log("params changed");
-    useGlobalStore().update_symbol(route.params.symbol[0]);
+    if (useGlobalStore().status.is_initialized)
+      useGlobalStore().update_symbol(route.params.symbol[0]);
   }
 );
 
