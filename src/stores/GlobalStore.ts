@@ -101,20 +101,20 @@ export const useGlobalStore = defineStore("globalStore", {
 
     update_symbol(symbol: string, mint_asset?: string, mint_pair?: string) {
       try {
+        console.log("1");
         this.symbol.mint_asset = mint_asset
           ? new PublicKey(mint_asset)
           : new PublicKey(
-              this.sa_api_data.find(
-                (api) => api.symbol == symbol.substring(0, symbol.length - 4)
-              )?.mint ?? ""
+              this.sa_api_data.find((api) => symbol.includes(api.symbol))
+                ?.mint ?? ""
             );
-
+        console.log("2");
         this.symbol.mint_pair = mint_pair
           ? new PublicKey(mint_pair)
           : new PublicKey(
-              CURRENCIES.find((c) => symbol.includes(symbol))?.mint ?? ""
+              CURRENCIES.find((c) => symbol.includes(c.name))?.mint ?? ""
             );
-
+        console.log("3");
         this.symbol.name = symbol;
       } catch (e) {
         console.error("Unbale to change symbol: [" + symbol + "]");
