@@ -8,6 +8,25 @@ import Column from "primevue/column";
 
 <template>
   <Accordion :activeIndex="0">
+    <AccordionTab header="Collection">
+      <DataTable
+        :value="
+          Object.keys(useInsightsStore().selected?.collection).flatMap(
+            (obj) => {
+              return {
+                key: obj.toString().toUpperCase(),
+                value: useInsightsStore().selected?.collection?.[obj],
+              };
+            }
+          )
+        "
+        tableStyle="min-width: 50rem"
+      >
+        <Column :sortable="true" field="key" header="Info" />
+        <Column :sortable="true" field="value" header="Value" />
+      </DataTable>
+    </AccordionTab>
+
     <AccordionTab header="Attributes">
       <DataTable
         :value="
@@ -26,17 +45,6 @@ import Column from "primevue/column";
         <Column :sortable="true" field="value" header="Value" />
       </DataTable>
     </AccordionTab>
-    <AccordionTab header="Collection">
-      <div
-        v-for="key in Object.keys(useInsightsStore().selected?.collection)"
-        class="grid grid-cols-2 gap-2"
-      >
-        <div class="p-card p-2 mb-2 uppercase">{{ key }}</div>
-        <div class="p-card p-2 mb-2 uppercase">
-          {{ useInsightsStore().selected?.collection?.[key] }}
-        </div>
-      </div>
-    </AccordionTab>
   </Accordion>
 
   <Accordion>
@@ -45,6 +53,7 @@ import Column from "primevue/column";
       :header="key.split('S')[0].toUpperCase()"
     >
       <DataTable
+        v-if="useInsightsStore().selected?.slots?.[key].length"
         :value="useInsightsStore().selected?.slots?.[key]"
         tableStyle="min-width: 50rem"
       >

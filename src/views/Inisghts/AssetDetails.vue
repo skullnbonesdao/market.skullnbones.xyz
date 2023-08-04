@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { Metaplex } from "@metaplex-foundation/js";
-import { Connection } from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
 import { useGlobalStore } from "../../stores/GlobalStore";
 import { useInsightsStore } from "../../stores/InsightsStore";
 import { E_EXPLORER, EXPLORER } from "../../static/explorer";
@@ -12,19 +12,34 @@ import AccordionTab from "primevue/accordiontab";
 import Accordion from "primevue/accordion";
 import Avatar from "primevue/avatar";
 import AssetDetailsGalleria from "./AssetDetails/AssetDetailsGalleria.vue";
+import AssetDetailsMarkets from "./AssetDetails/AssetDetailsMarkets.vue";
 
 const data = ref();
-
+const token_supply = ref();
 onMounted(async () => {
   const metaplex = Metaplex.make(new Connection(useGlobalStore().rpc.url));
   // const d = await metaplex.tokens().findMintByAddress({
   //   address: new PublicKey(useInsightsStore().selected?.mint ?? ""),
   // });
 });
+
+watch(
+  () => useInsightsStore().selected?.mint,
+  async () => {
+    useGlobalStore()
+      .connection.getTokenSupply(
+        new PublicKey(useInsightsStore().selected?.mint ?? "")
+      )
+      .then((resp) => (token_supply.value = resp.value.uiAmount));
+  }
+);
 </script>
 
 <template>
-  <div v-if="useInsightsStore().selected" class="flex flex-col p-card">
+  <div
+    v-if="useInsightsStore().selected"
+    class="flex flex-col p-card background"
+  >
     <div id="header" class="flex flex-row">
       <div class="flex flex-col m-2 space-y-3 w-full">
         <div class="flex flex-row items-center">
@@ -100,25 +115,33 @@ onMounted(async () => {
             </Button>
           </div>
 
+          <!--          <div class="p-inputgroup flex-1">-->
+          <!--            <span class="p-inputgroup-addon w-24">-->
+          <!--              <p>Created</p>-->
+          <!--            </span>-->
+          <!--            <p class="p-inputtext p-component p-inputwrapper">-->
+          <!--              {{ useInsightsStore().selected?.createdAt }}-->
+          <!--            </p>-->
+          <!--          </div>-->
+
           <div class="p-inputgroup flex-1">
             <span class="p-inputgroup-addon w-24">
-              <p>Created</p>
+              <p>Supply</p>
             </span>
             <p class="p-inputtext p-component p-inputwrapper">
-              {{ useInsightsStore().selected?.createdAt }}
+              {{ token_supply }}
             </p>
           </div>
         </div>
 
-        <Accordion>
+        <Accordion :activeIndex="0">
           <AccordionTab header="Description">
             <p>{{ useInsightsStore().selected?.description }}</p>
           </AccordionTab>
         </Accordion>
-
-        <Accordion>
-          <AccordionTab header="Galleria">
-            <AssetDetailsGalleria />
+        <Accordion :activeIndex="0">
+          <AccordionTab header="Markets">
+            <AssetDetailsMarkets />
           </AccordionTab>
         </Accordion>
       </div>
@@ -126,11 +149,16 @@ onMounted(async () => {
 
     <div id="content" class="p-2 space-y-10">
       <AssetDetailsAPIDataInfo />
+
+      <Accordion>
+        <AccordionTab header="Galleria">
+          <AssetDetailsGalleria />
+        </AccordionTab>
+      </Accordion>
+
       <AssetDetailsAPIJson />
     </div>
 
     <div id="footer"></div>
   </div>
 </template>
-
-<style scoped></style>

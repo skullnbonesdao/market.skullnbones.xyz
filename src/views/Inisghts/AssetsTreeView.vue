@@ -11,6 +11,7 @@ const nodes = computed(() => {
   let parent_nodes: any[] = [];
   Object.keys(ItemType).forEach((item_type, idx) => {
     parent_nodes.push({
+      key: item_type + idx,
       label: item_type.toUpperCase(),
       name: item_type.toString(),
       children: [],
@@ -66,8 +67,8 @@ watch(
       v-model:selectionKeys="selectedKey"
       :filter="true"
       :value="nodes"
-      class="w-full md:w-30rem"
       filterMode="lenient"
+      scrollHeight="60rem"
       selectionMode="single"
     ></Tree>
   </div>
