@@ -80,9 +80,13 @@ const items = ref([
     to: "/portfolio",
   },
   {
-    label: "Sage",
+    label: "Tools",
     icon: "pi pi-fw pi-sitemap",
     items: [
+      {
+        label: "Insights",
+        to: "/insights",
+      },
       {
         label: "Prizes",
         to: "sageprizes",
