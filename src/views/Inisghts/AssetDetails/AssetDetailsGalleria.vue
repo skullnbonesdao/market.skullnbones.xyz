@@ -11,16 +11,25 @@ interface GalleryImage {
 }
 
 const images = computed(() => {
-  return (
-    useInsightsStore()?.selected?.media?.gallery?.flatMap((image, idx) => {
-      return {
-        title: idx.toString(),
-        alt: image,
-        itemImageSrc: image,
-        thumbnailImageSrc: image,
-      } as GalleryImage;
-    }) ?? ([] as any)
-  );
+  let images: GalleryImage[] | undefined = [];
+
+  images?.push({
+    title: useInsightsStore().selected?.name ?? "main-image",
+    alt: useInsightsStore().selected?.image ?? "",
+    itemImageSrc: useInsightsStore().selected?.image ?? "",
+    thumbnailImageSrc: useInsightsStore().selected?.image ?? "",
+  } as GalleryImage);
+
+  useInsightsStore()?.selected?.media?.gallery?.forEach((image, idx) => {
+    images?.push({
+      title: idx.toString(),
+      alt: image,
+      itemImageSrc: image,
+      thumbnailImageSrc: image,
+    } as GalleryImage);
+  });
+
+  return images;
 });
 
 const responsiveOptions = ref([
@@ -43,7 +52,7 @@ const responsiveOptions = ref([
   <Galleria
     :numVisible="5"
     :responsiveOptions="responsiveOptions"
-    :value="images"
+    :value="images as any[]"
     style="height: 500px"
   >
     <template #item="slotProps">

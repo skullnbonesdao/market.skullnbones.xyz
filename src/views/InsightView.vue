@@ -9,5 +9,3 @@ import AssetDetails from "./Inisghts/AssetDetails.vue";
     <AssetDetails class="basis-5/6" />
   </div>
 </template>
-
-<style scoped></style>
