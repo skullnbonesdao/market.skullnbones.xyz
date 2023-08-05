@@ -13,6 +13,9 @@ import Accordion from "primevue/accordion";
 import Avatar from "primevue/avatar";
 import AssetDetailsGalleria from "./AssetDetails/AssetDetailsGalleria.vue";
 import AssetDetailsMarkets from "./AssetDetails/AssetDetailsMarkets.vue";
+import CurrencyIcon from "../../components/icon-helper/CurrencyIcon.vue";
+import { CURRENCIES, E_CURRENCIES } from "../../static/currencies";
+import G_CurrentMarketPrice from "../../components/graphql/G_CurrentMarketPrice.vue";
 
 const data = ref();
 const token_supply = ref();
@@ -131,6 +134,35 @@ watch(
             <p class="p-inputtext p-component p-inputwrapper">
               {{ token_supply }}
             </p>
+          </div>
+
+          <div class="p-inputgroup flex-1">
+            <span class="p-inputgroup-addon w-24">
+              <p>Price</p>
+            </span>
+
+            <p class="p-inputtext p-component p-inputwrapper text-right">
+              <G_CurrentMarketPrice
+                :symbol="useInsightsStore().selected?.symbol + 'ATLAS'"
+              />
+            </p>
+            <span class="p-inputgroup-addon w-6">
+              <CurrencyIcon
+                :currency="
+                  CURRENCIES.find((c) => c.type === E_CURRENCIES.ATLAS)
+                "
+              ></CurrencyIcon>
+            </span>
+            <p class="p-inputtext p-component p-inputwrapper text-right">
+              <G_CurrentMarketPrice
+                :symbol="useInsightsStore().selected?.symbol + 'USDC'"
+              />
+            </p>
+            <span class="p-inputgroup-addon w-6">
+              <CurrencyIcon
+                :currency="CURRENCIES.find((c) => c.type === E_CURRENCIES.USDC)"
+              ></CurrencyIcon>
+            </span>
           </div>
         </div>
 
