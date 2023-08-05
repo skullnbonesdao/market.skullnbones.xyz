@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { gql } from "graphql-tag";
-import { ref } from "vue";
 import { useGlobalStore } from "../../stores/GlobalStore";
 
 const props = defineProps({
@@ -13,10 +12,6 @@ const props = defineProps({
     type: Number,
   },
 });
-
-const symbol_local = ref("FOODATLAS");
-
-symbol_local.value = props.symbol;
 
 const TRADE_QUERY = gql`
   query get_last_or_first($symbol: String!) {
@@ -36,7 +31,7 @@ const TRADE_QUERY = gql`
   <ApolloQuery
     :poll-interval="useGlobalStore().pollInterval"
     :query="TRADE_QUERY"
-    :variables="{ symbol: symbol_local }"
+    :variables="{ symbol: props.symbol }"
   >
     <template v-slot="{ result: { loading, error, data } }">
       <div v-if="loading" class="loading apollo">Loading...</div>
