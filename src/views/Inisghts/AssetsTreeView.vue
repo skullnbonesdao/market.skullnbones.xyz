@@ -28,7 +28,7 @@ const nodes = computed(() => {
     matching_childs.forEach((asset, idy) => {
       parent_nodes[idx].children.push({
         key: asset.mint,
-        label: asset.name.toUpperCase() + " [" + asset.symbol + "]",
+        label: "[" + asset.symbol + "] " + asset.name.toUpperCase(),
         data: asset.name,
         item: asset,
       });
@@ -67,10 +67,12 @@ watch(
       v-model:selectionKeys="selectedKey"
       :filter="true"
       :value="nodes"
+      class="text-xs"
       filterMode="lenient"
       scrollHeight="60rem"
       selectionMode="single"
-    ></Tree>
+    >
+    </Tree>
   </div>
 </template>
 
