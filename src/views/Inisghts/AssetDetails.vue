@@ -4,8 +4,6 @@ import { Metaplex } from "@metaplex-foundation/js";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { useGlobalStore } from "../../stores/GlobalStore";
 import { useInsightsStore } from "../../stores/InsightsStore";
-import { E_EXPLORER, EXPLORER } from "../../static/explorer";
-import ExplorerIcon from "../../components/icon-helper/ExplorerIcon.vue";
 import AssetDetailsAPIDataInfo from "./AssetDetails/AssetDetailsAPIDataInfo.vue";
 import AssetDetailsAPIJson from "./AssetDetails/AssetDetailsAPIJson.vue";
 import AccordionTab from "primevue/accordiontab";
@@ -16,6 +14,8 @@ import AssetDetailsMarkets from "./AssetDetails/AssetDetailsMarkets.vue";
 import CurrencyIcon from "../../components/icon-helper/CurrencyIcon.vue";
 import { CURRENCIES, E_CURRENCIES } from "../../static/currencies";
 import G_CurrentMarketPrice from "../../components/graphql/G_CurrentMarketPrice.vue";
+import { E_EXPLORER, EXPLORER } from "../../static/explorer";
+import ExplorerIcon from "../../components/icon-helper/ExplorerIcon.vue";
 
 const data = ref();
 const token_supply = ref();
@@ -43,9 +43,9 @@ watch(
     v-if="useInsightsStore().selected"
     class="flex flex-col p-card background"
   >
-    <div id="header" class="flex flex-row">
-      <div class="flex flex-col m-2 space-y-3 w-full">
-        <div class="flex flex-row items-center">
+    <div id="header" class="p-2">
+      <div class="flex flex-col space-y-3 w-full">
+        <div class="flex flex-col md:flex-row items-center">
           <div class="flex flex-row w-full gap-2">
             <p class="text-6xl">
               {{ useInsightsStore().selected?.name }}
@@ -56,7 +56,33 @@ watch(
               size="xlarge"
             />
           </div>
+          <div class="p-inputgroup">
+            <div class="w-full"></div>
+            <Button>
+              <ExplorerIcon
+                :address="useInsightsStore().selected?.mint"
+                :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)"
+                class="w-6"
+              />
+            </Button>
 
+            <Button>
+              <ExplorerIcon
+                :address="useInsightsStore().selected?.mint"
+                :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)"
+                class="w-6"
+              />
+            </Button>
+            <Button>
+              <ExplorerIcon
+                :address="useInsightsStore().selected?.mint"
+                :explorer="
+                  EXPLORER.find((e) => e.type === E_EXPLORER.STARATLAS)
+                "
+                class="w-6"
+              />
+            </Button>
+          </div>
           <!--          <div class="flex flex-row gap-2">-->
           <!--            <ExplorerIcon-->
           <!--              :address="useInsightsStore().selected?.mint"-->
@@ -93,29 +119,6 @@ watch(
             <p class="p-inputtext p-component p-inputwrapper">
               {{ useInsightsStore().selected?.mint }}
             </p>
-            <Button>
-              <ExplorerIcon
-                :address="useInsightsStore().selected?.mint"
-                :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLSCAN)"
-                class="w-6"
-              />
-            </Button>
-            <Button>
-              <ExplorerIcon
-                :address="useInsightsStore().selected?.mint"
-                :explorer="EXPLORER.find((e) => e.type === E_EXPLORER.SOLANAFM)"
-                class="w-6"
-              />
-            </Button>
-            <Button>
-              <ExplorerIcon
-                :address="useInsightsStore().selected?.mint"
-                :explorer="
-                  EXPLORER.find((e) => e.type === E_EXPLORER.STARATLAS)
-                "
-                class="w-6"
-              />
-            </Button>
           </div>
 
           <!--          <div class="p-inputgroup flex-1">-->
@@ -165,21 +168,21 @@ watch(
             </span>
           </div>
         </div>
-
-        <Accordion :activeIndex="0">
-          <AccordionTab header="Description">
-            <p>{{ useInsightsStore().selected?.description }}</p>
-          </AccordionTab>
-        </Accordion>
-        <Accordion :activeIndex="0">
-          <AccordionTab header="Markets">
-            <AssetDetailsMarkets />
-          </AccordionTab>
-        </Accordion>
       </div>
     </div>
 
     <div id="content" class="p-2 space-y-10">
+      <Accordion :activeIndex="0">
+        <AccordionTab header="Description">
+          <p>{{ useInsightsStore().selected?.description }}</p>
+        </AccordionTab>
+      </Accordion>
+      <Accordion :activeIndex="0">
+        <AccordionTab header="Markets">
+          <AssetDetailsMarkets />
+        </AccordionTab>
+      </Accordion>
+
       <AssetDetailsAPIDataInfo />
 
       <Accordion>
