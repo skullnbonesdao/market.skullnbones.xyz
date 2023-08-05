@@ -28,7 +28,7 @@ const nodes = computed(() => {
     matching_childs.forEach((asset, idy) => {
       parent_nodes[idx].children.push({
         key: asset.mint,
-        label: asset.name.toUpperCase(),
+        label: asset.name.toUpperCase() + " [" + asset.symbol + "]",
         data: asset.name,
         item: asset,
       });
