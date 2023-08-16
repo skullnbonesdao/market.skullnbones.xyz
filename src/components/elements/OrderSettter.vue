@@ -25,6 +25,7 @@
             <div class="p-inputgroup flex-1">
               <span class="w-15 p-inputgroup-addon uppercase">Price</span>
               <InputNumber
+                id="input_price"
                 v-model="input.price"
                 :class="input.price <= 0 ? ' p-invalid' : ''"
                 :max-fraction-digits="8"
@@ -56,6 +57,7 @@
             <div class="p-inputgroup flex-1">
               <span class="w-15 p-inputgroup-addon uppercase">Size</span>
               <InputNumber
+                id="input_size"
                 v-model="input.size"
                 :class="input.size <= 0 ? ' p-invalid' : ''"
                 placeholder="0.0"
