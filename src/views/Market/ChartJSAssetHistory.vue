@@ -17,7 +17,7 @@ const is_loading = ref(true);
 const udf_data = ref<UdfHistory>();
 const x_axis = ref<number[]>([]);
 const y_axis = ref<number[]>([]);
-
+const data_label = ref<string>(useGlobalStore().symbol.name);
 const timeframe_selected = ref({
   name: "1 Month",
   resolution: "1D",
@@ -47,6 +47,7 @@ watch(
 
 async function upadate_chart_data() {
   is_loading.value = true;
+
   await udfAPI.udf
     .getHistory({
       symbol: useGlobalStore().symbol.name,
@@ -63,8 +64,10 @@ async function upadate_chart_data() {
       udf_data.value = data.data as unknown as UdfHistory;
       console.log(data.data);
 
+      data_label.value = useGlobalStore().symbol.name;
       x_axis.value = udf_data.value.t.flatMap((t) => t * 1000);
       y_axis.value = udf_data.value.c;
+
       is_loading.value = false;
     });
 }
@@ -73,7 +76,7 @@ const chartData = ref({
   labels: x_axis,
   datasets: [
     {
-      label: useGlobalStore().symbol.name,
+      label: data_label,
       data: y_axis,
       lineTension: 0.4,
       borderWidth: 3,
@@ -81,6 +84,7 @@ const chartData = ref({
     },
   ],
 });
+
 const chartOptions = ref({
   plugins: {
     legend: {
@@ -89,7 +93,7 @@ const chartOptions = ref({
     tooltips: {
       callbacks: {
         label: function (tooltipItem: any) {
-          console.log(tooltipItem);
+          console.info(tooltipItem);
           return tooltipItem.yLabel;
         },
       },
