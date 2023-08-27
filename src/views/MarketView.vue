@@ -33,7 +33,6 @@
           <TradingViewChart
             v-if="show_tv_chart"
             :symbol="useGlobalStore().symbol.name"
-            class="p-card"
           />
           <ChartJSAssetHistory v-else />
         </div>
@@ -46,7 +45,6 @@
       </div>
       <div class="flex basis-1/3 flex-col space-y-2">
         <MarketplaceQuickLinks class="p-card p-2" />
-
         <OrderSettter class="p-card p-2" />
         <OrderBook class="p-card p-2" />
       </div>
