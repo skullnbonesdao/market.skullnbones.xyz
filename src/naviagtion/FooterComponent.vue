@@ -33,6 +33,9 @@
           © [2023 S&B] All Rights Reserved.
         </div>
         <div class="flex w-full justify-center">{{ version }}</div>
+        <div class="flex w-full justify-center">
+          <img alt="Italian Trulli" src="/images/streamingfast-p-500.png" />
+        </div>
       </div>
 
       <Button
