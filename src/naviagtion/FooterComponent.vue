@@ -33,9 +33,6 @@
           © [2023 S&B] All Rights Reserved.
         </div>
         <div class="flex w-full justify-center">{{ version }}</div>
-        <div class="flex w-full justify-center">
-          <img alt="Italian Trulli" src="/images/streamingfast-p-500.png" />
-        </div>
       </div>
 
       <Button
@@ -44,6 +41,12 @@
         @click="open_url('https://discord.gg/eQZQaF5Qk6')"
       >
       </Button>
+    </div>
+
+    <div class="flex flex-row gap-2">
+      <div class="flex w-full justify-center">
+        <img alt="Italian Trulli" src="/images/streamingfast-p-500.png" />
+      </div>
     </div>
 
     <div class="">
