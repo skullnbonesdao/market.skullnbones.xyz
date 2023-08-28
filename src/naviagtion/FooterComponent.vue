@@ -43,6 +43,12 @@
       </Button>
     </div>
 
+    <div class="flex flex-row gap-2">
+      <div class="flex w-full justify-center">
+        <img alt="Italian Trulli" src="/images/streamingfast-p-500.png" />
+      </div>
+    </div>
+
     <div class="">
       <G_SyncStatusBar class="w-full"></G_SyncStatusBar>
     </div>

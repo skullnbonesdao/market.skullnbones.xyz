@@ -15,7 +15,7 @@
         </div>
         <div class="flex w-full justify-end">SELL</div>
       </div>
-      <div class="grid 2xl:grid-cols-2">
+      <div class="grid 2xl:grid-cols-2 overflow-x-scroll max-h-250">
         <div
           id="col_sell"
           class="flex flex-col 2xl:border-r-1 2xl:border-black"

@@ -3,7 +3,6 @@
     <span class="p-inputgroup-addon text-sm basis-1/5">Sync-Status</span>
     <div class="flex w-full p-inputgroup-addon">
       <ApolloQuery
-        class="w-full"
         :query="
       (gql: any) => gql`
         query get_ranges {
@@ -15,6 +14,7 @@
   }
       `
     "
+        class="w-full"
       >
         <template v-slot="{ result: { loading, error, data } }">
           <!-- Loading -->
@@ -29,12 +29,12 @@
           <!-- Result -->
           <div v-else-if="data" class="result apollo flex">
             <ProgressBar
-              class="w-full"
               :value="
                 parseFloat(
                   calc_range_percentage(data?.cursors)?.toFixed(1) ?? '0'
                 )
               "
+              class="w-full"
             ></ProgressBar>
           </div>
         </template>
@@ -43,7 +43,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Connection } from "@solana/web3.js";
 import gql from "graphql-tag";
 import { onMounted, ref } from "vue";
@@ -98,7 +98,7 @@ function calc_range_percentage(ranges: any[]) {
       })
       .reduce((a: any, b: any) => a + b);
 
-    parseInt(((sum_ranges / total_range) * 100).toFixed(1)) === 100
+    (sum_ranges / total_range) * 100 > 99.9
       ? (is_synced.value = true)
       : (is_synced.value = false);
     return (sum_ranges / total_range) * 100;
