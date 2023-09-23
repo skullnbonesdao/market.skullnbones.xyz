@@ -45,7 +45,7 @@
       </div>
       <div class="flex basis-1/3 flex-col space-y-2">
         <MarketplaceQuickLinks class="p-card p-2" />
-        <MarketStatsElement class="p-card p-2"></MarketStatsElement>
+        <!--        <MarketStatsElement class="p-card p-2"></MarketStatsElement>-->
         <OrderSettter class="p-card p-2" />
         <OrderBook class="p-card p-2" />
       </div>
@@ -66,7 +66,6 @@ import MarketplaceQuickLinks from "../components/elements/marketplace_elements/M
 import ChartJSAssetHistory from "./Market/ChartJSAssetHistory.vue";
 import TradingViewChart from "../components/elements/TradingView/TradingViewChart.vue";
 import { useRoute, useRouter } from "vue-router";
-import MarketStatsElement from "./Market/MarketStatsElement.vue";
 
 const show_search = ref<boolean>();
 show_search.value = false;

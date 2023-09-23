@@ -1,24 +1,31 @@
 <template>
   <div
-    class="text-gray-500"
     :class="
       isUserOrderBlock(props.order, publicKey) &&
       (reverse_order
         ? 'border-r-4 border-sky-500 '
         : 'border-l-4 border-sky-500')
     "
+    class="text-gray-500"
+    v-on:mouseenter="hovered = true"
+    v-on:mouseleave="hovered = false"
   >
+    <div v-if="hovered" class="bg-full text-white text-center animate-pulse">
+      <div v-if="props.side === 'buy'">BUY (fill)</div>
+      <div v-else>SELL (fill)</div>
+    </div>
     <div
-      class="grid grid-cols-2 bg-bar gap-2"
+      v-else
       :dir="reverse_order ? 'rtl' : ''"
+      class="grid grid-cols-2 bg-bar gap-2"
     >
       <!--            <p class="basis-1/3" :class="reverse_order ? 'text-right' : 'text-left'">{{ order?.owners.length }}</p>-->
-      <p class="flex" :class="reverse_order ? 'text-left' : 'text-right'">
+      <p :class="reverse_order ? 'text-left' : 'text-right'" class="flex">
         {{ order?.size }}
       </p>
       <p
-        class="flex bg-text"
         :class="reverse_order ? 'text-left ' : 'text-right'"
+        class="flex bg-text"
       >
         {{ order?.price.toFixed(8).substring(0, 10) }}
       </p>
@@ -26,7 +33,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { defineProps, PropType, ref } from "vue";
 import { useWallet } from "solana-wallets-vue";
 import { PublicKey } from "@solana/web3.js";
@@ -34,6 +41,7 @@ import { OrderBookOrderMap } from "../../../stores/StaratlasGmStore";
 
 const is_user_order = ref(false);
 const { publicKey } = useWallet();
+const hovered = ref(false);
 
 const props = defineProps({
   order: { type: Object as PropType<OrderBookOrderMap> },
@@ -84,6 +92,11 @@ function isUserOrderBlock(
     v-bind(bg_color) v-bind(percentage_fill + "%"),
     #03102f00 v-bind(percentage_unfill + "%")
   );
+}
+
+.bg-full {
+  z-index: -1;
+  background: v-bind(bg_color);
 }
 
 .bg-text {
