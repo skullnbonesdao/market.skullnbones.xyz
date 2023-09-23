@@ -303,7 +303,7 @@ export const useUserWalletStore = defineStore("userWalletStore", {
       this.sa_score = [];
 
       const ships_in_score = await getAllFleetsForUserPublicKey(
-        new Connection("https://solana-mainnet.rpc.extrnode.com"),
+        useGlobalStore().connection as Connection,
         new PublicKey(this.address ?? ""),
         new PublicKey(SCORE_FLEET_PROGRAM_ID)
       );
